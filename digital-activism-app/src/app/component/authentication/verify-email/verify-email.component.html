@@ -1,0 +1,29 @@
+<form (onResize)="handleFooterTopMinValue($event, 0)" (ngSubmit)="onSubmit()">
+  <div class="sign-form-body">
+    <div class="sign-form-body-div">
+      <app-logo></app-logo>
+      <div class="sign-form-elem">
+        <h1>Validate your email</h1>
+      </div>
+      <div class="sign-form-elem" *ngIf="isCodeValid">
+        <span class="centered-span">Your email has been validated successfully.</span>
+        <span class="centered-span">You can now <button class="href-button" (click)="routeTo('/login')">Login.</button></span>
+      </div>
+      <div class="sign-form-elem">
+        <span *ngIf="!isCodeValid">A Code has been sent to your email address.</span>
+      </div>
+      <div class="sign-form-elem" *ngIf="!isCodeValid">
+        <label for="verificationCodeInput">Verification Code:</label>
+        <input type="text" id="verificationCodeInput" [(ngModel)]="verificationCodeInput" name="verificationCodeInput">
+        <span class="validation-error-span" *ngIf="isCodeInvalid()">The verification code is incorrect.</span>
+      </div>
+      <div class="sign-form-elem" *ngIf="!isCodeValid">
+        <button class="auth-button" type="submit" name="submit-button">Validate Email</button>
+      </div>
+    </div>
+  </div>
+</form>
+<app-footer
+  [footerTopMinValue]="footerTopMinValue"
+  [position]="position"
+></app-footer>
