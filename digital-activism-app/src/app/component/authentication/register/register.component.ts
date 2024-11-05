@@ -1,6 +1,6 @@
-import {Component, EventEmitter, OnInit, Output} from '@angular/core';
+import {Component, OnInit, ViewChild} from '@angular/core';
 import {NgForOf, NgIf} from "@angular/common";
-import {RECAPTCHA_SETTINGS, RecaptchaModule} from "ng-recaptcha-2";
+import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recaptcha-2";
 import {FormsModule} from "@angular/forms";
 import {LogoComponent} from "../../logo/logo.component";
 import {FooterComponent} from "../../footer/footer.component";
@@ -20,7 +20,8 @@ import {RegisterRequest} from '../../../model/authentication/register-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
 import {EmailVerificationRequest} from '../../../model/authentication/email-verification-request';
 import {RegisterResponse} from '../../../model/authentication/register-response';
-import {ErrorList} from '../../../model/authentication/error-list';
+import {EmailVerificationResponse} from '../../../model/authentication/email-verification-response';
+import {MatProgressBar, MatProgressBarModule} from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-register',
@@ -32,7 +33,9 @@ import {ErrorList} from '../../../model/authentication/error-list';
     LogoComponent,
     FooterComponent,
     NgxResizeObserverModule,
-    NgForOf
+    NgForOf,
+    MatProgressBar,
+    MatProgressBarModule
   ],
   providers: [
     {
@@ -45,6 +48,10 @@ import {ErrorList} from '../../../model/authentication/error-list';
   styleUrls: ['./register.component.scss']
 })
 export class RegisterComponent extends AuthenticationComponent implements OnInit {
+  override getRecaptchaRef(): RecaptchaComponent {
+    return this.captchaRef;
+  }
+
   faXmark = faXmark;
 
   // Form fields
@@ -53,12 +60,10 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
   passwordInput: string = "";
   confirmPasswordInput: string = "";
 
-  // Logic Fields
-  isMemberAdded: boolean = false;
-
   registerResponse: RegisterResponse = new RegisterResponse([]);
+  emailVerificationResponse = new EmailVerificationResponse([], "");
 
-  @Output() onUserAddedEmitter = new EventEmitter<MemberDTO>();
+  @ViewChild('captchaRef') captchaRef!: RecaptchaComponent
 
   constructor(protected override memberService: MemberService,
               protected override currentMemberService: CurrentMemberService,
@@ -81,30 +86,36 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
     new Promise<boolean>((resolve, reject) => {
       this.isFormValid().then((isFormValid) => {
         if (isFormValid) {
+          this.formValidated = true;
           console.log("Form is valid")
           let registerRequest = new RegisterRequest(this.usernameInput, this.emailInput, this.passwordInput);
           this.authenticationService.register(registerRequest).subscribe({
             next: (registerResponse: RegisterResponse) => {
-              this.registerResponse = registerResponse;
-              console.log(registerResponse)
-              console.log("User added: ", registerResponse.memberDTO);
+              this.registerResponse = RegisterResponse.fromJson(registerResponse);
               this.currentMemberService.setCounter(0)
-              let memberDto: MemberDTO = MemberDTO.fromJson(registerResponse.memberDTO!);
-              console.log("MemberDto: " + memberDto);
-              let verificationEmailRequest = new EmailVerificationRequest(memberDto.getToken()!, this.emailInput.toLowerCase());
-              this.authenticationService.sendVerificationEmail(verificationEmailRequest).subscribe(verificationEmailResponse => {
-                if (verificationEmailResponse != null && verificationEmailResponse.errors.length == 0) {
-                  this.internalObjectService.setObject({
-                    verificationCodeHash: verificationEmailResponse.verificationCodeHash,
-                    memberDto: memberDto
-                  });
-                  this.router.navigate(['/verify-email'], {relativeTo: this.route}).then();
-                  resolve(true);
-                } else {
-                  console.log(verificationEmailResponse.errors)
-                  resolve(false);
-                }
-              })
+              let memberDto: MemberDTO = this.registerResponse.memberDTO!;
+              console.log(this.registerResponse)
+              if (this.registerResponse.hasNoErrors()) {
+                let verificationEmailRequest = new EmailVerificationRequest(memberDto.getToken()!, this.emailInput.toLowerCase());
+                this.authenticationService.sendVerificationEmail(verificationEmailRequest).subscribe(emailVerificationResponse => {
+                  this.emailVerificationResponse = emailVerificationResponse;
+                  if (emailVerificationResponse != null && emailVerificationResponse.errors.length == 0) {
+                    this.internalObjectService.setObject({
+                      verificationCodeHash: emailVerificationResponse.verificationCodeHash,
+                      memberDto: memberDto
+                    });
+                    this.router.navigate(['/verify-email'], {relativeTo: this.route}).then();
+                    resolve(true);
+                  } else {
+                    console.log(emailVerificationResponse.errors)
+                    resolve(false);
+                  }
+                })
+              } else {
+                console.log("Errors in registration: ", this.registerResponse.errorLists);
+                resolve(false);
+              }
+
             },
             error: (error: HttpErrorResponse) => {
               console.log("Error in adding new user: ", error);
@@ -118,12 +129,16 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
         }
       })
     }).then(success => {
-      if (!success) super.onSubmit();
+      if (!success) {
+        super.onSubmit();
+        this.formValidated = false;
+      }
+      this.resetCaptcha();
     });
   }
 
   override async isFormValid(): Promise<boolean> {
-    if(this.isUsernameValid() &&
+    if (this.isUsernameValid() &&
       this.isEmailProper(this.emailInput) &&
       this.isPasswordsMatch() &&
       this.isPasswordProper(this.passwordInput)) {
@@ -163,5 +178,8 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
     this.usernameInput = "";
     this.passwordInput = "";
     this.confirmPasswordInput = "";
+    this.registerResponse = new RegisterResponse([]);
+    this.emailVerificationResponse = new EmailVerificationResponse([], "");
+    this.formValidated = false;
   }
 }

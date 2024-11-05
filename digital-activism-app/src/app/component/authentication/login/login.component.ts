@@ -2,7 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
 import {HttpClientModule, HttpErrorResponse} from "@angular/common/http";
 import {NgForOf, NgIf} from "@angular/common";
-import {RECAPTCHA_SETTINGS, RecaptchaModule} from "ng-recaptcha-2";
+import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recaptcha-2";
 import {FormsModule} from "@angular/forms";
 import {environment} from "../../../../environment/environment.prod";
 import {AuthenticationComponent} from "../authentication-component";

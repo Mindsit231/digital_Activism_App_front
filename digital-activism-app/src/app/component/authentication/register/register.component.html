@@ -9,20 +9,25 @@
         <label for="username-input">Username:</label>
         <input type="text" id="username-input" [(ngModel)]="usernameInput" name="username-input">
         <span class="validation-error-span" *ngIf="isUsernameInvalid()">{{ fieldInvalidMessage }}</span>
+        <ng-container *ngFor="let error of registerResponse.findErrorListByName(USERNAME_ERROR_IDENTIFIER).errors">
+          <span class="validation-error-span">{{ error }}</span>
+        </ng-container>
       </div>
       <div class="sign-form-elem">
         <label for="email-input">Email:</label>
         <input type="email" id="email-input" [(ngModel)]="emailInput" name="email-input">
         <span class="validation-error-span" *ngIf="isEmailInvalid()">{{ emailInvalidMessage }}</span>
-        <ng-container *ngFor="let error of registerResponse.findErrorListByName('email').errors">
+        <ng-container *ngFor="let error of registerResponse.findErrorListByName(EMAIL_ERROR_IDENTIFIER).errors">
           <span class="validation-error-span">{{ error }}</span>
-
         </ng-container>
       </div>
       <div class="sign-form-elem">
         <label for="password-input">Password:</label>
         <input type="password" id="password-input" [(ngModel)]="passwordInput" name="password-input">
         <span class="validation-error-span" *ngIf="isPasswordInvalid()">{{ passwordInvalidMessage }}</span>
+        <ng-container *ngFor="let error of registerResponse.findErrorListByName(PASSWORD_ERROR_IDENTIFIER).errors">
+          <span class="validation-error-span">{{ error }}</span>
+        </ng-container>
       </div>
       <div class="sign-form-elem">
         <label for="passwordConfirmation-input">Password Confirmation:</label>
@@ -31,11 +36,19 @@
         <span class="validation-error-span" *ngIf="isPasswordsNotMatch()">{{ passwordsNotMatchMessage }}</span>
       </div>
       <div class="sign-form-elem">
-        <re-captcha (resolved)="resolved($event)"></re-captcha>
+        <re-captcha (resolved)="resolved($event)"  #captchaRef></re-captcha>
         <label class="validation-error-span centered-span" *ngIf="isCaptchaInvalid()">Please verify that you're not a
           robot.</label>
       </div>
       <div class="separation-line-small"></div>
+      <div class="sign-form-elem">
+        <ng-container *ngFor="let error of emailVerificationResponse.errors">
+          <span class="validation-error-span">{{ error }}</span>
+        </ng-container>
+      </div>
+      <div class="sign-form-elem" *ngIf="formValidated">
+        <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+      </div>
       <div class="sign-form-elem">
         <button class="auth-button" type="submit" name="submit-button">Register</button>
       </div>

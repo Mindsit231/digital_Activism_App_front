@@ -4,7 +4,7 @@ import {ReCaptchaResponse} from '../../model/reCaptcha/re-captcha-response';
 import {ReCaptchaRequest} from '../../model/reCaptcha/re-captcha-request';
 import {environment} from '../../../environment/environment.prod';
 import {MIN_PASSWORD_LENGTH} from '../../service/member.service';
-import {HttpErrorResponse} from '@angular/common/http';
+import {RecaptchaComponent} from 'ng-recaptcha-2';
 
 export abstract class AuthenticationComponent extends FormComponent {
   protected recaptchaService!: ReCaptchaService;
@@ -13,6 +13,8 @@ export abstract class AuthenticationComponent extends FormComponent {
   protected isCaptchaValid: boolean = false;
   protected isCaptchaChecked: boolean = false;
 
+  protected formValidated: boolean = false;
+
   // Validation messages
   protected passwordInvalidMessage: String = "Password must have at least one lowercase and uppercase letter, one number, one special character and " + MIN_PASSWORD_LENGTH + " characters long.";
   protected oldPasswordInvalidMessage: String = "Old Password is incorrect.";
@@ -20,6 +22,11 @@ export abstract class AuthenticationComponent extends FormComponent {
   protected emailInvalidMessage: String = "Email is invalid.";
   protected fieldInvalidMessage: String = "Field must be at least 3 characters long without any special characters.";
   protected notRobotMessage: string = "Please verify that you're not a robot."
+
+  // Error Identifiers
+  protected USERNAME_ERROR_IDENTIFIER = "Username";
+  protected EMAIL_ERROR_IDENTIFIER = "Email";
+  protected PASSWORD_ERROR_IDENTIFIER = "Password";
 
   protected constructor() {
     super();
@@ -56,6 +63,12 @@ export abstract class AuthenticationComponent extends FormComponent {
     })
   }
 
+  resetCaptcha(): void {
+    this.getRecaptchaRef().reset();
+    this.isCaptchaValid = false;
+    this.isCaptchaChecked = false;
+  }
+
   isEmailProper(email: string): boolean {
     let regex = new RegExp("^[\\w-.]+@([\\w-]+\\.)+[\\w-]{2,4}$");
     return regex.test(email)
@@ -75,22 +88,26 @@ export abstract class AuthenticationComponent extends FormComponent {
   // sendVerificationEmail(email: string): Promise<string | null> {
   //   return new Promise<string | null>((resolve, reject) => {
   //     this.authenticationService.sendVerificationEmail(this.getUserToken(), email).subscribe({
-          // next: (success: boolean) => {
-          //   if (success) {
-          //     console.log("Email sent");
-          //     resolve(verificationCodeHash);
-          //   } else {
-          //     console.log("Email not sent");
-          //     resolve(null);
-          //   }
-          // },
-          // error: (error: HttpErrorResponse) => {
-          //   console.log("Error in sending email: ", error);
-          //   resolve(null);
-          // }
+  // next: (success: boolean) => {
+  //   if (success) {
+  //     console.log("Email sent");
+  //     resolve(verificationCodeHash);
+  //   } else {
+  //     console.log("Email not sent");
+  //     resolve(null);
+  //   }
+  // },
+  // error: (error: HttpErrorResponse) => {
+  //   console.log("Error in sending email: ", error);
+  //   resolve(null);
+  // }
 
   //     });
   //   });
   //
   // }
+
+  getRecaptchaRef(): RecaptchaComponent {
+    return {} as RecaptchaComponent
+  };
 }

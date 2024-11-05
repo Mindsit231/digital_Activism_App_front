@@ -7,16 +7,18 @@ import {MemberService} from "../../service/member.service";
 import {CookieService} from "ngx-cookie-service";
 import {NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
+import {MatProgressBar, MatProgressBarModule} from "@angular/material/progress-bar";
 
 @Component({
   selector: 'app-home',
   standalone: true,
-  imports: [
-    NgxResizeObserverModule,
-    FooterComponent,
-    NgForOf,
-    NgIf
-  ],
+    imports: [
+        NgxResizeObserverModule,
+        FooterComponent,
+        NgForOf,
+        NgIf,
+        MatProgressBarModule
+    ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
