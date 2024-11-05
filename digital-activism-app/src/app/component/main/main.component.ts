@@ -13,7 +13,7 @@ import {CookieComponent} from "../misc/cookie-component";
 })
 export class MainComponent extends CookieComponent implements OnInit {
   // Excluded Routes for headers / footers
-  excludedHeaderRoutes = ['/login', '/register', '/password-recovery', '/password-reset/'];
+  excludedHeaderRoutes = ['/login', '/register', '/password-recovery', '/password-reset/', '/verify-email'];
 
   constructor(protected override router: Router) {
     super();

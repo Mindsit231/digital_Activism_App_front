@@ -12,7 +12,7 @@ import {LogoComponent} from "../../logo/logo.component";
 import {CookieService} from 'ngx-cookie-service';
 import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
-import {MemberDto} from "../../../model/member/member-dto";
+import {MemberDTO} from "../../../model/member/member-dto";
 
 @Component({
   selector: 'app-password-recovery',

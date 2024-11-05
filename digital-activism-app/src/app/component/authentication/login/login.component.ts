@@ -13,7 +13,7 @@ import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {CurrentMemberService} from "../../../service/current-member.service";
 import {MemberService, MIN_PASSWORD_LENGTH} from "../../../service/member.service";
-import {MemberDto} from "../../../model/member/member-dto";
+import {MemberDTO} from "../../../model/member/member-dto";
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LoginRequest} from '../../../model/authentication/login-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
@@ -55,7 +55,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
               protected override router: Router, protected override route: ActivatedRoute,
               private internalObjectService: InternalObjectService<{
                 verificationCodeHash: string,
-                member: MemberDto
+                member: MemberDTO
               }>) {
     super();
   }
@@ -72,7 +72,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
         if (isFormValid) {
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
           this.authenticationService.verifyLogin(loginRequest).subscribe(({
-            next: (jsonMemberDTO: MemberDto) => {
+            next: (jsonMemberDTO: MemberDTO) => {
               this.isLoginChecked = true;
               if (jsonMemberDTO != null) {
                 console.log('Login is valid');

@@ -8,7 +8,7 @@ import {
 import {ConnectionSecurityFieldComponent} from "../connection-security-field/connection-security-field.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormComponent} from "../../../misc/form-component";
-import {MemberDto} from "../../../../model/member/member-dto";
+import {MemberDTO} from "../../../../model/member/member-dto";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {MemberService} from "../../../../service/member.service";
@@ -33,9 +33,9 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   editableElements = editableElements;
   changesSuccess: boolean = false;
 
-  @Input() user!: MemberDto;
+  @Input() user!: MemberDTO;
 
-  @Input() userSubject!: Subject<MemberDto>;
+  @Input() userSubject!: Subject<MemberDTO>;
 
   @Input() editingUserType: EditingUserType = EditingUserType.USER;
   @Input() isModal: boolean = false
@@ -49,7 +49,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     this.setEditableElementValues();
 
     if (this.userSubject !== undefined) this.userSubject.subscribe({
-      next: (user: MemberDto) => {
+      next: (user: MemberDTO) => {
         this.user = user;
       }
     });
@@ -89,10 +89,10 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
   onApplyChanges() {
     this.setUserFields();
-    let member: MemberDto = MemberDto.fromJson(this.user)
+    let member: MemberDTO = MemberDTO.fromJson(this.user)
 
     this.memberService.updateEntity(member).subscribe({
-      next: (jsonUser: MemberDto) => {
+      next: (jsonUser: MemberDTO) => {
         console.log("Updated member.")
         this.changesSuccess = true;
       },

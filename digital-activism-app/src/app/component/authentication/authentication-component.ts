@@ -11,6 +11,7 @@ export abstract class AuthenticationComponent extends FormComponent {
 
   protected captcha: string | null = "";
   protected isCaptchaValid: boolean = false;
+  protected isCaptchaChecked: boolean = false;
 
   // Validation messages
   protected passwordInvalidMessage: String = "Password must have at least one lowercase and uppercase letter, one number, one special character and " + MIN_PASSWORD_LENGTH + " characters long.";
@@ -29,7 +30,7 @@ export abstract class AuthenticationComponent extends FormComponent {
   }
 
   isCaptchaInvalid(): boolean {
-    return !this.isCaptchaValid && this.isSubmitted;
+    return !this.isCaptchaValid && this.isCaptchaChecked && this.isSubmitted;
   }
 
   checkCaptcha(): Promise<boolean> {
@@ -38,9 +39,11 @@ export abstract class AuthenticationComponent extends FormComponent {
         let captchaRequest = new ReCaptchaRequest(environment.secretKey, this.captcha);
         console.log(captchaRequest);
         this.recaptchaService.verifyCaptcha(captchaRequest).subscribe({
-          next: (response: ReCaptchaResponse) => {
-            this.isCaptchaValid = response.success;
-            resolve(response.success);
+          next: (reCaptchaResponse: ReCaptchaResponse) => {
+            console.log(reCaptchaResponse)
+            this.isCaptchaValid = reCaptchaResponse.success;
+            this.isCaptchaChecked = true;
+            resolve(reCaptchaResponse.success);
           },
           error: (error) => {
             console.error(error);
@@ -69,9 +72,9 @@ export abstract class AuthenticationComponent extends FormComponent {
     return regex.test(field) && field.length >= 3;
   }
 
-  sendVerificationEmail(email: string): Promise<string | null> {
-    return new Promise<string | null>((resolve, reject) => {
-      this.authenticationService.sendVerificationEmail(this.getUserToken(), email).subscribe({
+  // sendVerificationEmail(email: string): Promise<string | null> {
+  //   return new Promise<string | null>((resolve, reject) => {
+  //     this.authenticationService.sendVerificationEmail(this.getUserToken(), email).subscribe({
           // next: (success: boolean) => {
           //   if (success) {
           //     console.log("Email sent");
@@ -86,8 +89,8 @@ export abstract class AuthenticationComponent extends FormComponent {
           //   resolve(null);
           // }
 
-      });
-    });
-
-  }
+  //     });
+  //   });
+  //
+  // }
 }

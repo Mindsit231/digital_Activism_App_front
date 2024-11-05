@@ -5,20 +5,20 @@ import {Observable} from "rxjs";
 import {TokenByEmail} from "../model/query/update/token-by-email";
 import {TokenByOldToken} from "../model/query/update/token-by-old-token";
 import {PasswordByEmail} from "../model/query/update/password-by-email";
-import {MemberDto} from "../model/member/member-dto";
+import {MemberDTO} from "../model/member/member-dto";
 import {PfpPathByEmail} from "../model/query/update/pfp-path-by-email";
 
 @Injectable({
   providedIn: 'root'
 })
-export class MemberService extends EntityService<MemberDto> {
+export class MemberService extends EntityService<MemberDTO> {
 
   constructor(http: HttpClient) {
     super(http, "member");
   }
 
-  public findMemberByEmail(email: String): Observable<MemberDto> {
-    return this.http.get<MemberDto>(`${this.apiBackendUrl}/${this.entityName}/select-member-by-email/${email}`);
+  public findMemberByEmail(email: String): Observable<MemberDTO> {
+    return this.http.get<MemberDTO>(`${this.apiBackendUrl}/${this.entityName}/select-member-by-email/${email}`);
   }
 
   public updatePasswordByEmail(passwordByEmail: PasswordByEmail): Observable<number> {

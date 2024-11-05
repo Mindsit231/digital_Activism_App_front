@@ -5,7 +5,7 @@ import {FooterComponent} from "../../footer/footer.component";
 import {CookieService} from "ngx-cookie-service";
 import {CurrentMemberService} from "../../../service/current-member.service";
 import {ActivatedRoute, Router} from "@angular/router";
-import {MemberDto} from "../../../model/member/member-dto";
+import {MemberDTO} from "../../../model/member/member-dto";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {ConnectionSecurityElementComponent} from "./connection-security-element/connection-security-element.component";
 import {CookieComponent} from "../../misc/cookie-component";
@@ -28,7 +28,7 @@ import {AuthenticationService} from '../../../service/authentication.service';
 })
 export class ConnectionSecurityComponent extends CookieComponent implements OnInit {
 
-  user!: MemberDto;
+  user!: MemberDTO;
 
   constructor(private el: ElementRef,
               protected override memberService: MemberService,

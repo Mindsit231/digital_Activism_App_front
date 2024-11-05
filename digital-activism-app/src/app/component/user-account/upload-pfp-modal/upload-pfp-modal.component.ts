@@ -7,7 +7,7 @@ import {MatIconModule} from "@angular/material/icon";
 import {faCheck, faTrash, faUser, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {UploadStatus} from "../../misc/form-component";
-import {MemberDto} from "../../../model/member/member-dto";
+import {MemberDTO} from "../../../model/member/member-dto";
 import {Subject} from "rxjs";
 import {MemberService} from "../../../service/member.service";
 
@@ -37,8 +37,8 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
   @Input() override isModalOpen = false
   @Output() override onModalChangeEmitter = new EventEmitter<boolean>()
 
-  @Input() memberSubject!: Subject<MemberDto>;
-  @Input() member!: MemberDto;
+  @Input() memberSubject!: Subject<MemberDTO>;
+  @Input() member!: MemberDTO;
 
   @ViewChild('imageInput') fileInput!: ElementRef;
 
@@ -48,7 +48,7 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.memberSubject !== undefined) this.memberSubject.subscribe({
-      next: (member: MemberDto) => {
+      next: (member: MemberDTO) => {
         this.member = member;
       }
     });

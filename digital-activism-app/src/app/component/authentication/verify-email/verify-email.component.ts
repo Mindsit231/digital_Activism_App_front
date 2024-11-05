@@ -10,7 +10,7 @@ import {CookieService} from "ngx-cookie-service";
 import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {MemberService} from '../../../service/member.service';
-import {MemberDto} from '../../../model/member/member-dto';
+import {MemberDTO} from '../../../model/member/member-dto';
 import {AuthenticationService} from '../../../service/authentication.service';
 
 @Component({
@@ -35,14 +35,14 @@ export class VerifyEmailComponent extends FormComponent implements OnInit {
   isCodeValid: boolean = false;
 
   // Service Fields
-  inputObject!: { verificationCodeHash: string, memberDto: MemberDto };
+  inputObject!: { verificationCodeHash: string, memberDto: MemberDTO };
 
   constructor(protected override memberService: MemberService,
               protected override cookieService: CookieService,
               protected override authenticationService: AuthenticationService,
               private internalObjectService: InternalObjectService<{
                 verificationCodeHash: string,
-                memberDto: MemberDto
+                memberDto: MemberDTO
               }>,
               protected override router: Router, protected override route: ActivatedRoute) {
     super();

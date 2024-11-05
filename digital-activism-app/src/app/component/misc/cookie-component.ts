@@ -4,7 +4,7 @@ import {ActivatedRoute, Router} from '@angular/router';
 import {CookieService} from 'ngx-cookie-service';
 import {CurrentMemberService} from '../../service/current-member.service';
 import {MemberService} from '../../service/member.service';
-import {MemberDto} from '../../model/member/member-dto';
+import {MemberDTO} from '../../model/member/member-dto';
 import {AuthenticationService} from '../../service/authentication.service';
 
 export abstract class CookieComponent {
@@ -71,7 +71,7 @@ export abstract class CookieComponent {
         this.currentMemberService.setMainPromise(new Promise<boolean>((resolve_sub, reject) => {
           this.authenticationService.loginByToken(this.getUserToken())
             .subscribe({
-              next: (jsonUser: MemberDto) => {
+              next: (jsonUser: MemberDTO) => {
                 if (jsonUser != null) {
                   this.initializeMember(jsonUser);
                   this.currentMemberService.setCounter(0);
@@ -101,8 +101,8 @@ export abstract class CookieComponent {
     });
   }
 
-  initializeMember(jsonMember: MemberDto) {
-    this.currentMemberService.member = MemberDto.fromJson(jsonMember);
+  initializeMember(jsonMember: MemberDTO) {
+    this.currentMemberService.member = MemberDTO.fromJson(jsonMember);
     this.setUserToken(this.currentMemberService.member?.token!);
     this.initializeMemberPfpImgUrl().then();
 

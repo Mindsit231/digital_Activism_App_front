@@ -7,7 +7,7 @@ import {ActivatedRoute, Router} from "@angular/router";
 import {CookieComponent} from "../../misc/cookie-component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
-import {MemberDto} from "../../../model/member/member-dto";
+import {MemberDTO} from "../../../model/member/member-dto";
 import {MemberService} from "../../../service/member.service";
 import {PaginatorModule} from "primeng/paginator";
 import {Tag} from '../../../model/tag/tag';
@@ -30,7 +30,7 @@ export class UserSettingsComponent extends CookieComponent implements OnInit {
   hasAddresses: boolean = false;
   isModalOpen: boolean = false;
 
-  user!: MemberDto;
+  user!: MemberDTO;
 
   faUser = faUser;
   faCamera = faCamera;

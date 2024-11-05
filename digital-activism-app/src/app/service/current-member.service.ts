@@ -1,11 +1,11 @@
-import {MemberDto} from "../model/member/member-dto";
+import {MemberDTO} from "../model/member/member-dto";
 import {Injectable} from "@angular/core";
 @Injectable({
   providedIn: 'root'
 })
 export class CurrentMemberService {
   private counter: number = 0;
-  private _member!: MemberDto | undefined;
+  private _member!: MemberDTO | undefined;
   private mainPromise!: Promise<boolean>;
 
   constructor() {}
@@ -34,11 +34,11 @@ export class CurrentMemberService {
     this.mainPromise = mainPromise;
   }
 
-  get member(): MemberDto | undefined {
+  get member(): MemberDTO | undefined {
     return this._member;
   }
 
-  set member(member: MemberDto | undefined) {
+  set member(member: MemberDTO | undefined) {
     this._member = member;
   }
 

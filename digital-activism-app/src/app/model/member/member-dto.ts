@@ -1,6 +1,6 @@
 import {TagPerMember} from "../tag/tag-per-member";
 
-export class MemberDto {
+export class MemberDTO {
     protected id: number | undefined;
 
     username: string;
@@ -17,23 +17,25 @@ export class MemberDto {
     // PFP IMAGE URL (COMPUTED WHEN NEEDED)
     pfpImgUrl: string | undefined;
 
-    constructor(username: string, email: string, password: string, birthdate: string,
+    constructor(username: string, email: string, password: string, role: string,
                 creationDate?: string, token?: string,
-                userId?: number, pfpImgPath?: string) {
+                userId?: number, pfpName?: string) {
         this.id = userId;
 
         this.email = email;
         this.username = username;
         this.password = password;
-        this.role = birthdate;
+        this.role = role;
 
         this.creationDate = creationDate;
         this.token = token;
-        this.pfpName = pfpImgPath;
+        this.pfpName = pfpName;
     }
 
-    static fromJson(jsonMember: MemberDto): MemberDto {
-        return new MemberDto(jsonMember.username, jsonMember.email, jsonMember.password, jsonMember.role, jsonMember.creationDate, jsonMember.token, jsonMember.id, jsonMember.pfpName);
+    static fromJson(jsonMemberDto: MemberDTO): MemberDTO {
+        return new MemberDTO(jsonMemberDto.username, jsonMemberDto.email, jsonMemberDto.password, jsonMemberDto.role,
+          jsonMemberDto.creationDate, jsonMemberDto.token,
+          jsonMemberDto.id, jsonMemberDto.pfpName);
     }
 
     hasPfp(): boolean {
@@ -64,5 +66,9 @@ export class MemberDto {
 
     setPfpName(pfpName: string) {
         this.pfpName = pfpName;
+    }
+
+    getToken() {
+        return this.token;
     }
 }
