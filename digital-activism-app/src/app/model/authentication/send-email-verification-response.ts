@@ -1,4 +1,4 @@
-export class EmailVerificationResponse {
+export class SendEmailVerificationResponse {
   errors: string[];
   verificationCodeHash: string;
 

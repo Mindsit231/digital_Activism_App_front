@@ -1,14 +1,16 @@
 import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders, HttpParams} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {LoginRequest} from '../model/authentication/login-request';
 import {MemberDTO} from '../model/member/member-dto';
 import {Observable} from 'rxjs';
 import {environment} from '../../environment/environment.prod';
 import {RegisterRequest} from '../model/authentication/register-request';
 import {Email} from '../model/misc/email';
-import {EmailVerificationResponse} from '../model/authentication/email-verification-response';
-import {EmailVerificationRequest} from '../model/authentication/email-verification-request';
+import {SendEmailVerificationResponse} from '../model/authentication/send-email-verification-response';
+import {SendEmailVerificationRequest} from '../model/authentication/send-email-verification-request';
 import {RegisterResponse} from '../model/authentication/register-response';
+import {VerifyEmailRequest} from '../model/authentication/verify-email-request';
+import {VerifyEmailResponse} from '../model/authentication/verify-email-response';
 
 @Injectable({
   providedIn: 'root'
@@ -39,28 +41,27 @@ export class AuthenticationService {
     );
   }
 
-  public verifyEmail(token: String): Observable<number> {
+  public sendEmailVerification(sendEmailVerificationRequest: SendEmailVerificationRequest, token: string): Observable<SendEmailVerificationResponse> {
     const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
-    return this.http.post<number>(
+
+    return this.http.post<SendEmailVerificationResponse>(
+      `${this.apiBackendUrl}/authenticated/send-verification-email`,
+      sendEmailVerificationRequest,
+      {
+        headers: headers,
+      }
+    );
+  }
+
+  public verifyEmail(verifyEmailRequest: VerifyEmailRequest, token: String): Observable<VerifyEmailResponse> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<VerifyEmailResponse>(
       `${this.apiBackendUrl}/authenticated/verify-email`,
-      null,
+      verifyEmailRequest,
       {
         headers: headers
       }
     );
   }
 
-  public sendVerificationEmail(verificationEmailRequest: EmailVerificationRequest): Observable<EmailVerificationResponse> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${verificationEmailRequest.token}`});
-    const params: HttpParams = new HttpParams().set(this.EMAIL_HEADER, verificationEmailRequest.email);
-
-    return this.http.post<EmailVerificationResponse>(
-      `${this.apiBackendUrl}/authenticated/send-verification-email`,
-      null,
-      {
-        headers: headers,
-        params: params
-      }
-    );
-  }
 }

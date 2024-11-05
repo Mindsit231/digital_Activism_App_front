@@ -15,7 +15,9 @@
       <div class="sign-form-elem" *ngIf="!isCodeValid">
         <label for="verificationCodeInput">Verification Code:</label>
         <input type="text" id="verificationCodeInput" [(ngModel)]="verificationCodeInput" name="verificationCodeInput">
-        <span class="validation-error-span" *ngIf="isCodeInvalid()">The verification code is incorrect.</span>
+        <ng-container *ngFor="let error of verifyEmailResponse.errors">
+          <span class="validation-error-span">{{ error }}</span>
+        </ng-container>
       </div>
       <div class="sign-form-elem" *ngIf="!isCodeValid">
         <button class="auth-button" type="submit" name="submit-button">Validate Email</button>
