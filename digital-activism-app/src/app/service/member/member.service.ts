@@ -1,12 +1,12 @@
 import {HttpClient} from "@angular/common/http";
-import {EntityService} from "./entity.service";
+import {EntityService} from "../entity.service";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {TokenByEmail} from "../model/query/update/token-by-email";
-import {TokenByOldToken} from "../model/query/update/token-by-old-token";
-import {PasswordByEmail} from "../model/query/update/password-by-email";
-import {MemberDTO} from "../model/member/member-dto";
-import {PfpPathByEmail} from "../model/query/update/pfp-path-by-email";
+import {TokenByEmail} from "../../model/query/update/token-by-email";
+import {TokenByOldToken} from "../../model/query/update/token-by-old-token";
+import {PasswordByEmail} from "../../model/query/update/password-by-email";
+import {MemberDTO} from "../../model/member/member-dto";
+import {PfpPathByEmail} from "../../model/query/update/pfp-path-by-email";
 
 @Injectable({
   providedIn: 'root'

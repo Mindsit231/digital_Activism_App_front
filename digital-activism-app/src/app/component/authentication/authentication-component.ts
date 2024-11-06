@@ -3,7 +3,7 @@ import {ReCaptchaService} from '../../service/reCaptcha/re-captcha.service';
 import {ReCaptchaResponse} from '../../model/reCaptcha/re-captcha-response';
 import {ReCaptchaRequest} from '../../model/reCaptcha/re-captcha-request';
 import {environment} from '../../../environment/environment.prod';
-import {MIN_PASSWORD_LENGTH} from '../../service/member.service';
+import {MIN_PASSWORD_LENGTH} from '../../service/member/member.service';
 import {RecaptchaComponent} from 'ng-recaptcha-2';
 
 export abstract class AuthenticationComponent extends FormComponent {
@@ -84,28 +84,6 @@ export abstract class AuthenticationComponent extends FormComponent {
     let regex = new RegExp("^[a-zA-Z0-9]*$");
     return regex.test(field) && field.length >= 3;
   }
-
-  // sendVerificationEmail(email: string): Promise<string | null> {
-  //   return new Promise<string | null>((resolve, reject) => {
-  //     this.authenticationService.sendVerificationEmail(this.getUserToken(), email).subscribe({
-  // next: (success: boolean) => {
-  //   if (success) {
-  //     console.log("Email sent");
-  //     resolve(verificationCodeHash);
-  //   } else {
-  //     console.log("Email not sent");
-  //     resolve(null);
-  //   }
-  // },
-  // error: (error: HttpErrorResponse) => {
-  //   console.log("Error in sending email: ", error);
-  //   resolve(null);
-  // }
-
-  //     });
-  //   });
-  //
-  // }
 
   getRecaptchaRef(): RecaptchaComponent {
     return {} as RecaptchaComponent

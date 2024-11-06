@@ -2,19 +2,18 @@ import {MemberDTO} from '../member/member-dto';
 import {ErrorList} from './error-list';
 
 export class RegisterResponse {
-  memberDTO: MemberDTO | undefined;
+  token: string;
   errorLists: ErrorList[];
 
-  constructor(errors: ErrorList[], memberDto?: MemberDTO) {
+  constructor(errors: ErrorList[], token: string) {
     this.errorLists = errors;
-    this.memberDTO = memberDto;
+    this.token = token;
   }
 
 
-  static fromJson(json: any): RegisterResponse {
-    let errorLists: ErrorList[] = json.errorLists.map((errorList: any) => ErrorList.fromJson(errorList));
-    let memberDTO: MemberDTO | undefined = json.memberDTO != undefined ? MemberDTO.fromJson(json.memberDTO) : undefined;
-    return new RegisterResponse(errorLists, memberDTO);
+  static fromJson(registerResponseJson: RegisterResponse): RegisterResponse {
+    let errorLists: ErrorList[] = registerResponseJson.errorLists.map((errorList: any) => ErrorList.fromJson(errorList));
+    return new RegisterResponse(errorLists, registerResponseJson.token);
   }
 
   public findErrorListByName(name: string): ErrorList {

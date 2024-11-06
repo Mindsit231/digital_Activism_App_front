@@ -1,5 +1,5 @@
-import {Component, OnInit} from '@angular/core';
-import {ActivatedRoute, Router, RouterOutlet} from '@angular/router';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {RouterOutlet} from '@angular/router';
 import {HttpClientModule, HttpErrorResponse} from "@angular/common/http";
 import {NgForOf, NgIf} from "@angular/common";
 import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recaptcha-2";
@@ -7,16 +7,20 @@ import {FormsModule} from "@angular/forms";
 import {environment} from "../../../../environment/environment.prod";
 import {AuthenticationComponent} from "../authentication-component";
 import {LogoComponent} from "../../logo/logo.component";
-import {InternalObjectService} from "../../../service/misc/internal-object.service";
 import {CookieService} from "ngx-cookie-service";
 import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
-import {CurrentMemberService} from "../../../service/current-member.service";
-import {MemberService, MIN_PASSWORD_LENGTH} from "../../../service/member.service";
+import {CurrentMemberService} from "../../../service/member/current-member.service";
+import {MemberService, MIN_PASSWORD_LENGTH} from "../../../service/member/member.service";
 import {MemberDTO} from "../../../model/member/member-dto";
 import {AuthenticationService} from '../../../service/authentication.service';
 import {LoginRequest} from '../../../model/authentication/login-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
+import {RouterService} from '../../../service/router.service';
+import {TokenService} from '../../../service/token.service';
+import {VerifyEmailService} from '../../../service/verify-email.service';
+import {SendEmailVerificationResponse} from '../../../model/authentication/send-email-verification-response';
+import {MatProgressBar} from '@angular/material/progress-bar';
 
 // @ts-ignore
 @Component({
@@ -26,7 +30,7 @@ import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
     RouterOutlet,
     NgForOf, HttpClientModule,
     FormsModule,
-    RecaptchaModule, NgIf, LogoComponent, FooterComponent, NgxResizeObserverModule
+    RecaptchaModule, NgIf, LogoComponent, FooterComponent, NgxResizeObserverModule, MatProgressBar
   ],
   providers: [
     {
@@ -39,6 +43,10 @@ import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
   styleUrls: ['./login.component.scss', '../auth.styles.scss']
 })
 export class LoginComponent extends AuthenticationComponent implements OnInit {
+  override getRecaptchaRef(): RecaptchaComponent {
+    return this.captchaRef;
+  }
+
   // Form fields
   emailInput: string = "";
   passwordInput: string = "";
@@ -47,22 +55,24 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
   isLoginValid: boolean = false;
   isLoginChecked: boolean = false;
 
-  constructor(protected override memberService: MemberService,
-              protected override authenticationService: AuthenticationService,
+  emailVerificationResponse = new SendEmailVerificationResponse([], "");
+
+  @ViewChild('captchaRef') captchaRef!: RecaptchaComponent
+
+  constructor(protected memberService: MemberService,
+              protected authenticationService: AuthenticationService,
+              protected cookieService: CookieService,
+              protected currentMemberService: CurrentMemberService,
+              protected routerService: RouterService,
+              protected tokenService: TokenService,
               protected override recaptchaService: ReCaptchaService,
-              protected override cookieService: CookieService,
-              protected override currentMemberService: CurrentMemberService,
-              protected override router: Router, protected override route: ActivatedRoute,
-              private internalObjectService: InternalObjectService<{
-                verificationCodeHash: string,
-                member: MemberDTO
-              }>) {
+              protected verifyEmailService: VerifyEmailService) {
     super();
   }
 
   ngOnInit(): void {
-    if (this.hasUserToken()) {
-      this.deleteUserToken();
+    if (this.tokenService.hasUserToken()) {
+      this.tokenService.deleteUserToken();
     }
   }
 
@@ -70,15 +80,29 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
     new Promise<boolean>((resolve) => {
       this.isFormValid().then((isFormValid) => {
         if (isFormValid) {
+          this.formValidated = true;
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
           this.authenticationService.verifyLogin(loginRequest).subscribe(({
             next: (jsonMemberDTO: MemberDTO) => {
               this.isLoginChecked = true;
               if (jsonMemberDTO != null) {
                 console.log('Login is valid');
-                this.isLoginValid = true;
-                this.initializeMember(jsonMemberDTO);
-                resolve(true);
+                if (!jsonMemberDTO.emailVerified) {
+                  console.log('Email is not verified');
+                  this.verifyEmailService.verifyEmail(this.emailInput, jsonMemberDTO.token!)
+                    .then(sendEmailVerificationResponse => {
+                      this.emailVerificationResponse = sendEmailVerificationResponse;
+                    })
+                    .catch(error => {
+                      console.log(error);
+                    }).finally(() => {
+                      resolve(false)
+                    });
+                } else {
+                  this.isLoginValid = true;
+                  this.currentMemberService.initializeMember(jsonMemberDTO);
+                  resolve(true);
+                }
               }
             },
             error: (error: HttpErrorResponse) => {
@@ -94,9 +118,11 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
       });
     }).then(success => {
       super.onSubmit();
+      this.formValidated = false;
+      this.resetCaptcha();
 
-      if (success && this.isLoginValid) {
-        this.routeToHome().then();
+      if (success) {
+        this.routerService.routeToHome().then();
       }
     });
   }
@@ -126,5 +152,4 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
   isLoginInvalid(): boolean {
     return !this.isLoginValid && this.isLoginChecked && this.isSubmitted;
   }
-
 }

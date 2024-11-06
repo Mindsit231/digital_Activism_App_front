@@ -3,19 +3,20 @@ import {LogoComponent} from "../logo/logo.component";
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
-import {CookieComponent} from "../misc/cookie-component";
+import {FooterHandlerComponent} from "../misc/footer-handler-component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
 import {faBars, faPlus, faXmark} from '@fortawesome/free-solid-svg-icons';
 import 'resize-observer-polyfill/dist/ResizeObserver.global'
-import {CurrentMemberService} from "../../service/current-member.service";
+import {CurrentMemberService} from "../../service/member/current-member.service";
 import {FormsModule} from "@angular/forms";
 import {AutoCompleteModule} from 'primeng/autocomplete';
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {logout, ProfileMenuItem, profileMenuItems} from "../user-account/profile-menu-item/profile-menu-item";
-import {MemberService} from "../../service/member.service";
+import {MemberService} from "../../service/member/member.service";
 import {navigationItems} from "./navigation-item";
 import {AddEditPostModalComponent} from "../add-edit-post-modal/add-edit-post-modal.component";
 import {AuthenticationService} from '../../service/authentication.service';
+import {RouterService} from '../../service/router.service';
 
 @Component({
   selector: 'app-header',
@@ -30,7 +31,7 @@ import {AuthenticationService} from '../../service/authentication.service';
     '[header-body]': 'true'
   }
 })
-export class HeaderComponent extends CookieComponent implements OnInit {
+export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   // Logic Fields
   showMenu: boolean = false;
 
@@ -43,21 +44,21 @@ export class HeaderComponent extends CookieComponent implements OnInit {
   navigationItems = navigationItems;
   profileMenuItems = profileMenuItems;
 
-  constructor(protected override currentMemberService: CurrentMemberService,
-              protected override authenticationService: AuthenticationService,
-              protected override memberService: MemberService,
-              protected override cookieService: CookieService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+  constructor(protected currentMemberService: CurrentMemberService,
+              protected authenticationService: AuthenticationService,
+              protected memberService: MemberService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService) {
     super();
   }
 
   ngOnInit(): void {
-    this.initializeMemberByToken().then();
+    this.currentMemberService.initializeMemberByFetchingToken().then();
   }
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {
     if (profileMenuItem != logout) {
-      this.routeTo(profileMenuItem.link)
+      this.routerService.routeTo(profileMenuItem.link)
     } else {
       this.currentMemberService.setMemberToNull();
       this.loginOnClick();
@@ -67,7 +68,7 @@ export class HeaderComponent extends CookieComponent implements OnInit {
   }
 
   loginOnClick() {
-    this.routeTo("login");
+    this.routerService.routeTo("/login");
   }
 
   burgerMenuOnClick() {
@@ -83,6 +84,6 @@ export class HeaderComponent extends CookieComponent implements OnInit {
   }
 
   registerOnClick() {
-    this.routeTo("register");
+    this.routerService.routeTo("/register");
   }
 }

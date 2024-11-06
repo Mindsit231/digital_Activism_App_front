@@ -7,7 +7,7 @@
       </div>
       <div class="sign-form-elem" *ngIf="isCodeValid">
         <span class="centered-span">Your email has been validated successfully.</span>
-        <span class="centered-span">You can now <button class="href-button" (click)="routeTo('/login')">Login.</button></span>
+        <span class="centered-span">You can now <button class="href-button" (click)="routerService.routeTo('/login')">Login.</button></span>
       </div>
       <div class="sign-form-elem">
         <span *ngIf="!isCodeValid">A Code has been sent to your email address.</span>

@@ -1,9 +1,9 @@
-import {CookieComponent} from "./cookie-component";
+import {FooterHandlerComponent} from "./footer-handler-component";
 import {HttpErrorResponse, HttpEvent, HttpEventType} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {EntityService} from "../../service/entity.service";
 
-export abstract class FormComponent extends CookieComponent {
+export abstract class FormComponent extends FooterHandlerComponent {
   protected isSubmitted: boolean = false;
 
   onSubmit() {

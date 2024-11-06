@@ -11,7 +11,7 @@ import {FormComponent} from "../../../misc/form-component";
 import {MemberDTO} from "../../../../model/member/member-dto";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {MemberService} from "../../../../service/member.service";
+import {MemberService} from "../../../../service/member/member.service";
 import {Subject} from "rxjs";
 import {EditingUserType} from '../../../misc/editing-user-type';
 
@@ -41,7 +41,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   @Input() isModal: boolean = false
   @Output() onCloseModal = new EventEmitter<boolean>();
 
-  constructor(protected override memberService: MemberService) {
+  constructor(protected memberService: MemberService) {
     super();
   }
 

@@ -17,22 +17,30 @@
         <span class="validation-error-span" *ngIf="isPasswordInvalid()">{{ fieldInvalidMessage }}</span>
       </div>
       <div class="sign-form-elem">
-        <re-captcha (resolved)="resolved($event)"></re-captcha>
+        <re-captcha (resolved)="resolved($event)" #captchaRef></re-captcha>
         <span class="validation-error-span centered-span" *ngIf="isCaptchaInvalid()">{{ notRobotMessage }}</span>
       </div>
       <div class="separation-line-small"></div>
       <span class="validation-error-span" *ngIf="isLoginInvalid()">Invalid Email / Password</span>
+      <div class="sign-form-elem">
+        <ng-container *ngFor="let error of emailVerificationResponse.errors">
+          <span class="validation-error-span">{{ error }}</span>
+        </ng-container>
+      </div>
+      <div class="sign-form-elem" *ngIf="formValidated">
+        <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+      </div>
 
       <div class="sign-form-elem">
         <button class="auth-button" type="submit">Login</button>
       </div>
 
       <div class="sign-form-elem">
-        <button class="href-button" (click)="routeTo('/password-recovery')">Forgot Password</button>
+        <button class="href-button" (click)="routerService.routeTo('/password-recovery')">Forgot Password</button>
       </div>
       <div class="sign-form-elem">
         <span class="centered-span">Don't have an account?
-          <button class="href-button" (click)="routeTo('/register')"> Register</button>
+          <button class="href-button" (click)="routerService.routeTo('/register')"> Register</button>
         </span>
       </div>
     </div>

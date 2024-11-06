@@ -34,7 +34,7 @@
       </div>
     </div>
   </div>
-  <div class="header-elem logo-title-elem" (click)="routeToHome()">
+  <div class="header-elem logo-title-elem" (click)="routerService.routeToHome()">
     <img class="logo-img" src="assets/logo.png" alt="logo">
     <div class="title-elem">
       <span>Digital Activism</span>
@@ -43,7 +43,7 @@
   <div class="navigation-container">
     <div *ngFor="let navigationItem of navigationItems">
       <div class="navigation-elem-div" *ngIf="!navigationItem.getIsLoggedIn() || currentMemberService.isLoggedIn()"
-           (click)="routeTo(navigationItem.getLink())">
+           (click)="routerService.routeTo(navigationItem.getLink())">
         <div class="icon-elem-1">
           <fa-icon [icon]="navigationItem.getIcon()" [class]="['icon-1']"></fa-icon>
         </div>

@@ -1,9 +1,9 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {CookieComponent} from "../misc/cookie-component";
+import {FooterHandlerComponent} from "../misc/footer-handler-component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {FooterComponent} from "../footer/footer.component";
-import {CurrentMemberService} from "../../service/current-member.service";
-import {MemberService} from "../../service/member.service";
+import {CurrentMemberService} from "../../service/member/current-member.service";
+import {MemberService} from "../../service/member/member.service";
 import {CookieService} from "ngx-cookie-service";
 import {NgForOf, NgIf} from "@angular/common";
 import {ActivatedRoute, Router} from "@angular/router";
@@ -22,13 +22,12 @@ import {MatProgressBar, MatProgressBarModule} from "@angular/material/progress-b
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
-export class HomeComponent extends CookieComponent implements OnInit {
+export class HomeComponent extends FooterHandlerComponent implements OnInit {
 
   constructor(private el: ElementRef,
-              protected override cookieService: CookieService,
-              protected override currentMemberService: CurrentMemberService,
-              protected override memberService: MemberService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+              protected cookieService: CookieService,
+              protected currentMemberService: CurrentMemberService,
+              protected memberService: MemberService) {
     super();
   }
 

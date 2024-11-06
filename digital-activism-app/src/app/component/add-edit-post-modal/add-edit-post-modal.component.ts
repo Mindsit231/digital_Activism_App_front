@@ -8,13 +8,14 @@ import {HttpErrorResponse} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {ModalComponent} from "../misc/modal-component";
 import {ModalOpenType} from "../misc/modal-open-type";
-import {CurrentMemberService} from "../../service/current-member.service";
+import {CurrentMemberService} from "../../service/member/current-member.service";
 import {getCurrentDate} from "../misc/functions";
 import {UploadStatus} from "../misc/form-component";
 import {Tag} from "../../model/tag/tag";
 import {Post} from '../../model/post/post';
 import {PostImage} from '../../model/post/post-image';
 import {PostVideo} from '../../model/post/post-video';
+import {RouterService} from '../../service/router.service';
 
 @Component({
   selector: 'app-add-edit-tweet-modal',
@@ -71,7 +72,7 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
               // protected override currentMemberService: CurrentMemberService,
               // protected override tagService: TagService,
               // protected override tagPerPostService: TagPerPostService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+              protected routerService: RouterService) {
     super();
   }
 

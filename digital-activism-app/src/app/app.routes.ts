@@ -9,19 +9,23 @@ import {UserSettingsComponent} from './component/user-account/user-settings/user
 import {ConnectionSecurityComponent} from './component/user-account/connection-security/connection-security.component';
 import {UserAccountComponent} from './component/user-account/user-account.component';
 import {VerifyEmailComponent} from './component/authentication/verify-email/verify-email.component';
+import {AuthenticatedGuardService} from './service/guard/authenticated-guard.service';
+import {VerifyMailGuardService} from './service/guard/verify-mail-guard.service';
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
   {path: 'home', component: HomeComponent},
   {path: 'login', component: LoginComponent},
   {path: 'register', component: RegisterComponent},
-  {path: 'verify-email', component: VerifyEmailComponent},
+  {path: 'verify-email', component: VerifyEmailComponent, canActivate: [VerifyMailGuardService]},
   {path: 'password-recovery', component: PasswordRecoveryComponent},
   {path: `password-reset/:${StorageKeys.USER_TOKEN}`, component: PasswordResetComponent},
   {
-    path: 'user-account', component: UserAccountComponent, children: [
+    path: 'user-account', component: UserAccountComponent,
+    children: [
       {path: 'connection-security', component: ConnectionSecurityComponent},
       {path: 'user-settings', component: UserSettingsComponent},
     ],
+    canActivate: [AuthenticatedGuardService]
   },
 ];

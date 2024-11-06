@@ -5,6 +5,7 @@ export class MemberDTO {
 
     username: string;
     email: string;
+    emailVerified: boolean;
     password: string;
     role: string;
 
@@ -17,12 +18,13 @@ export class MemberDTO {
     // PFP IMAGE URL (COMPUTED WHEN NEEDED)
     pfpImgUrl: string | undefined;
 
-    constructor(username: string, email: string, password: string, role: string,
+    constructor(username: string, email: string, emailVerified: boolean, password: string, role: string,
                 creationDate?: string, token?: string,
                 userId?: number, pfpName?: string) {
         this.id = userId;
 
         this.email = email;
+        this.emailVerified = emailVerified;
         this.username = username;
         this.password = password;
         this.role = role;
@@ -33,7 +35,9 @@ export class MemberDTO {
     }
 
     static fromJson(jsonMemberDto: MemberDTO): MemberDTO {
-        return new MemberDTO(jsonMemberDto.username, jsonMemberDto.email, jsonMemberDto.password, jsonMemberDto.role,
+        return new MemberDTO(jsonMemberDto.username,
+          jsonMemberDto.email, jsonMemberDto.emailVerified,
+          jsonMemberDto.password, jsonMemberDto.role,
           jsonMemberDto.creationDate, jsonMemberDto.token,
           jsonMemberDto.id, jsonMemberDto.pfpName);
     }
@@ -66,9 +70,5 @@ export class MemberDTO {
 
     setPfpName(pfpName: string) {
         this.pfpName = pfpName;
-    }
-
-    getToken() {
-        return this.token;
     }
 }

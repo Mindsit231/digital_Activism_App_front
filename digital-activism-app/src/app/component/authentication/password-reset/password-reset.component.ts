@@ -10,7 +10,8 @@ import {StorageKeys} from "../../misc/storage-keys";
 import {CookieService} from "ngx-cookie-service";
 import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
-import {MemberService} from "../../../service/member.service";
+import {MemberService} from "../../../service/member/member.service";
+import {RouterService} from '../../../service/router.service';
 
 @Component({
   selector: 'app-password-reset',
@@ -43,14 +44,14 @@ export class PasswordResetComponent extends AuthenticationComponent implements O
   token: string | null = "";
   _isPasswordReset: boolean = false;
 
-  constructor(protected override memberService: MemberService,
-              protected override cookieService: CookieService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+  constructor(protected memberService: MemberService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService) {
     super();
   }
 
   ngOnInit(): void {
-    this.route.params.subscribe(params => {
+    this.routerService.getRouteParams().subscribe(params => {
       this.token = params[StorageKeys.USER_TOKEN];
     });
 
@@ -58,10 +59,10 @@ export class PasswordResetComponent extends AuthenticationComponent implements O
       if (this.token == null ||
         !(this.token.length > 0) ||
         this.token != this.cookieService.get(StorageKeys.USER_TOKEN)) {
-        this.routeToHome().then();
+        this.routerService.routeToHome().then();
       }
     } catch (e) {
-      this.routeToHome().then();
+      this.routerService.routeToHome().then();
     }
   }
 

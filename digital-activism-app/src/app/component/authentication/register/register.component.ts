@@ -4,12 +4,10 @@ import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recapt
 import {FormsModule} from "@angular/forms";
 import {LogoComponent} from "../../logo/logo.component";
 import {FooterComponent} from "../../footer/footer.component";
-import {MemberService} from "../../../service/member.service";
-import {CurrentMemberService} from "../../../service/current-member.service";
+import {MemberService} from "../../../service/member/member.service";
+import {CurrentMemberService} from "../../../service/member/current-member.service";
 import {CookieService} from "ngx-cookie-service";
-import {ActivatedRoute, Router} from "@angular/router";
 import {MemberDTO} from "../../../model/member/member-dto";
-import {InternalObjectService} from "../../../service/misc/internal-object.service";
 import {environment} from "../../../../environment/environment.prod";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {AuthenticationComponent} from "../authentication-component";
@@ -18,10 +16,11 @@ import {NgxResizeObserverModule} from 'ngx-resize-observer';
 import {HttpErrorResponse} from '@angular/common/http';
 import {RegisterRequest} from '../../../model/authentication/register-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
-import {SendEmailVerificationRequest} from '../../../model/authentication/send-email-verification-request';
 import {RegisterResponse} from '../../../model/authentication/register-response';
 import {SendEmailVerificationResponse} from '../../../model/authentication/send-email-verification-response';
 import {MatProgressBar, MatProgressBarModule} from '@angular/material/progress-bar';
+import {RouterService} from '../../../service/router.service';
+import {VerifyEmailService} from '../../../service/verify-email.service';
 
 @Component({
   selector: 'app-register',
@@ -60,26 +59,22 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
   passwordInput: string = "";
   confirmPasswordInput: string = "";
 
-  registerResponse: RegisterResponse = new RegisterResponse([]);
+  registerResponse: RegisterResponse = new RegisterResponse([], "");
   emailVerificationResponse = new SendEmailVerificationResponse([], "");
 
   @ViewChild('captchaRef') captchaRef!: RecaptchaComponent
 
-  constructor(protected override memberService: MemberService,
-              protected override currentMemberService: CurrentMemberService,
-              protected override authenticationService: AuthenticationService,
-              protected override recaptchaService: ReCaptchaService,
-              protected override cookieService: CookieService,
-              protected override router: Router, protected override route: ActivatedRoute,
-              private internalObjectService: InternalObjectService<{
-                verificationCodeHash: string,
-                memberDto: MemberDTO
-              }>) {
+  constructor(protected override recaptchaService: ReCaptchaService,
+              protected memberService: MemberService,
+              protected currentMemberService: CurrentMemberService,
+              protected authenticationService: AuthenticationService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService,
+              protected verifyEmailService: VerifyEmailService) {
     super();
   }
 
   ngOnInit(): void {
-    this.initializeMemberByToken().then();
   }
 
   override onSubmit() {
@@ -93,29 +88,17 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
             next: (registerResponse: RegisterResponse) => {
               this.registerResponse = RegisterResponse.fromJson(registerResponse);
               this.currentMemberService.setCounter(0)
-              let memberDto: MemberDTO = this.registerResponse.memberDTO!;
               console.log(this.registerResponse)
               if (this.registerResponse.hasNoErrors()) {
-                let sendEmailVerificationRequest = new SendEmailVerificationRequest(this.emailInput.toLowerCase());
-                this.authenticationService.sendEmailVerification(sendEmailVerificationRequest, memberDto.getToken()!).subscribe({
-                  next: (sendEmailVerificationResponse: SendEmailVerificationResponse) => {
+                this.verifyEmailService.verifyEmail(this.emailInput, this.registerResponse.token)
+                  .then(sendEmailVerificationResponse => {
                     this.emailVerificationResponse = sendEmailVerificationResponse;
-                    if (sendEmailVerificationResponse != null && sendEmailVerificationResponse.errors.length == 0) {
-                      this.internalObjectService.setObject({
-                        verificationCodeHash: sendEmailVerificationResponse.verificationCodeHash,
-                        memberDto: memberDto
-                      });
-                      this.router.navigate(['/verify-email'], {relativeTo: this.route}).then();
-                      resolve(true);
-                    } else {
-                      console.log(sendEmailVerificationResponse.errors)
-                      resolve(false);
-                    }
-                  }, error: (error: HttpErrorResponse) => {
-                    console.log("Error in sending email: ", error);
+                    resolve(true)
+                  })
+                  .catch(error => {
+                    console.log(error);
                     resolve(false);
-                  }
-                })
+                  });
               } else {
                 console.log("Errors in registration: ", this.registerResponse.errorLists);
                 resolve(false);
@@ -174,16 +157,5 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
 
   isPasswordsMatch(): boolean {
     return this.passwordInput === this.confirmPasswordInput;
-  }
-
-  private clearValues() {
-    this.isSubmitted = false;
-    this.emailInput = "";
-    this.usernameInput = "";
-    this.passwordInput = "";
-    this.confirmPasswordInput = "";
-    this.registerResponse = new RegisterResponse([]);
-    this.emailVerificationResponse = new SendEmailVerificationResponse([], "");
-    this.formValidated = false;
   }
 }

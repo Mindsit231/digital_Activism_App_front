@@ -9,7 +9,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {UploadStatus} from "../../misc/form-component";
 import {MemberDTO} from "../../../model/member/member-dto";
 import {Subject} from "rxjs";
-import {MemberService} from "../../../service/member.service";
+import {MemberService} from "../../../service/member/member.service";
 
 @Component({
   selector: 'app-upload-pfp-modal',
@@ -42,7 +42,7 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
 
   @ViewChild('imageInput') fileInput!: ElementRef;
 
-  constructor(protected override memberService: MemberService) {
+  constructor(protected memberService: MemberService) {
     super();
   }
 

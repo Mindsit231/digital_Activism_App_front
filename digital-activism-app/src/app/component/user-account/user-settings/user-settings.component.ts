@@ -1,16 +1,16 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
 import {faCamera, faFloppyDisk, faPenToSquare, faUser, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {UploadPfpModalComponent} from "../upload-pfp-modal/upload-pfp-modal.component";
-import {CurrentMemberService} from "../../../service/current-member.service";
 import {CookieService} from "ngx-cookie-service";
-import {ActivatedRoute, Router} from "@angular/router";
-import {CookieComponent} from "../../misc/cookie-component";
+import {FooterHandlerComponent} from "../../misc/footer-handler-component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
 import {MemberDTO} from "../../../model/member/member-dto";
-import {MemberService} from "../../../service/member.service";
+import {MemberService} from "../../../service/member/member.service";
 import {PaginatorModule} from "primeng/paginator";
 import {Tag} from '../../../model/tag/tag';
+import {RouterService} from '../../../service/router.service';
+import {CurrentMemberService} from '../../../service/member/current-member.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -25,7 +25,7 @@ import {Tag} from '../../../model/tag/tag';
   templateUrl: './user-settings.component.html',
   styleUrl: './user-settings.component.scss'
 })
-export class UserSettingsComponent extends CookieComponent implements OnInit {
+export class UserSettingsComponent extends FooterHandlerComponent implements OnInit {
 
   hasAddresses: boolean = false;
   isModalOpen: boolean = false;
@@ -41,13 +41,11 @@ export class UserSettingsComponent extends CookieComponent implements OnInit {
   availableTags: Tag[] = [];
   selectedTagId!: string | undefined;
 
-  constructor(private el: ElementRef,
-              protected override memberService: MemberService,
-              protected override currentMemberService: CurrentMemberService,
-              protected override cookieService: CookieService,
-              // protected override tagService: TagService,
-              // protected override tagPerMemberService: TagPerMemberService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+  constructor(protected el: ElementRef,
+              protected memberService: MemberService,
+              protected currentMemberService: CurrentMemberService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService) {
     super();
   }
 
@@ -87,10 +85,12 @@ export class UserSettingsComponent extends CookieComponent implements OnInit {
     // }
   }
 
-  getSelectedTags() {
-    return this.availableTags.filter(tag => {
-      return this.currentMemberService.member?.tagPerMemberList.find(tagPerMember => tag.tagId == tagPerMember.tagId) != undefined;
-    })
+  getSelectedTags(): Tag[] {
+    // return this.availableTags.filter(tag => {
+    //   return this.currentMemberService.member?.tagPerMemberList.find(tagPerMember => tag.tagId == tagPerMember.tagId) != undefined;
+    // })
+    // todo - fix this
+    return [];
   }
 
   onDeleteTag(tag: Tag) {

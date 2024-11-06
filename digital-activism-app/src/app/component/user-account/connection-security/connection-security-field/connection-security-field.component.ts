@@ -4,7 +4,7 @@ import {NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {EditableElementType} from "../../../misc/editable-element-type";
 import {AuthenticationComponent} from "../../../authentication/authentication-component";
-import {CurrentMemberService} from "../../../../service/current-member.service";
+import {CurrentMemberService} from "../../../../service/member/current-member.service";
 import {EditingUserType} from "../../../misc/editing-user-type";
 
 @Component({
@@ -32,7 +32,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   isOldPasswordChecked = false;
   isEditable: boolean = true;
 
-  constructor(protected override currentMemberService: CurrentMemberService) {
+  constructor(protected currentMemberService: CurrentMemberService) {
     super();
   }
 

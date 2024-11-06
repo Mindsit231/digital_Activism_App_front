@@ -1,13 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
-import {CookieComponent} from "../../misc/cookie-component";
+import {FooterHandlerComponent} from "../../misc/footer-handler-component";
 import {ActivatedRoute, Router} from "@angular/router";
 import {logout, ProfileMenuItem, profileMenuItems} from "./profile-menu-item";
 import {NgIf} from "@angular/common";
 import {CookieService} from "ngx-cookie-service";
-import {CurrentMemberService} from "../../../service/current-member.service";
+import {CurrentMemberService} from "../../../service/member/current-member.service";
 import {EditableElement, editableElements, passwordElement, usernameElement} from "../../misc/editable-element";
-import {MemberService} from "../../../service/member.service";
+import {MemberService} from "../../../service/member/member.service";
+import {AuthenticationService} from '../../../service/authentication.service';
+import {RouterService} from '../../../service/router.service';
 
 @Component({
   selector: 'app-profile-menu-item',
@@ -19,18 +21,18 @@ import {MemberService} from "../../../service/member.service";
   templateUrl: './profile-menu-item.component.html',
   styleUrl: './profile-menu-item.component.scss'
 })
-export class ProfileMenuItemComponent extends CookieComponent implements OnInit {
+export class ProfileMenuItemComponent extends FooterHandlerComponent implements OnInit {
   @Input() profileMenuItem!: ProfileMenuItem;
   @Output() clickedOnEmitter = new EventEmitter<ProfileMenuItem>();
 
   borderRadius: string = '0';
   hasBorderBottom: boolean = true;
 
-  constructor(protected override currentMemberService: CurrentMemberService,
-              protected override memberService: MemberService,
-              protected override cookieService: CookieService,
-              protected override router: Router,
-              protected override route: ActivatedRoute) {
+  constructor(protected currentMemberService: CurrentMemberService,
+              protected authenticationService: AuthenticationService,
+              protected memberService: MemberService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService) {
     super();
   }
 
@@ -45,9 +47,9 @@ export class ProfileMenuItemComponent extends CookieComponent implements OnInit 
 
   onClick() {
     if (this.profileMenuItem == logout) {
-      this.logoutOnClick();
+      this.authenticationService.logoutOnClick();
     } else {
-      this.routeTo(this.profileMenuItem.link)
+      this.routerService.routeTo(this.profileMenuItem.link)
     }
   }
 

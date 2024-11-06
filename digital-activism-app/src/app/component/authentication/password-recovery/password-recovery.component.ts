@@ -4,7 +4,7 @@ import {AuthenticationComponent} from "../authentication-component";
 import {FormsModule} from "@angular/forms";
 import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recaptcha-2";
 import {environment} from "../../../../environment/environment.prod";
-import {MemberService} from "../../../service/member.service";
+import {MemberService} from "../../../service/member/member.service";
 import {ActivatedRoute, Router} from "@angular/router";
 import {Email} from "../../../model/misc/email";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -13,6 +13,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {FooterComponent} from "../../footer/footer.component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {MemberDTO} from "../../../model/member/member-dto";
+import {RouterService} from '../../../service/router.service';
 
 @Component({
   selector: 'app-password-recovery',
@@ -41,9 +42,9 @@ export class PasswordRecoveryComponent extends AuthenticationComponent {
   isEmailChecked: boolean = false;
   _isEmailSent: boolean = false;
 
-  constructor(protected override memberService: MemberService,
-              protected override cookieService: CookieService,
-              protected override router: Router, protected override route: ActivatedRoute) {
+  constructor(protected memberService: MemberService,
+              protected cookieService: CookieService,
+              protected routerService: RouterService) {
     super();
   }
 

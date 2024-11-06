@@ -1,23 +1,29 @@
-import {Injectable} from '@angular/core';
-import {HttpClient, HttpHeaders} from '@angular/common/http';
+import {inject, Injectable} from '@angular/core';
+import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
 import {LoginRequest} from '../model/authentication/login-request';
 import {MemberDTO} from '../model/member/member-dto';
 import {Observable} from 'rxjs';
 import {environment} from '../../environment/environment.prod';
 import {RegisterRequest} from '../model/authentication/register-request';
-import {Email} from '../model/misc/email';
 import {SendEmailVerificationResponse} from '../model/authentication/send-email-verification-response';
 import {SendEmailVerificationRequest} from '../model/authentication/send-email-verification-request';
 import {RegisterResponse} from '../model/authentication/register-response';
 import {VerifyEmailRequest} from '../model/authentication/verify-email-request';
 import {VerifyEmailResponse} from '../model/authentication/verify-email-response';
+import {RouterService} from './router.service';
+import {MemberService} from './member/member.service';
+import {TokenService} from './token.service';
+import {Role} from './guard/role';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   protected apiBackendUrl = environment.apiBackendUrl;
-  protected EMAIL_HEADER = 'Email';
+  protected routerService: RouterService = inject(RouterService);
+
+  protected memberService: MemberService = inject(MemberService);
+  protected tokenService: TokenService = inject(TokenService);
 
   constructor(protected http: HttpClient) {
   }
@@ -64,4 +70,49 @@ export class AuthenticationService {
     );
   }
 
+  public isLoggedIn(): Promise<MemberDTO> {
+    return new Promise<MemberDTO>((resolve, reject) => {
+      this.loginByToken(this.tokenService.getUserToken()).subscribe({
+        next: (memberDTO: MemberDTO) => {
+          if (memberDTO != null) {
+            this.tokenService.setUserToken(memberDTO.token!);
+            resolve(memberDTO);
+          } else {
+            reject(new Error('MemberDTO is null'));
+          }
+
+        },
+        error: (error: HttpErrorResponse) => {
+          reject(error);
+        }
+      });
+    })
+  }
+
+  async canActivateRole(roles: Role[]): Promise<boolean> {
+    return await this.isLoggedIn().then(
+      (memberDTO: MemberDTO) => {
+        if (memberDTO != null) {
+          for (let role of roles) {
+            if (memberDTO.role == role.role) {
+              return true;
+            }
+          }
+          return false;
+        } else {
+          return false;
+        }
+      }
+    ).catch((error) => {
+      console.log(error);
+      return false;
+    });
+  }
+
+  logoutOnClick() {
+    this.tokenService.deleteUserToken();
+    this.routerService.routeToHome().then(() => {
+      window.location.reload();
+    });
+  }
 }
