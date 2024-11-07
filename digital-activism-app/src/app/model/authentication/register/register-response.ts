@@ -1,5 +1,5 @@
-import {MemberDTO} from '../member/member-dto';
-import {ErrorList} from './error-list';
+import {MemberDTO} from '../../member/member-dto';
+import {ErrorList} from '../error-list';
 
 export class RegisterResponse {
   token: string;

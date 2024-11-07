@@ -7,13 +7,11 @@ import {MIN_PASSWORD_LENGTH} from '../../service/member/member.service';
 import {RecaptchaComponent} from 'ng-recaptcha-2';
 
 export abstract class AuthenticationComponent extends FormComponent {
-  protected recaptchaService!: ReCaptchaService;
+  protected reCaptchaService!: ReCaptchaService;
 
   protected captcha: string | null = "";
   protected isCaptchaValid: boolean = false;
   protected isCaptchaChecked: boolean = false;
-
-  protected formValidated: boolean = false;
 
   // Validation messages
   protected passwordInvalidMessage: String = "Password must have at least one lowercase and uppercase letter, one number, one special character and " + MIN_PASSWORD_LENGTH + " characters long.";
@@ -42,10 +40,10 @@ export abstract class AuthenticationComponent extends FormComponent {
 
   checkCaptcha(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
-      if (this.captcha != null) {
+      if (this.captcha != null && environment.reCaptchaEnabled) {
         let captchaRequest = new ReCaptchaRequest(environment.secretKey, this.captcha);
         console.log(captchaRequest);
-        this.recaptchaService.verifyCaptcha(captchaRequest).subscribe({
+        this.reCaptchaService.verifyCaptcha(captchaRequest).subscribe({
           next: (reCaptchaResponse: ReCaptchaResponse) => {
             console.log(reCaptchaResponse)
             this.isCaptchaValid = reCaptchaResponse.success;
@@ -57,6 +55,11 @@ export abstract class AuthenticationComponent extends FormComponent {
             resolve(false);
           }
         });
+      } else if (!environment.reCaptchaEnabled) {
+        console.info("ReCaptcha is disabled. Skipping verification.")
+        this.isCaptchaChecked = true;
+        this.isCaptchaValid = true;
+        resolve(true);
       } else {
         resolve(false);
       }
@@ -64,9 +67,12 @@ export abstract class AuthenticationComponent extends FormComponent {
   }
 
   resetCaptcha(): void {
-    this.getRecaptchaRef().reset();
-    this.isCaptchaValid = false;
-    this.isCaptchaChecked = false;
+    if(this.captcha != null && this.captcha.length > 0) {
+      this.getRecaptchaRef().reset();
+      this.captcha = "";
+      this.isCaptchaValid = false;
+      this.isCaptchaChecked = false;
+    }
   }
 
   isEmailProper(email: string): boolean {

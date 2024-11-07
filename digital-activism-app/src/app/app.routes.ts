@@ -11,6 +11,8 @@ import {UserAccountComponent} from './component/user-account/user-account.compon
 import {VerifyEmailComponent} from './component/authentication/verify-email/verify-email.component';
 import {AuthenticatedGuardService} from './service/guard/authenticated-guard.service';
 import {VerifyMailGuardService} from './service/guard/verify-mail-guard.service';
+import {PasswordResetGuardService} from './service/guard/password-reset-guard.service';
+export const passwordResetRoute = `password-reset`;
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -19,7 +21,9 @@ export const routes: Routes = [
   {path: 'register', component: RegisterComponent},
   {path: 'verify-email', component: VerifyEmailComponent, canActivate: [VerifyMailGuardService]},
   {path: 'password-recovery', component: PasswordRecoveryComponent},
-  {path: `password-reset/:${StorageKeys.USER_TOKEN}`, component: PasswordResetComponent},
+  {path: `${passwordResetRoute}/:${StorageKeys.USER_TOKEN}`,
+    component: PasswordResetComponent, canActivate: [PasswordResetGuardService]
+  },
   {
     path: 'user-account', component: UserAccountComponent,
     children: [

@@ -1,19 +1,23 @@
 import {inject, Injectable} from '@angular/core';
 import {HttpClient, HttpErrorResponse, HttpHeaders} from '@angular/common/http';
-import {LoginRequest} from '../model/authentication/login-request';
+import {LoginRequest} from '../model/authentication/login/login-request';
 import {MemberDTO} from '../model/member/member-dto';
 import {Observable} from 'rxjs';
 import {environment} from '../../environment/environment.prod';
-import {RegisterRequest} from '../model/authentication/register-request';
-import {SendEmailVerificationResponse} from '../model/authentication/send-email-verification-response';
-import {SendEmailVerificationRequest} from '../model/authentication/send-email-verification-request';
-import {RegisterResponse} from '../model/authentication/register-response';
-import {VerifyEmailRequest} from '../model/authentication/verify-email-request';
-import {VerifyEmailResponse} from '../model/authentication/verify-email-response';
+import {RegisterRequest} from '../model/authentication/register/register-request';
+import {SendEmailVerificationResponse} from '../model/authentication/verify-email/send-email-verification-response';
+import {SendEmailVerificationRequest} from '../model/authentication/verify-email/send-email-verification-request';
+import {RegisterResponse} from '../model/authentication/register/register-response';
+import {VerifyEmailRequest} from '../model/authentication/verify-email/verify-email-request';
+import {VerifyEmailResponse} from '../model/authentication/verify-email/verify-email-response';
 import {RouterService} from './router.service';
 import {MemberService} from './member/member.service';
 import {TokenService} from './token.service';
 import {Role} from './guard/role';
+import {RecoverPasswordRequest} from '../model/authentication/password-recovery/recover-password-request';
+import {RecoverPasswordResponse} from '../model/authentication/password-recovery/recover-password-response';
+import {ResetPasswordRequest} from '../model/authentication/password-reset/reset-password-request';
+import {ResetPasswordResponse} from '../model/authentication/password-reset/reset-password-response';
 
 @Injectable({
   providedIn: 'root'
@@ -47,6 +51,17 @@ export class AuthenticationService {
     );
   }
 
+  public verifyToken(token: string): Observable<boolean> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<boolean>(
+      `${this.apiBackendUrl}/authenticated/verify-token`,
+      null,
+      {
+        headers: headers
+      }
+    );
+  }
+
   public sendEmailVerification(sendEmailVerificationRequest: SendEmailVerificationRequest, token: string): Observable<SendEmailVerificationResponse> {
     const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
 
@@ -64,6 +79,21 @@ export class AuthenticationService {
     return this.http.post<VerifyEmailResponse>(
       `${this.apiBackendUrl}/authenticated/verify-email`,
       verifyEmailRequest,
+      {
+        headers: headers
+      }
+    );
+  }
+
+  public recoverPassword(recoverPasswordRequest: RecoverPasswordRequest): Observable<RecoverPasswordResponse> {
+    return this.http.post<RecoverPasswordResponse>(`${this.apiBackendUrl}/public/recover-password`, recoverPasswordRequest);
+  }
+
+  public resetPassword(resetPasswordRequest: ResetPasswordRequest, token: string): Observable<ResetPasswordResponse> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<ResetPasswordResponse>(
+      `${this.apiBackendUrl}/authenticated/reset-password`,
+      resetPasswordRequest,
       {
         headers: headers
       }
@@ -95,17 +125,17 @@ export class AuthenticationService {
         if (memberDTO != null) {
           for (let role of roles) {
             if (memberDTO.role == role.role) {
-              console.log("Passed role check");
+              console.info("Passed role check");
               return true;
             }
           }
         }
-        console.log("Failed role check");
+        console.error("Failed role check");
         return false;
       }
     ).catch((error) => {
-      console.log(error);
-      console.log("Failed role check");
+      console.error(error);
+      console.error("Failed role check");
       return false;
     });
   }

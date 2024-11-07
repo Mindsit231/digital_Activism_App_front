@@ -14,12 +14,12 @@ import {CurrentMemberService} from "../../../service/member/current-member.servi
 import {MemberService, MIN_PASSWORD_LENGTH} from "../../../service/member/member.service";
 import {MemberDTO} from "../../../model/member/member-dto";
 import {AuthenticationService} from '../../../service/authentication.service';
-import {LoginRequest} from '../../../model/authentication/login-request';
+import {LoginRequest} from '../../../model/authentication/login/login-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
 import {RouterService} from '../../../service/router.service';
 import {TokenService} from '../../../service/token.service';
 import {VerifyEmailService} from '../../../service/verify-email.service';
-import {SendEmailVerificationResponse} from '../../../model/authentication/send-email-verification-response';
+import {SendEmailVerificationResponse} from '../../../model/authentication/verify-email/send-email-verification-response';
 import {MatProgressBar} from '@angular/material/progress-bar';
 
 // @ts-ignore
@@ -28,7 +28,7 @@ import {MatProgressBar} from '@angular/material/progress-bar';
   standalone: true,
   imports: [
     RouterOutlet,
-    NgForOf, HttpClientModule,
+    NgForOf,
     FormsModule,
     RecaptchaModule, NgIf, LogoComponent, FooterComponent, NgxResizeObserverModule, MatProgressBar
   ],
@@ -55,7 +55,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
   isLoginValid: boolean = false;
   isLoginChecked: boolean = false;
 
-  emailVerificationResponse = new SendEmailVerificationResponse([], "");
+  emailVerificationResponse = new SendEmailVerificationResponse([]);
 
   @ViewChild('captchaRef') captchaRef!: RecaptchaComponent
 
@@ -65,7 +65,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
               protected currentMemberService: CurrentMemberService,
               protected routerService: RouterService,
               protected tokenService: TokenService,
-              protected override recaptchaService: ReCaptchaService,
+              protected override reCaptchaService: ReCaptchaService,
               protected verifyEmailService: VerifyEmailService) {
     super();
   }
@@ -84,7 +84,6 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
           this.authenticationService.verifyLogin(loginRequest).subscribe(({
             next: (jsonMemberDTO: MemberDTO) => {
-              this.isLoginChecked = true;
               if (jsonMemberDTO != null) {
                 console.log('Login is valid');
                 if (!jsonMemberDTO.emailVerified) {
@@ -106,9 +105,10 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
               }
             },
             error: (error: HttpErrorResponse) => {
+              this.isLoginChecked = true;
               console.log('Login is invalid / HTTP ERROR');
               resolve(false);
-            }
+            },
           }));
 
         } else {
@@ -121,8 +121,9 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
       this.formValidated = false;
 
       if (success) {
-        this.resetCaptcha();
         this.routerService.routeToHome().then();
+      } else {
+        this.resetCaptcha();
       }
     });
   }

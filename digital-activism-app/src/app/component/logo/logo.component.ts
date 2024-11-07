@@ -1,4 +1,5 @@
-import { Component } from '@angular/core';
+import {Component, ElementRef, OnInit} from '@angular/core';
+import {RouterService} from '../../service/router.service';
 
 @Component({
   selector: 'app-logo',
@@ -7,6 +8,12 @@ import { Component } from '@angular/core';
   templateUrl: './logo.component.html',
   styleUrl: './logo.component.scss',
 })
-export class LogoComponent {
+export class LogoComponent implements OnInit {
+  constructor(protected routerService: RouterService,
+              private el: ElementRef) {
+  }
 
+  ngOnInit(): void {
+    this.el.nativeElement.style.width = `100%`;
+  }
 }

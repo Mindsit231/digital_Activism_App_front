@@ -5,6 +5,7 @@ import {EntityService} from "../../service/entity.service";
 
 export abstract class FormComponent extends FooterHandlerComponent {
   protected isSubmitted: boolean = false;
+  protected formValidated: boolean = false;
 
   onSubmit() {
     this.isSubmitted = true;

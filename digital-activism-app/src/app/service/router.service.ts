@@ -28,8 +28,7 @@ export class RouterService {
     return this.router.url;
   }
 
-  getRouteParams(): Observable<Params> {
-    return this.route.params;
+  routeToLogin() {
+    return this.router.navigate(['/login'], {relativeTo: this.route});
   }
-
 }

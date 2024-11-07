@@ -7,17 +7,18 @@ import {FooterComponent} from "../../footer/footer.component";
 import {MemberService} from "../../../service/member/member.service";
 import {CurrentMemberService} from "../../../service/member/current-member.service";
 import {CookieService} from "ngx-cookie-service";
-import {MemberDTO} from "../../../model/member/member-dto";
 import {environment} from "../../../../environment/environment.prod";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {AuthenticationComponent} from "../authentication-component";
 import {AuthenticationService} from '../../../service/authentication.service';
 import {NgxResizeObserverModule} from 'ngx-resize-observer';
 import {HttpErrorResponse} from '@angular/common/http';
-import {RegisterRequest} from '../../../model/authentication/register-request';
+import {RegisterRequest} from '../../../model/authentication/register/register-request';
 import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
-import {RegisterResponse} from '../../../model/authentication/register-response';
-import {SendEmailVerificationResponse} from '../../../model/authentication/send-email-verification-response';
+import {RegisterResponse} from '../../../model/authentication/register/register-response';
+import {
+  SendEmailVerificationResponse
+} from '../../../model/authentication/verify-email/send-email-verification-response';
 import {MatProgressBar, MatProgressBarModule} from '@angular/material/progress-bar';
 import {RouterService} from '../../../service/router.service';
 import {VerifyEmailService} from '../../../service/verify-email.service';
@@ -60,11 +61,11 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
   confirmPasswordInput: string = "";
 
   registerResponse: RegisterResponse = new RegisterResponse([], "");
-  emailVerificationResponse = new SendEmailVerificationResponse([], "");
+  emailVerificationResponse = new SendEmailVerificationResponse([]);
 
   @ViewChild('captchaRef') captchaRef!: RecaptchaComponent
 
-  constructor(protected override recaptchaService: ReCaptchaService,
+  constructor(protected override reCaptchaService: ReCaptchaService,
               protected memberService: MemberService,
               protected currentMemberService: CurrentMemberService,
               protected authenticationService: AuthenticationService,
@@ -78,6 +79,8 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
   }
 
   override onSubmit() {
+    this.emailVerificationResponse = new SendEmailVerificationResponse([]);
+
     new Promise<boolean>((resolve, reject) => {
       this.isFormValid().then((isFormValid) => {
         if (isFormValid) {
@@ -95,7 +98,7 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
                     this.emailVerificationResponse = sendEmailVerificationResponse;
                   })
                   .catch(error => {
-                    console.log(error);
+                    this.emailVerificationResponse.errors.push(error);
                     resolve(false);
                   });
               } else {
@@ -118,9 +121,7 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
       super.onSubmit();
       this.formValidated = false;
 
-      if (success) {
-        this.resetCaptcha();
-      }
+      if (!success) this.resetCaptcha();
     });
   }
 

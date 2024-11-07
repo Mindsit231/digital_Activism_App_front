@@ -1,9 +1,8 @@
 import {inject, Injectable} from '@angular/core';
-import {SendEmailVerificationRequest} from '../model/authentication/send-email-verification-request';
-import {SendEmailVerificationResponse} from '../model/authentication/send-email-verification-response';
+import {SendEmailVerificationRequest} from '../model/authentication/verify-email/send-email-verification-request';
+import {SendEmailVerificationResponse} from '../model/authentication/verify-email/send-email-verification-response';
 import {HttpErrorResponse} from '@angular/common/http';
 import {AuthenticationService} from './authentication.service';
-import {MemberDTO} from '../model/member/member-dto';
 import {InternalObjectService} from './misc/internal-object.service';
 import {RouterService} from './router.service';
 
@@ -15,7 +14,6 @@ export class VerifyEmailService {
   private authenticationService: AuthenticationService = inject(AuthenticationService);
   private routerService: RouterService = inject(RouterService);
   private internalObjectService: InternalObjectService<{
-    verificationCodeHash: string,
     email: string
     token: string
   }> = inject(InternalObjectService);
@@ -23,7 +21,7 @@ export class VerifyEmailService {
   constructor() {
   }
 
-  sendEmailVerification(email: string, token: string): Promise<SendEmailVerificationResponse> {
+  sendEmailVerification(email: string, token: string, routing: boolean = true): Promise<SendEmailVerificationResponse> {
     let sendEmailVerificationRequest = new SendEmailVerificationRequest(email.toLowerCase());
 
     return new Promise<SendEmailVerificationResponse>((resolve, reject) => {
@@ -31,12 +29,10 @@ export class VerifyEmailService {
         next: (sendEmailVerificationResponse: SendEmailVerificationResponse) => {
           if (sendEmailVerificationResponse != null && sendEmailVerificationResponse.errors.length == 0) {
             this.internalObjectService.setObject({
-              verificationCodeHash: sendEmailVerificationResponse.verificationCodeHash,
               email: email,
               token: token
             });
-            console.log("here")
-            this.routerService.routeTo('/verify-email');
+            if(routing) this.routerService.routeTo('/verify-email');
             resolve(sendEmailVerificationResponse);
           } else {
             reject(sendEmailVerificationResponse.errors);

@@ -5,23 +5,50 @@
       <div class="sign-form-elem">
         <h1>Validate your email</h1>
       </div>
-      <div class="sign-form-elem" *ngIf="isCodeValid">
-        <span class="centered-span">Your email has been validated successfully.</span>
-        <span class="centered-span">You can now <button class="href-button" (click)="routerService.routeTo('/login')">Login.</button></span>
-      </div>
-      <div class="sign-form-elem">
-        <span *ngIf="!isCodeValid">A Code has been sent to your email address.</span>
-      </div>
-      <div class="sign-form-elem" *ngIf="!isCodeValid">
-        <label for="verificationCodeInput">Verification Code:</label>
-        <input type="text" id="verificationCodeInput" [(ngModel)]="verificationCodeInput" name="verificationCodeInput">
-        <ng-container *ngFor="let error of verifyEmailResponse.errors">
-          <span class="validation-error-span">{{ error }}</span>
-        </ng-container>
-      </div>
-      <div class="sign-form-elem" *ngIf="!isCodeValid">
-        <button class="auth-button" type="submit" name="submit-button">Validate Email</button>
-      </div>
+      @if (isCodeValid == ACTION_SUCCESS) {
+        <div class="sign-form-elem">
+          <span class="centered-span">Your email has been validated successfully.</span>
+          <span class="centered-span">You can now <button class="href-button" (click)="routerService.routeToLogin()">Login.</button></span>
+        </div>
+      } @else if(isCodeValid == ACTION_FAILURE || isCodeValid == ACTION_NULL) {
+        <div class="sign-form-elem">
+          <span>A Code has been sent to your email address.</span>
+        </div>
+        <div class="sign-form-elem">
+          <label for="verificationCodeInput">Verification Code:</label>
+          <input type="text" id="verificationCodeInput" [(ngModel)]="verificationCodeInput" name="verificationCodeInput">
+          @if(isCodeValid == ACTION_FAILURE && this.verifyEmailResponse.errors.length == 0) {
+            <span class="validation-error-span">Verification Code is Invalid.</span>
+          }
+
+          @if (verifyEmailResponse.errors.length > 0) {
+            @for (error of verifyEmailResponse.errors; track error) {
+              <span class="validation-error-span">{{ error }}</span>
+            }
+          }
+          @if (sendEmailVerificationResponse.errors.length > 0) {
+            @for (error of sendEmailVerificationResponse.errors; track error) {
+              <span class="validation-error-span">{{ error }}</span>
+            }
+          }
+          @if(emailResent == ACTION_SUCCESS) {
+            <span class="validation-success-span">A new email has been sent to {{ internalObjectService.getObject().email }} .</span>
+          } @else if(emailResent == ACTION_FAILURE) {
+            <span class="validation-error-span">Could not send an email to {{ internalObjectService.getObject().email }} .</span>
+          }
+        </div>
+        <div class="sign-form-elem">
+          <button class="auth-button" type="button" name="send-new-email-button"
+                  (click)="sendNewEmail()"
+                  [disabled]="!allowNewEmailButton">Send new email {{ getWaitText() }}</button>
+        </div>
+        @if(formValidated) {
+          <mat-progress-bar color="primary" mode="indeterminate"></mat-progress-bar>
+        }
+        <div class="sign-form-elem">
+          <button class="auth-button" type="submit" name="submit-button">Validate Email</button>
+        </div>
+      }
     </div>
   </div>
 </form>
