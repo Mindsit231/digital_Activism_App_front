@@ -23,7 +23,7 @@ export class VerifyEmailService {
   constructor() {
   }
 
-  verifyEmail(email: string, token: string): Promise<SendEmailVerificationResponse> {
+  sendEmailVerification(email: string, token: string): Promise<SendEmailVerificationResponse> {
     let sendEmailVerificationRequest = new SendEmailVerificationRequest(email.toLowerCase());
 
     return new Promise<SendEmailVerificationResponse>((resolve, reject) => {
@@ -35,6 +35,7 @@ export class VerifyEmailService {
               email: email,
               token: token
             });
+            console.log("here")
             this.routerService.routeTo('/verify-email');
             resolve(sendEmailVerificationResponse);
           } else {

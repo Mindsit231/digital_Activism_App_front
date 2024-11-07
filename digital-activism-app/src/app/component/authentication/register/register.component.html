@@ -37,8 +37,7 @@
       </div>
       <div class="sign-form-elem">
         <re-captcha (resolved)="resolved($event)"  #captchaRef></re-captcha>
-        <label class="validation-error-span centered-span" *ngIf="isCaptchaInvalid()">Please verify that you're not a
-          robot.</label>
+        <label class="validation-error-span centered-span" *ngIf="isCaptchaInvalid()">{{ notRobotMessage }}</label>
       </div>
       <div class="separation-line-small"></div>
       <div class="sign-form-elem">

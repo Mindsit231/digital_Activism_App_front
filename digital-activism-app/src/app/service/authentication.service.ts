@@ -95,16 +95,17 @@ export class AuthenticationService {
         if (memberDTO != null) {
           for (let role of roles) {
             if (memberDTO.role == role.role) {
+              console.log("Passed role check");
               return true;
             }
           }
-          return false;
-        } else {
-          return false;
         }
+        console.log("Failed role check");
+        return false;
       }
     ).catch((error) => {
       console.log(error);
+      console.log("Failed role check");
       return false;
     });
   }

@@ -9,7 +9,8 @@ import {MemberDTO} from '../../model/member/member-dto';
 export class VerifyMailGuardService implements CanActivate {
   constructor(private internalObjectService: InternalObjectService<{
     verificationCodeHash: string,
-    memberDto: MemberDTO
+    email: string
+    token: string
   }>) {
   }
 
@@ -18,6 +19,12 @@ export class VerifyMailGuardService implements CanActivate {
     state: RouterStateSnapshot
   ): boolean {
     let internalObject = this.internalObjectService.getObject();
-    return internalObject.verificationCodeHash != null && internalObject.memberDto != null && internalObject.memberDto.token != null;
+    if(internalObject.verificationCodeHash != null && internalObject.email != null && internalObject.token != null) {
+      console.log("Passed VerifyMailGuardService");
+      return true;
+    } else {
+      console.log("Failed VerifyMailGuardService");
+      return false;
+    }
   }
 }

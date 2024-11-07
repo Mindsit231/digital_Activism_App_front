@@ -90,10 +90,9 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
               this.currentMemberService.setCounter(0)
               console.log(this.registerResponse)
               if (this.registerResponse.hasNoErrors()) {
-                this.verifyEmailService.verifyEmail(this.emailInput, this.registerResponse.token)
+                this.verifyEmailService.sendEmailVerification(this.emailInput, this.registerResponse.token)
                   .then(sendEmailVerificationResponse => {
                     this.emailVerificationResponse = sendEmailVerificationResponse;
-                    resolve(true)
                   })
                   .catch(error => {
                     console.log(error);
@@ -116,11 +115,12 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
         }
       })
     }).then(success => {
-      if (!success) {
-        super.onSubmit();
-        this.formValidated = false;
+      super.onSubmit();
+      this.formValidated = false;
+
+      if (success) {
+        this.resetCaptcha();
       }
-      this.resetCaptcha();
     });
   }
 

@@ -89,7 +89,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
                 console.log('Login is valid');
                 if (!jsonMemberDTO.emailVerified) {
                   console.log('Email is not verified');
-                  this.verifyEmailService.verifyEmail(this.emailInput, jsonMemberDTO.token!)
+                  this.verifyEmailService.sendEmailVerification(this.emailInput, jsonMemberDTO.token!)
                     .then(sendEmailVerificationResponse => {
                       this.emailVerificationResponse = sendEmailVerificationResponse;
                     })
@@ -119,18 +119,21 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
     }).then(success => {
       super.onSubmit();
       this.formValidated = false;
-      this.resetCaptcha();
 
       if (success) {
+        this.resetCaptcha();
         this.routerService.routeToHome().then();
       }
     });
   }
 
   override async isFormValid(): Promise<boolean> {
-    return await this.checkCaptcha() &&
-      this.isEmailProper(this.emailInput) &&
-      this.passwordInput.length > 0;
+    if(this.isEmailProper(this.emailInput) &&
+      this.isPasswordValid()) {
+      return await this.checkCaptcha()
+    } else {
+      return Promise.resolve(false);
+    }
   }
 
   isEmailInvalid(): boolean {

@@ -37,9 +37,6 @@ export class VerifyEmailComponent extends FormComponent implements OnInit {
   // Logic Fields
   isCodeValid: boolean = false;
 
-  // Service Fields
-  inputObject!: { verificationCodeHash: string, memberDto: MemberDTO };
-
   verifyEmailResponse: VerifyEmailResponse = new VerifyEmailResponse([], false);
 
   constructor(protected memberService: MemberService,
@@ -47,15 +44,15 @@ export class VerifyEmailComponent extends FormComponent implements OnInit {
               protected authenticationService: AuthenticationService,
               private internalObjectService: InternalObjectService<{
                 verificationCodeHash: string,
-                memberDto: MemberDTO
+                email: string
+                token: string
               }>,
               protected routerService: RouterService) {
     super();
   }
 
   ngOnInit(): void {
-    this.inputObject = this.internalObjectService.getObject();
-    console.log(this.inputObject);
+    console.log(this.internalObjectService.getObject());
   }
 
   override isFormValid(): Promise<boolean> {
@@ -65,13 +62,15 @@ export class VerifyEmailComponent extends FormComponent implements OnInit {
   override onSubmit() {
     new Promise<boolean>((resolve, reject) => {
       this.isFormValid().then((isFormValid) => {
-        if (isFormValid && this.inputObject.verificationCodeHash != null) {
+        let inputObject = this.internalObjectService.getObject();
+
+        if (isFormValid && inputObject.verificationCodeHash != null) {
           let verifyEmailRequest = new VerifyEmailRequest(
-            this.inputObject.memberDto.email,
+            inputObject.email,
             this.verificationCodeInput,
-            this.inputObject.verificationCodeHash
+            inputObject.verificationCodeHash
           );
-          this.authenticationService.verifyEmail(verifyEmailRequest, this.inputObject.memberDto.token!).subscribe({
+          this.authenticationService.verifyEmail(verifyEmailRequest, inputObject.token).subscribe({
               next: (verifyEmailResponse: VerifyEmailResponse) => {
                 this.verifyEmailResponse = verifyEmailResponse;
 
