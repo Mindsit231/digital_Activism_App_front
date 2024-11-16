@@ -14,6 +14,8 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {MemberService} from "../../../../service/member/member.service";
 import {Subject} from "rxjs";
 import {EditingUserType} from '../../../misc/editing-user-type';
+import {TokenService} from '../../../../service/token.service';
+import {CurrentMemberService} from '../../../../service/member/current-member.service';
 
 @Component({
   selector: 'app-connection-security-element',
@@ -33,39 +35,33 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   editableElements = editableElements;
   changesSuccess: boolean = false;
 
-  @Input() user!: MemberDTO;
-
-  @Input() userSubject!: Subject<MemberDTO>;
+  @Input() memberDTO!: MemberDTO;
 
   @Input() editingUserType: EditingUserType = EditingUserType.USER;
   @Input() isModal: boolean = false
   @Output() onCloseModal = new EventEmitter<boolean>();
 
-  constructor(protected memberService: MemberService) {
+  constructor(protected memberService: MemberService,
+              protected currentMemberService: CurrentMemberService,
+              protected override tokenService: TokenService) {
     super();
   }
 
   ngOnInit(): void {
     this.setEditableElementValues();
-
-    if (this.userSubject !== undefined) this.userSubject.subscribe({
-      next: (user: MemberDTO) => {
-        this.user = user;
-      }
-    });
   }
 
   setEditableElementValues() {
     this.editableElements.forEach((editableElement) => {
       switch (editableElement.name) {
         case usernameElement.name:
-          editableElement.value = this.user?.username!;
+          editableElement.value = this.memberDTO?.username!;
           break;
         case emailElement.name:
-          editableElement.value = this.user?.email!;
+          editableElement.value = this.memberDTO?.email!;
           break;
         case passwordElement.name:
-          editableElement.value = this.user?.password!;
+          editableElement.value = this.memberDTO?.password!;
           break;
       }
     });
@@ -75,13 +71,29 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     this.editableElements.forEach((editableElement) => {
       switch (editableElement.name) {
         case usernameElement.name:
-          this.user.setUsername(editableElement.value);
+          this.memberDTO.setUsername(editableElement.value);
           break;
         case emailElement.name:
-          this.user.setEmail(editableElement.value);
+          this.memberDTO.setEmail(editableElement.value);
           break;
         case passwordElement.name:
-          this.user.setPassword(editableElement.value);
+          this.memberDTO.setPassword(editableElement.value);
+          break;
+      }
+    });
+  }
+
+  private updateCurrentMemberDTO() {
+    this.editableElements.forEach((editableElement) => {
+      switch (editableElement.name) {
+        case usernameElement.name:
+          this.currentMemberService.member?.setUsername(editableElement.value);
+          break;
+        case emailElement.name:
+          this.currentMemberService.member?.setEmail(editableElement.value);
+          break;
+        case passwordElement.name:
+          this.currentMemberService.member?.setPassword(editableElement.value);
           break;
       }
     });
@@ -89,11 +101,12 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
   onApplyChanges() {
     this.setUserFields();
-    let member: MemberDTO = MemberDTO.fromJson(this.user)
+    let member: MemberDTO = MemberDTO.fromJson(this.memberDTO)
 
-    this.memberService.updateEntity(member).subscribe({
-      next: (jsonUser: MemberDTO) => {
+    this.memberService.update(member, this.tokenService.getUserToken()).subscribe({
+      next: (jsonMemberDTO: MemberDTO) => {
         console.log("Updated member.")
+        this.updateCurrentMemberDTO();
         this.changesSuccess = true;
       },
       error: (error) => {

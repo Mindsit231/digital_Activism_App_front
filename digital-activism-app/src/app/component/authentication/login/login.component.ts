@@ -64,7 +64,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
               protected cookieService: CookieService,
               protected currentMemberService: CurrentMemberService,
               protected routerService: RouterService,
-              protected tokenService: TokenService,
+              protected override tokenService: TokenService,
               protected override reCaptchaService: ReCaptchaService,
               protected verifyEmailService: VerifyEmailService) {
     super();

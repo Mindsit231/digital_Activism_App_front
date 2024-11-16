@@ -10,6 +10,8 @@ import {UploadStatus} from "../../misc/form-component";
 import {MemberDTO} from "../../../model/member/member-dto";
 import {Subject} from "rxjs";
 import {MemberService} from "../../../service/member/member.service";
+import {PfpNameByEmail} from '../../../model/query/update/pfp-name-by-email';
+import {TokenService} from '../../../service/token.service';
 
 @Component({
   selector: 'app-upload-pfp-modal',
@@ -23,7 +25,7 @@ import {MemberService} from "../../../service/member/member.service";
   templateUrl: './upload-pfp-modal.component.html',
   styleUrl: './upload-pfp-modal.component.scss'
 })
-export class UploadPfpModalComponent extends ModalComponent implements OnInit {
+export class UploadPfpModalComponent extends ModalComponent {
   file!: File | null;
   imgUrl: string = '';
   statusMsg: string = '';
@@ -36,22 +38,13 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
 
   @Input() override isModalOpen = false
   @Output() override onModalChangeEmitter = new EventEmitter<boolean>()
-
-  @Input() memberSubject!: Subject<MemberDTO>;
-  @Input() member!: MemberDTO;
+  @Input() memberDTO!: MemberDTO;
 
   @ViewChild('imageInput') fileInput!: ElementRef;
 
-  constructor(protected memberService: MemberService) {
+  constructor(protected memberService: MemberService,
+              protected override tokenService: TokenService) {
     super();
-  }
-
-  ngOnInit(): void {
-    if(this.memberSubject !== undefined) this.memberSubject.subscribe({
-      next: (member: MemberDTO) => {
-        this.member = member;
-      }
-    });
   }
 
   onPfpImgSelected(event: any) {
@@ -64,7 +57,7 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
       this.statusMsg = 'Invalid file type!';
       return;
     }
-    const newFileName = this.member.getPfpImgPrefix()! + this.file?.name;
+    const newFileName = this.memberDTO.getPfpImgPrefix()! + this.file?.name;
     const formData = new FormData();
     formData.append('files', this.file!, newFileName);
 
@@ -73,8 +66,8 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
         this.statusMsg = uploadStatus.statusMsg;
         if (uploadStatus.isSuccessful) {
           this.deleteOldPfpImg();
-          this.updatePfpImgName(newFileName);
-          this.member.setPfpUrl(this.imgUrl);
+          this.updatePfpName(newFileName);
+          this.memberDTO.setPfpUrl(this.imgUrl);
           this.pfpImgChanged = true;
           this.resetValues();
         }
@@ -89,16 +82,13 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
     return Promise.resolve(this.file != null && (this.file?.type == 'image/png' || this.file?.type == 'image/jpeg'));
   }
 
-  private updatePfpImgName(newFileName: string) {
-    this.memberService.updatePfpNameByEmail(
-      {
-        email: this.member.email!,
-        pfpImgName: newFileName
-      }
-    ).subscribe({
+  private updatePfpName(newFileName: string) {
+    let pfpNameByEmail = new PfpNameByEmail(this.memberDTO.email!, newFileName);
+
+    this.memberService.updatePfpNameByEmail(pfpNameByEmail, this.tokenService.getUserToken()).subscribe({
       next: (response: number) => {
         console.log('Pfp img path updated: ', response);
-        this.member.setPfpName(newFileName);
+        this.memberDTO.setPfpName(newFileName);
       },
       error: (error: HttpErrorResponse) => {
         console.error(error);
@@ -107,8 +97,8 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
   }
 
   private deleteOldPfpImg() {
-    if (this.member.pfpName == null || this.member.pfpName!.length == 0) return;
-    this.memberService.deleteFile(this.member.pfpName!).subscribe({
+    if (this.memberDTO.pfpName == null || this.memberDTO.pfpName!.length == 0) return;
+    this.memberService.deleteFile(this.memberDTO.pfpName!, this.tokenService.getUserToken()).subscribe({
       next: (response: boolean) => {
         console.log('Old profile picture deleted: ', response);
       },
@@ -121,8 +111,8 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
   deleteImage() {
     this.deleteOldPfpImg();
     this.imgUrl = "";
-    this.member.setPfpUrl("");
-    this.updatePfpImgName("");
+    this.memberDTO.setPfpUrl("");
+    this.updatePfpName("");
     this.pfpImgChanged = true;
   }
 
@@ -138,11 +128,15 @@ export class UploadPfpModalComponent extends ModalComponent implements OnInit {
     super.closeModal();
   }
 
-  getUserPfpImgUrl() {
-    if (this.imgUrl.length > 0) {
-      return this.imgUrl;
-    } else if (this.member.hasPfp()) {
-      return this.member.pfpImgUrl;
+  getUserPfpImgUrl(): string {
+    if(this.memberDTO !== undefined) {
+      if (this.imgUrl.length > 0) {
+        return this.imgUrl;
+      } else if (this.memberDTO.hasPfp() && this.memberDTO.pfpImgUrl !== undefined) {
+        return this.memberDTO.pfpImgUrl;
+      } else {
+        return "";
+      }
     } else {
       return "";
     }

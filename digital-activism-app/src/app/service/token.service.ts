@@ -29,10 +29,4 @@ export class TokenService {
   deleteUserToken(): void {
     this.cookieService.delete(StorageKeys.USER_TOKEN, '/');
   }
-
-  public extractMemberFromToken(token: string): MemberDTO {
-    let decoded: MemberDTO = jwtDecode(token);
-    return MemberDTO.fromJson(decoded);
-  }
-
 }

@@ -1,12 +1,10 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpHeaders} from "@angular/common/http";
 import {EntityService} from "../entity.service";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import {TokenByEmail} from "../../model/query/update/token-by-email";
-import {TokenByOldToken} from "../../model/query/update/token-by-old-token";
-import {PasswordByEmail} from "../../model/query/update/password-by-email";
 import {MemberDTO} from "../../model/member/member-dto";
-import {PfpPathByEmail} from "../../model/query/update/pfp-path-by-email";
+import {PfpNameByEmail} from "../../model/query/update/pfp-name-by-email";
+import {Tag} from '../../model/tag';
 
 @Injectable({
   providedIn: 'root'
@@ -17,25 +15,58 @@ export class MemberService extends EntityService<MemberDTO> {
     super(http, "member");
   }
 
-  public findMemberByEmail(email: String): Observable<MemberDTO> {
-    return this.http.get<MemberDTO>(`${this.apiBackendUrl}/${this.entityName}/select-member-by-email/${email}`);
+  public updatePfpNameByEmail(pfpImgPathByEmail: PfpNameByEmail, token: string): Observable<number> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<number>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/update-pfp-name-by-email`,
+      pfpImgPathByEmail,
+      {
+        headers: headers
+      });
   }
 
-  public updatePasswordByEmail(passwordByEmail: PasswordByEmail): Observable<number> {
-    return this.http.post<number>(`${this.apiBackendUrl}/${this.entityName}/update-password-by-email`, passwordByEmail);
+  public proposeNewTag(tag: string, token: string): Observable<Tag> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<Tag>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/propose-new-tag`,
+      tag,
+      {
+        headers: headers
+      });
   }
 
-  public updateTokenByEmail(tokenByEmail: TokenByEmail): Observable<number> {
-    return this.http.post<number>(`${this.apiBackendUrl}/${this.entityName}/update-token-by-email`, tokenByEmail);
+  public fetchTagsByToken(token: string): Observable<Tag[]> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+
+    return this.http.post<Tag[]>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-tags-by-token`,
+      null,
+      {
+        headers: headers
+      });
   }
 
-  public updateTokenByOldToken(tokenByOldToken: TokenByOldToken): Observable<number> {
-    return this.http.post<number>(`${this.apiBackendUrl}/${this.entityName}/update-token-by-old-token`, tokenByOldToken);
+  public deleteTagByToken(tag: Tag, token: string): Observable<boolean> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+
+    return this.http.post<boolean>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/delete-tag-by-token`,
+      tag,
+      {
+        headers: headers
+      });
   }
 
-  public updatePfpNameByEmail(pfpImgPathByEmail: PfpPathByEmail): Observable<number> {
-    return this.http.post<number>(`${this.apiBackendUrl}/${this.entityName}/update-pfp-name-by-email`, pfpImgPathByEmail);
+  public update(memberDTO: MemberDTO, token: string): Observable<MemberDTO> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<MemberDTO>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/update`,
+      memberDTO,
+      {
+        headers: headers
+      });
   }
+
 }
 
 export var MIN_PASSWORD_LENGTH: number = 12;

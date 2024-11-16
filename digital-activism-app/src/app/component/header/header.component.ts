@@ -53,7 +53,7 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.currentMemberService.initializeMemberByFetchingToken().then();
+    this.currentMemberService.initializeMemberBySavedToken().then();
   }
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {

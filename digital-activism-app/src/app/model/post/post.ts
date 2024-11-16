@@ -2,9 +2,10 @@
 // import {PostVideo} from "./post-video";
 // import {TagPerPost} from "./tag-per-post";
 
-import {TagPerPost} from '../tag/tag-per-post';
-import {PostVideo} from './post-video';
+
 import {PostImage} from './post-image';
+import {PostVideo} from './post-video';
+import {Tag} from '../tag';
 
 export class Post {
   postId: number | undefined;
@@ -17,7 +18,7 @@ export class Post {
   postImageList: PostImage[] = [];
   postVideoList: PostVideo[] = [];
 
-  tagPerPostList: TagPerPost[] = [];
+  tagList: Tag[] = [];
 
   likesCount: number | undefined;
 

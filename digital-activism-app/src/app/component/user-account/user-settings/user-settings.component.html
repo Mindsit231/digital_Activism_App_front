@@ -19,26 +19,20 @@
         </div>
         <div class="profile-top-div-info">
           <span class="text-font-700">{{ currentMemberService.member?.username }}</span>
-          <span>{{ currentMemberService.member?.username }}</span>
           <span>{{ currentMemberService.member?.email }}</span>
         </div>
       </div>
       <div class="profile-tags-elem">
         <div class="tags-select-div">
           <div class="select-div">
-            <select class="default-input-3" [(ngModel)]="selectedTagId" (click)="onTagSelected()">
-              <option *ngFor="let tag of availableTags"
-                      [value]="tag.tagId">
-                {{ tag.name }}
-              </option>
-            </select>
+            <input class="default-input-3" [(ngModel)]="tagProposal">
           </div>
           <div class="clickable-icon-elem-3" (click)="saveOnClick()">
-            <fa-icon [icon]="faFloppyDisk" [class]="['clickable-icon-3']"></fa-icon>
+            <fa-icon [icon]="faArrowRight" [class]="['clickable-icon-3']"></fa-icon>
           </div>
         </div>
         <div class="tags-container">
-          <div class="tag-element" *ngFor="let tag of getSelectedTags()">
+          <div class="tag-element" *ngFor="let tag of memberTags">
             <span>{{tag.name}}</span>
             <div class="clickable-icon-elem-4" (click)="onDeleteTag(tag)">
               <fa-icon [icon]="faXmark" [class]="['clickable-icon-4']"></fa-icon>
@@ -56,6 +50,6 @@
 </div>
 <app-upload-pfp-modal
   [isModalOpen]="isModalOpen"
-  [member]="user"
+  [memberDTO]="this.currentMemberService.member!"
   (onModalChangeEmitter)="closeModal($event)"
 ></app-upload-pfp-modal>

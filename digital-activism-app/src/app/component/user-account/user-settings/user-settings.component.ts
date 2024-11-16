@@ -1,16 +1,16 @@
 import {Component, ElementRef, OnInit} from '@angular/core';
-import {faCamera, faFloppyDisk, faPenToSquare, faUser, faXmark} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faCamera, faPenToSquare, faUser, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {UploadPfpModalComponent} from "../upload-pfp-modal/upload-pfp-modal.component";
 import {CookieService} from "ngx-cookie-service";
 import {FooterHandlerComponent} from "../../misc/footer-handler-component";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
-import {MemberDTO} from "../../../model/member/member-dto";
 import {MemberService} from "../../../service/member/member.service";
 import {PaginatorModule} from "primeng/paginator";
-import {Tag} from '../../../model/tag/tag';
+import {Tag} from '../../../model/tag';
 import {RouterService} from '../../../service/router.service';
 import {CurrentMemberService} from '../../../service/member/current-member.service';
+import {TokenService} from '../../../service/token.service';
 
 @Component({
   selector: 'app-user-settings',
@@ -27,23 +27,22 @@ import {CurrentMemberService} from '../../../service/member/current-member.servi
 })
 export class UserSettingsComponent extends FooterHandlerComponent implements OnInit {
 
-  hasAddresses: boolean = false;
   isModalOpen: boolean = false;
-
-  user!: MemberDTO;
 
   faUser = faUser;
   faCamera = faCamera;
   faPenToSquare = faPenToSquare;
-  faFloppyDisk = faFloppyDisk;
+  faArrowRight = faArrowRight;
+
+  memberTags: Tag[] = [];
 
   faXmark = faXmark;
-  availableTags: Tag[] = [];
-  selectedTagId!: string | undefined;
+  tagProposal!: string | undefined;
 
   constructor(protected el: ElementRef,
               protected memberService: MemberService,
               protected currentMemberService: CurrentMemberService,
+              protected tokenService: TokenService,
               protected cookieService: CookieService,
               protected routerService: RouterService) {
     super();
@@ -52,19 +51,14 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
   ngOnInit(): void {
     this.el.nativeElement.style.width = `100%`;
 
-    // this.initializeMemberByToken().then(() => {
-    //   this.loggedInPage();
-    //
-    //   this.user = this.currentMemberService.member!;
-    //   this.tagService.getAllEntities().subscribe({
-    //     next: (jsonTags: Tag[]) => {
-    //       this.availableTags = Tag.initializeTags(jsonTags);
-    //     },
-    //     error: (error: HttpErrorResponse) => {
-    //       console.error(error);
-    //     }
-    //   });
-    // });
+    this.memberService.fetchTagsByToken(this.tokenService.getUserToken()).subscribe({
+      next: (tags: Tag[]) => {
+        this.memberTags = tags;
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   openModal() {
@@ -75,65 +69,36 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
     this.isModalOpen = newVal;
   }
 
-  onTagSelected() {
-    // if(this.selectedTagId != undefined) {
-    //   let selectedTagId = parseInt(this.selectedTagId);
-    //   if (!this.currentMemberService.member?.tagPerMemberList.find(tagPerMember => tagPerMember.tagId == selectedTagId) && this.selectedTagId != undefined) {
-    //     let tagPerMember = new TagPerMember(selectedTagId, this.currentMemberService.member?.getMemberId()!);
-    //     this.currentMemberService.member?.tagPerMemberList.push(tagPerMember);
-    //   }
-    // }
-  }
-
-  getSelectedTags(): Tag[] {
-    // return this.availableTags.filter(tag => {
-    //   return this.currentMemberService.member?.tagPerMemberList.find(tagPerMember => tag.tagId == tagPerMember.tagId) != undefined;
-    // })
-    // todo - fix this
-    return [];
-  }
-
   onDeleteTag(tag: Tag) {
-    // this.selectedTagId = undefined;
-    //
-    // new Promise<boolean>((resolve, reject) => {
-    //   let tagPerMember = this.currentMemberService.member?.tagPerMemberList.find(tagPerMember => tagPerMember.tagId == tag.tagId);
-    //
-    //   if(tagPerMember?.tagPerMemberId != undefined) {
-    //     this.tagPerMemberService.deleteEntityById(tagPerMember?.tagPerMemberId!).subscribe({
-    //       next: () => {
-    //         console.log("Deleted tag per member with id: " + (tagPerMember?.tagPerMemberId!));
-    //         resolve(true)
-    //       },
-    //       error: (error: HttpErrorResponse) => {
-    //         resolve(false);
-    //       }
-    //     });
-    //   } else {
-    //     resolve(true);
-    //   }
-    // }).then((success: boolean) => {
-    //   if(success) {
-    //     this.currentMemberService.member?.tagPerMemberList.splice(this.currentMemberService.member?.tagPerMemberList
-    //       .findIndex((tagPerMember: TagPerMember) => tagPerMember.tagId == tag.tagId), 1);
-    //   }
-    // });
+    this.memberService.deleteTagByToken(tag, this.tokenService.getUserToken()).subscribe({
+      next: (isDeleted: boolean) => {
+        if (isDeleted) {
+          this.memberTags.splice(this.memberTags.indexOf(tag), 1);
+        } else {
+          console.error("Tag was not deleted");
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      }
+    });
   }
 
   saveOnClick() {
-    // this.currentMemberService.member?.tagPerMemberList.forEach((tagPerMember: TagPerMember) => {
-    //   if(tagPerMember.tagPerMemberId == undefined) {
-    //
-    //     this.tagPerMemberService.addEntity(tagPerMember).subscribe({
-    //       next: (jsonTagPerMember: TagPerMember) => {
-    //         tagPerMember.tagPerMemberId = jsonTagPerMember.tagPerMemberId;
-    //         console.log("Added tag per post with id: " + tagPerMember.tagPerMemberId);
-    //       },
-    //       error: (error: HttpErrorResponse) => {
-    //         console.error(error);
-    //       }
-    //     });
-    //   }
-    // });
+    this.memberService.proposeNewTag(this.tagProposal!, this.tokenService.getUserToken()).subscribe({
+      next: (jsonTag: Tag) => {
+        if (jsonTag != null) {
+          this.memberTags.push(jsonTag);
+        } else {
+          console.error("Tag is null");
+        }
+      },
+      error: (error) => {
+        console.error(error);
+      },
+      complete: () => {
+        this.tagProposal = "";
+      }
+    });
   }
 }

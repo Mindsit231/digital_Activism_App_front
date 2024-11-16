@@ -1,5 +1,5 @@
 import {Observable} from "rxjs";
-import {HttpClient, HttpEvent} from "@angular/common/http";
+import {HttpClient, HttpEvent, HttpHeaders} from "@angular/common/http";
 import {environment} from "../../environment/environment.prod";
 import {Injectable} from "@angular/core";
 
@@ -14,46 +14,44 @@ export abstract class EntityService<T> {
     this.entityName = entityName;
   }
 
-  public getAllEntities(): Observable<T[]> {
-    return this.http.get<T[]>(`${this.apiBackendUrl}/${this.entityName}/all`);
+  public uploadFiles(formData: FormData, token: string): Observable<HttpEvent<string[]>> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+
+    return this.http.post<string[]>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/upload-files`,
+      formData,
+      {
+        headers: headers,
+        reportProgress: true,
+        observe: 'events'
+      })
   }
 
-  public addEntity(entity: T): Observable<T> {
-    return this.http.post<T>(`${this.apiBackendUrl}/${this.entityName}/add`, entity);
+  public downloadFiles(fileName: string, token: string): Observable<HttpEvent<Blob>> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+
+    return this.http.get(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/download-file/${fileName}`,
+      {
+        headers: headers,
+        reportProgress: true,
+        observe: 'events',
+        responseType: 'blob',
+        // transferCache: {
+        //   includeHeaders: ['Content-Type', 'File-Name', 'Content-Disposition']
+        // }
+      });
   }
 
-  public updateEntity(entity: T): Observable<T> {
-    return this.http.put<T>(`${this.apiBackendUrl}/${this.entityName}/update`, entity);
-  }
+  public deleteFile(fileName: string, token: string): Observable<boolean> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
 
-  public deleteEntityById(entityId: number): Observable<void> {
-    return this.http.get<void>(`${this.apiBackendUrl}/${this.entityName}/delete/${entityId}`);
-  }
-
-  public findEntityById(entityId: number): Observable<T> {
-    return this.http.get<T>(`${this.apiBackendUrl}/${this.entityName}/find-by-id/${entityId}`);
-  }
-
-  public uploadFiles(formData: FormData): Observable<HttpEvent<string[]>> {
-    return this.http.post<string[]>(`${this.apiBackendUrl}/${this.entityName}/upload-files`, formData, {
-      reportProgress: true,
-      observe: 'events'
-    })
-  }
-
-  public downloadFiles(fileName: string): Observable<HttpEvent<Blob>> {
-    return this.http.get(`${this.apiBackendUrl}/${this.entityName}/download-file/${fileName}`, {
-      reportProgress: true,
-      observe: 'events',
-      responseType: 'blob',
-      // transferCache: {
-      //   includeHeaders: ['Content-Type', 'File-Name', 'Content-Disposition']
-      // }
-    });
-  }
-
-  public deleteFile(fileName: string): Observable<boolean> {
-    return this.http.get<boolean>(`${this.apiBackendUrl}/${this.entityName}/delete-file/${fileName}`);
+    return this.http.get<boolean>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/delete-file/${fileName}`,
+      {
+        headers: headers
+      }
+    );
   }
 }
 

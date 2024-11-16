@@ -11,7 +11,7 @@ import {ModalOpenType} from "../misc/modal-open-type";
 import {CurrentMemberService} from "../../service/member/current-member.service";
 import {getCurrentDate} from "../misc/functions";
 import {UploadStatus} from "../misc/form-component";
-import {Tag} from "../../model/tag/tag";
+import {Tag} from "../../model/tag";
 import {Post} from '../../model/post/post';
 import {PostImage} from '../../model/post/post-image';
 import {PostVideo} from '../../model/post/post-video';
@@ -159,10 +159,11 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
     // }
   }
 
-  getSelectedTags() {
-    return this.availableTags.filter(tag => {
-      return this.editingPost.tagPerPostList.find(tagPerPost => tag.tagId == tagPerPost.tagId) != undefined;
-    })
+  getSelectedTags(): Tag[] {
+    // return this.availableTags.filter(tag => {
+    //   return this.editingPost.tagPerPostList.find(tagPerPost => tag.tagId == tagPerPost.tagId) != undefined;
+    // })
+    return [];
   }
 
   onAcceptClick() {

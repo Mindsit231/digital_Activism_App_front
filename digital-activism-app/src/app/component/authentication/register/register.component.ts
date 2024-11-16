@@ -90,7 +90,6 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
           this.authenticationService.register(registerRequest).subscribe({
             next: (registerResponse: RegisterResponse) => {
               this.registerResponse = RegisterResponse.fromJson(registerResponse);
-              this.currentMemberService.setCounter(0)
               console.log(this.registerResponse)
               if (this.registerResponse.hasNoErrors()) {
                 this.verifyEmailService.sendEmailVerification(this.emailInput, this.registerResponse.token)

@@ -2,10 +2,13 @@ import {FooterHandlerComponent} from "./footer-handler-component";
 import {HttpErrorResponse, HttpEvent, HttpEventType} from "@angular/common/http";
 import {Observable} from "rxjs";
 import {EntityService} from "../../service/entity.service";
+import {TokenService} from '../../service/token.service';
 
 export abstract class FormComponent extends FooterHandlerComponent {
   protected isSubmitted: boolean = false;
   protected formValidated: boolean = false;
+
+  protected tokenService!: TokenService;
 
   onSubmit() {
     this.isSubmitted = true;
@@ -17,21 +20,18 @@ export abstract class FormComponent extends FooterHandlerComponent {
 
   protected uploadFiles(entityService: EntityService<any>, formData: FormData): Observable<UploadStatus> {
     return new Observable<UploadStatus>(subscriber => {
-      entityService.uploadFiles(formData).subscribe({
+      entityService.uploadFiles(formData, this.tokenService.getUserToken()).subscribe({
         next: (httpEvent: HttpEvent<string[]>) => {
           switch (httpEvent.type) {
             case HttpEventType.ResponseHeader:
-              console.log('Response header has been received');
               break;
             case HttpEventType.Response:
               subscriber.next(new UploadStatus('Your file(s) have been uploaded successfully!', true, true));
               break;
             case HttpEventType.Sent:
-              // console.log('Request has been made!');
               subscriber.next(new UploadStatus('Uploading...', true, false));
               break;
             default:
-              // console.log('Event: ', httpEvent);
           }
         },
         error: (error: HttpErrorResponse) => {

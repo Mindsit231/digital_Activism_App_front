@@ -14,33 +14,10 @@ export class CurrentMemberService {
 
   private _member!: MemberDTO | undefined;
 
-  private counter: number = 0;
-  private mainPromise!: Promise<boolean>;
-
   constructor() {}
-
-  public getCounter(): number {
-    return this.counter;
-  }
-
-  public setCounter(counter: number): void {
-    this.counter = counter;
-  }
-
-  public incrementCounter(): void {
-    this.counter++;
-  }
 
   isLoggedIn(): boolean {
     return this._member !== undefined && this._member !== null;
-  }
-
-  getMainPromise(): Promise<boolean> {
-    return this.mainPromise;
-  }
-
-  setMainPromise(mainPromise: Promise<boolean>): void {
-    this.mainPromise = mainPromise;
   }
 
   get member(): MemberDTO | undefined {
@@ -55,13 +32,12 @@ export class CurrentMemberService {
     this.member = undefined;
   }
 
-  initializeMemberByFetchingToken(): Promise<boolean> {
+  initializeMemberBySavedToken(): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       if (this.tokenService.hasUserToken()) {
         this.authenticationService.loginByToken(this.tokenService.getUserToken())
           .subscribe({
             next: (memberDTO: MemberDTO) => {
-              // let memberDTO: MemberDTO = this.tokenService.extractMemberFromToken(memberDTO);
               if (memberDTO != null) {
                 this.initializeMember(memberDTO);
 
@@ -82,23 +58,6 @@ export class CurrentMemberService {
     });
   }
 
-  initializeMemberBySavedToken(): boolean {
-    let token: string = this.tokenService.getUserToken();
-    if (this.tokenService.hasUserToken()) {
-      let memberDTO: MemberDTO = this.tokenService.extractMemberFromToken(token);
-
-      if (token != null && token == memberDTO.token) {
-        this.initializeMember(memberDTO);
-        return true;
-      } else {
-        console.log('User not found');
-        return false;
-      }
-    } else {
-      return false;
-    }
-  }
-
   initializeMember(memberDTO: MemberDTO) {
     this.member = MemberDTO.fromJson(memberDTO);
     this.tokenService.setUserToken(this.member.token!);
@@ -110,7 +69,7 @@ export class CurrentMemberService {
   private initializeMemberPfpImgUrl(): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
       if (this.member?.hasPfp()) {
-        this.memberService.downloadFiles(this.member?.pfpName!).subscribe({
+        this.memberService.downloadFiles(this.member?.pfpName!, this.tokenService.getUserToken()).subscribe({
           next: (httpEvent: HttpEvent<Blob>) => {
             if (httpEvent.type === HttpEventType.Response) {
               const file: File = this.getFile(httpEvent);

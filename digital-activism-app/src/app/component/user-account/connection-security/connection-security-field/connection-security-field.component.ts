@@ -49,53 +49,40 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   onConfirm() {
-    // if (this.isPasswordElement() && !this.isEditingUserTypeAdmin()) {
-    //   this.isEditingPassword = true;
-    //   if (this.isPasswordProper(this.newValue)) {
-    //     if (!(this.newValue === this.passwordConfirmation)) {
-    //       console.log("Passwords do not match.")
-    //       return;
-    //     }
-    //
-    //     // COMPARE OLD PASSWORD WITH STORED HASH
-    //     bcrypt.compare(this.oldPassword, this.currentMemberService.member?.password!, (err, success) => {
-    //       if (success) {
-    //         // HASH NEW PASSWORD
-    //         bcrypt.hash(this.newValue, this.hashSalt, (err, hash) => {
-    //           console.log("Password changed.")
-    //           this.editableElement.value = hash;
-    //         });
-    //       } else {
-    //         this.isOldPasswordValid = false;
-    //         this.isOldPasswordChecked = true;
-    //         console.log("Old password is incorrect.")
-    //         return;
-    //       }
-    //     });
-    //   } else {
-    //     console.log("Password is not proper.")
-    //     return;
-    //   }
-    // } else if(this.isPasswordElement() && this.isEditingUserTypeAdmin()) {
-    //   this.isEditingPassword = true;
-    //   if (this.isPasswordProper(this.newValue)) {
-    //     // HASH NEW PASSWORD
-    //     bcrypt.hash(this.newValue, this.hashSalt, (err, hash) => {
-    //       console.log("Password changed.")
-    //       this.editableElement.value = hash;
-    //     });
-    //   } else {
-    //     console.log("Password is not proper.")
-    //     return;
-    //   }
-    //
-    // } else {
-    //   if (this.isFieldProper(this.newValue)) {
-    //     this.editableElement.value = this.newValue;
-    //   } else {
-    //     return;
-    //   }
-    // }
+    if (this.isPasswordElement() && !this.isEditingUserTypeAdmin()) {
+      this.isEditingPassword = true;
+      if (this.isPasswordProper(this.newValue)) {
+        if (!(this.newValue === this.passwordConfirmation)) {
+          console.log("Passwords do not match.")
+          return;
+        }
+
+        // // COMPARE OLD PASSWORD WITH STORED HASH
+        // bcrypt.compare(this.oldPassword, this.currentMemberService.member?.password!, (err, success) => {
+        //   if (success) {
+        //     // HASH NEW PASSWORD
+        //     bcrypt.hash(this.newValue, this.hashSalt, (err, hash) => {
+        //       console.log("Password changed.")
+        //       this.editableElement.value = hash;
+        //     });
+        //   } else {
+        //     this.isOldPasswordValid = false;
+        //     this.isOldPasswordChecked = true;
+        //     console.log("Old password is incorrect.")
+        //     return;
+        //   }
+        // });
+      } else {
+        console.log("Password is not proper.")
+        return;
+      }
+    } else {
+      if (this.isFieldProper(this.newValue)) {
+        this.editableElement.value = this.newValue;
+      } else {
+        return;
+      }
+    }
 
     this.setEditing(false);
   }
