@@ -3,7 +3,6 @@ import {ReCaptchaService} from '../../service/reCaptcha/re-captcha.service';
 import {ReCaptchaResponse} from '../../model/reCaptcha/re-captcha-response';
 import {ReCaptchaRequest} from '../../model/reCaptcha/re-captcha-request';
 import {environment} from '../../../environment/environment.prod';
-import {MIN_PASSWORD_LENGTH} from '../../service/member/member.service';
 import {RecaptchaComponent} from 'ng-recaptcha-2';
 
 export abstract class AuthenticationComponent extends FormComponent {
@@ -22,9 +21,9 @@ export abstract class AuthenticationComponent extends FormComponent {
   protected notRobotMessage: string = "Please verify that you're not a robot."
 
   // Error Identifiers
-  protected USERNAME_ERROR_IDENTIFIER = "Username";
-  protected EMAIL_ERROR_IDENTIFIER = "Email";
-  protected PASSWORD_ERROR_IDENTIFIER = "Password";
+  protected USERNAME_ERROR_LIST = "Username";
+  protected EMAIL_ERROR_LIST = "Email";
+  protected PASSWORD_ERROR_LIST = "Password";
 
   protected constructor() {
     super();
@@ -95,3 +94,5 @@ export abstract class AuthenticationComponent extends FormComponent {
     return {} as RecaptchaComponent
   };
 }
+
+export var MIN_PASSWORD_LENGTH: number = 12;

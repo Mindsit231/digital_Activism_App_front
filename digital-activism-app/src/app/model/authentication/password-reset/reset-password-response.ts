@@ -1,8 +1,12 @@
-import {ErrorList} from '../error-list';
+import {ErrorLists} from '../error-lists';
 
 export class ResetPasswordResponse {
-  errorLists: ErrorList[] = [];
-  success: boolean = false;
+  errorLists: ErrorLists;
+  success: boolean;
 
-  constructor() {}
+
+  constructor() {
+    this.errorLists = new ErrorLists([]);
+    this.success = false;
+  }
 }

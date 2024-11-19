@@ -68,5 +68,3 @@ export class MemberService extends EntityService<MemberDTO> {
   }
 
 }
-
-export var MIN_PASSWORD_LENGTH: number = 12;

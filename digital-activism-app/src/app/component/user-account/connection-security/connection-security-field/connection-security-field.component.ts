@@ -5,7 +5,9 @@ import {FormsModule} from "@angular/forms";
 import {EditableElementType} from "../../../misc/editable-element-type";
 import {AuthenticationComponent} from "../../../authentication/authentication-component";
 import {CurrentMemberService} from "../../../../service/member/current-member.service";
-import {EditingUserType} from "../../../misc/editing-user-type";
+import {ACTION_FAILURE, ACTION_NULL, ACTION_SUCCESS, ActionStatus} from '../../../misc/action-status';
+import {AuthenticationService} from '../../../../service/authentication.service';
+import {TokenService} from '../../../../service/token.service';
 
 @Component({
   selector: 'app-cs-elem',
@@ -19,7 +21,6 @@ import {EditingUserType} from "../../../misc/editing-user-type";
 })
 export class ConnectionSecurityFieldComponent extends AuthenticationComponent implements OnInit {
   @Input() editableElement!: EditableElement;
-  @Input() editingUserType!: EditingUserType;
 
   newValue: string = "";
   passwordConfirmation: string = "";
@@ -28,63 +29,62 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   isEditingField = false;
   isEditingPassword = false;
 
-  isOldPasswordValid = false;
-  isOldPasswordChecked = false;
+  isConfirmed: ActionStatus = ACTION_NULL;
+
+  isNewPasswordSame = false;
   isEditable: boolean = true;
 
-  constructor(protected currentMemberService: CurrentMemberService) {
+  constructor(protected currentMemberService: CurrentMemberService,
+              protected authenticationService: AuthenticationService,
+              protected override tokenService: TokenService) {
     super();
   }
 
   ngOnInit(): void {
-    this.isEditable = this.editableElement.isEditable || this.isEditingUserTypeAdmin();
-  }
-
-  isEditingUserTypeAdmin() {
-    return this.editingUserType === EditingUserType.ADMIN
+    this.isEditable = this.editableElement.isEditable;
   }
 
   setEditing(isEditing: boolean) {
     this.isEditingField = isEditing;
+    this.isEditingPassword = isEditing;
   }
 
   onConfirm() {
-    if (this.isPasswordElement() && !this.isEditingUserTypeAdmin()) {
-      this.isEditingPassword = true;
+    if (this.isPasswordElement()) {
+      console.log(this.newValue)
       if (this.isPasswordProper(this.newValue)) {
-        if (!(this.newValue === this.passwordConfirmation)) {
+        if (this.newValue === this.passwordConfirmation) {
+          this.authenticationService.checkOldPassword(this.oldPassword, this.tokenService.getUserToken()).subscribe({
+            next: (isNewPasswordSame: boolean) => {
+              this.isNewPasswordSame = isNewPasswordSame;
+              this.isConfirmed = isNewPasswordSame ? ACTION_SUCCESS : ACTION_FAILURE;
+            },
+            error: (error) => {
+              this.isConfirmed = ACTION_FAILURE;
+              console.error(error);
+            }
+          });
+          this.isConfirmed = ACTION_SUCCESS;
+        } else {
           console.log("Passwords do not match.")
-          return;
+          this.isConfirmed = ACTION_FAILURE;
         }
-
-        // // COMPARE OLD PASSWORD WITH STORED HASH
-        // bcrypt.compare(this.oldPassword, this.currentMemberService.member?.password!, (err, success) => {
-        //   if (success) {
-        //     // HASH NEW PASSWORD
-        //     bcrypt.hash(this.newValue, this.hashSalt, (err, hash) => {
-        //       console.log("Password changed.")
-        //       this.editableElement.value = hash;
-        //     });
-        //   } else {
-        //     this.isOldPasswordValid = false;
-        //     this.isOldPasswordChecked = true;
-        //     console.log("Old password is incorrect.")
-        //     return;
-        //   }
-        // });
       } else {
         console.log("Password is not proper.")
-        return;
+        this.isConfirmed = ACTION_FAILURE;
       }
     } else {
-      if (this.isFieldProper(this.newValue)) {
-        this.editableElement.value = this.newValue;
+      if(this.isFieldProper(this.newValue)) {
+        this.isConfirmed = ACTION_SUCCESS;
       } else {
-        return;
+        console.log("Field is not proper.")
+        this.isConfirmed = ACTION_FAILURE;
       }
     }
-
-    this.setEditing(false);
+    if(this.isConfirmed === ACTION_SUCCESS) {
+      this.setEditing(false);
+      this.editableElement.value = this.newValue;
+    }
   }
 
   onEdit() {
@@ -98,8 +98,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   onCancel() {
-    this.newValue = this.editableElement.value;
-    this.setEditing(false);
+    this.resetValues();
   }
 
   getValue() {
@@ -111,15 +110,13 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   resetValues() {
-    this.newValue = "";
+    this.newValue = this.getValue();
     this.passwordConfirmation = "";
     this.oldPassword = "";
 
-    this.isEditingField = false;
-    this.isEditingPassword = false;
-
-    this.isOldPasswordValid = false;
-    this.isOldPasswordChecked = false;
+    this.setEditing(false);
+    this.isConfirmed = ACTION_NULL;
+    this.isNewPasswordSame = false;
   }
 
 
@@ -128,22 +125,22 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   isEditingPasswordElement() {
-    return this.isPasswordElement() && this.isEditingField && !this.isEditingUserTypeAdmin();
+    return this.isPasswordElement() && this.isEditingField;
   }
 
   isFieldInvalid() {
-    return this.isEditingField && !this.isFieldProper(this.newValue) && !this.isPasswordElement();
+    return this.isConfirmed === ACTION_FAILURE && !this.isFieldProper(this.newValue) && !this.isPasswordElement();
   }
 
   isPasswordInvalid(): boolean {
-    return this.isEditingPassword && !this.isPasswordProper(this.newValue) && this.isPasswordElement();
+    return this.isConfirmed === ACTION_FAILURE && !this.isPasswordProper(this.newValue) && this.isPasswordElement();
   }
 
   isPasswordsNotMatch(): boolean {
-    return this.isEditingPassword && this.newValue !== this.passwordConfirmation;
+    return this.isConfirmed === ACTION_FAILURE && this.newValue !== this.passwordConfirmation;
   }
 
-  isOldPasswordInvalid() {
-    return this.isEditingPassword && !this.isOldPasswordValid && this.isOldPasswordChecked;
+  isNewPasswordInvalid() {
+    return this.isConfirmed === ACTION_FAILURE && !this.isNewPasswordSame;
   }
 }

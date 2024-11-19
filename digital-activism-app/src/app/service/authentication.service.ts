@@ -100,6 +100,17 @@ export class AuthenticationService {
     );
   }
 
+  public checkOldPassword(oldPassword: string, token: string): Observable<boolean> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.post<boolean>(
+      `${this.apiBackendUrl}/authenticated/check-old-password`,
+      oldPassword,
+      {
+        headers: headers
+      }
+    );
+  }
+
   public isLoggedIn(): Promise<MemberDTO> {
     return new Promise<MemberDTO>((resolve, reject) => {
       this.loginByToken(this.tokenService.getUserToken()).subscribe({

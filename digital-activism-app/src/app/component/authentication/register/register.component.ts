@@ -22,6 +22,7 @@ import {
 import {MatProgressBar, MatProgressBarModule} from '@angular/material/progress-bar';
 import {RouterService} from '../../../service/router.service';
 import {VerifyEmailService} from '../../../service/verify-email.service';
+import {ErrorLists} from '../../../model/authentication/error-lists';
 
 @Component({
   selector: 'app-register',
@@ -60,7 +61,7 @@ export class RegisterComponent extends AuthenticationComponent implements OnInit
   passwordInput: string = "";
   confirmPasswordInput: string = "";
 
-  registerResponse: RegisterResponse = new RegisterResponse([], "");
+  registerResponse: RegisterResponse = new RegisterResponse(new ErrorLists([]), "");
   emailVerificationResponse = new SendEmailVerificationResponse([]);
 
   @ViewChild('captchaRef') captchaRef!: RecaptchaComponent

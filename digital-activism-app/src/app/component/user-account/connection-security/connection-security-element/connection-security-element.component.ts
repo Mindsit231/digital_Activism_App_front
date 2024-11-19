@@ -13,7 +13,6 @@ import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {MemberService} from "../../../../service/member/member.service";
 import {Subject} from "rxjs";
-import {EditingUserType} from '../../../misc/editing-user-type';
 import {TokenService} from '../../../../service/token.service';
 import {CurrentMemberService} from '../../../../service/member/current-member.service';
 
@@ -37,7 +36,6 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
   @Input() memberDTO!: MemberDTO;
 
-  @Input() editingUserType: EditingUserType = EditingUserType.USER;
   @Input() isModal: boolean = false
   @Output() onCloseModal = new EventEmitter<boolean>();
 
