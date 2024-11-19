@@ -15,6 +15,7 @@ import {MemberService} from "../../../../service/member/member.service";
 import {Subject} from "rxjs";
 import {TokenService} from '../../../../service/token.service';
 import {CurrentMemberService} from '../../../../service/member/current-member.service';
+import {UpdateResponse} from '../../../../model/member/update-response';
 
 @Component({
   selector: 'app-connection-security-element',
@@ -33,6 +34,8 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
   editableElements = editableElements;
   changesSuccess: boolean = false;
+
+  updateResponse: UpdateResponse = new UpdateResponse();
 
   @Input() memberDTO!: MemberDTO;
 
@@ -81,7 +84,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     });
   }
 
-  private updateCurrentMemberDTO() {
+  private updateCurrentMemberDTO(memberDTO: MemberDTO) {
     this.editableElements.forEach((editableElement) => {
       switch (editableElement.name) {
         case usernameElement.name:
@@ -102,9 +105,10 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     let member: MemberDTO = MemberDTO.fromJson(this.memberDTO)
 
     this.memberService.update(member, this.tokenService.getUserToken()).subscribe({
-      next: (jsonMemberDTO: MemberDTO) => {
+      next: (updateResponse: UpdateResponse) => {
         console.log("Updated member.")
-        this.updateCurrentMemberDTO();
+        this.updateResponse = updateResponse;
+        this.updateCurrentMemberDTO(updateResponse.memberDTO);
         this.changesSuccess = true;
       },
       error: (error) => {
@@ -119,6 +123,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
   onCancel() {
     this.setEditableElementValues();
+    this.updateResponse = new UpdateResponse();
     this.isSubmitted = false;
   }
 

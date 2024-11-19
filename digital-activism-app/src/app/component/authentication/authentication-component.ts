@@ -14,7 +14,7 @@ export abstract class AuthenticationComponent extends FormComponent {
 
   // Validation messages
   protected passwordInvalidMessage: String = "Password must have at least one lowercase and uppercase letter, one number, one special character and " + MIN_PASSWORD_LENGTH + " characters long.";
-  protected oldPasswordInvalidMessage: String = "Old Password is incorrect.";
+  protected oldPasswordInvalidMessage: String = "Password cannot be the same as old password.";
   protected passwordsNotMatchMessage: String = "Passwords do not match.";
   protected emailInvalidMessage: String = "Email is invalid.";
   protected fieldInvalidMessage: String = "Field must be at least 3 characters long without any special characters.";

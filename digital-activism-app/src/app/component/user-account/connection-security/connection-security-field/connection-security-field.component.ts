@@ -31,7 +31,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
 
   isConfirmed: ActionStatus = ACTION_NULL;
 
-  isNewPasswordSame = false;
+  isNewPasswordSame: ActionStatus = ACTION_NULL;
   isEditable: boolean = true;
 
   constructor(protected currentMemberService: CurrentMemberService,
@@ -50,41 +50,52 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   onConfirm() {
-    if (this.isPasswordElement()) {
-      console.log(this.newValue)
-      if (this.isPasswordProper(this.newValue)) {
-        if (this.newValue === this.passwordConfirmation) {
-          this.authenticationService.checkOldPassword(this.oldPassword, this.tokenService.getUserToken()).subscribe({
-            next: (isNewPasswordSame: boolean) => {
-              this.isNewPasswordSame = isNewPasswordSame;
-              this.isConfirmed = isNewPasswordSame ? ACTION_SUCCESS : ACTION_FAILURE;
-            },
-            error: (error) => {
-              this.isConfirmed = ACTION_FAILURE;
-              console.error(error);
-            }
-          });
-          this.isConfirmed = ACTION_SUCCESS;
+    new Promise<ActionStatus>((resolve, reject) => {
+      if (this.isPasswordElement()) {
+        if (this.isPasswordProper(this.newValue)) {
+          if (this.newValue === this.passwordConfirmation) {
+            this.authenticationService.checkOldPassword(this.oldPassword, this.tokenService.getUserToken()).subscribe({
+              next: (isNewPasswordSame: boolean) => {
+                this.isNewPasswordSame = isNewPasswordSame ? ACTION_FAILURE : ACTION_SUCCESS;
+                this.isConfirmed = isNewPasswordSame ? ACTION_FAILURE : ACTION_SUCCESS;
+              },
+              error: (error) => {
+                console.error(error);
+                resolve(ACTION_FAILURE);
+              },
+              complete: () => {
+                if(this.isNewPasswordSame === ACTION_FAILURE) {
+                  console.log("Old Password matches")
+                }
+                resolve(this.isNewPasswordSame);
+              }
+            });
+          } else {
+            console.error("Passwords do not match.")
+            resolve(ACTION_FAILURE);
+          }
         } else {
-          console.log("Passwords do not match.")
-          this.isConfirmed = ACTION_FAILURE;
+          console.error("Password is not proper.")
+          resolve(ACTION_FAILURE);
         }
       } else {
-        console.log("Password is not proper.")
-        this.isConfirmed = ACTION_FAILURE;
+        if (this.isFieldProper(this.newValue)) {
+          resolve(ACTION_SUCCESS);
+        } else {
+          console.log("Field is not proper.")
+          resolve(ACTION_FAILURE);
+        }
       }
-    } else {
-      if(this.isFieldProper(this.newValue)) {
-        this.isConfirmed = ACTION_SUCCESS;
-      } else {
-        console.log("Field is not proper.")
-        this.isConfirmed = ACTION_FAILURE;
+    }).then((status: ActionStatus) => {
+      this.isConfirmed = status;
+
+      if (this.isConfirmed === ACTION_SUCCESS) {
+        this.setEditing(false);
+        this.editableElement.value = this.newValue;
       }
-    }
-    if(this.isConfirmed === ACTION_SUCCESS) {
-      this.setEditing(false);
-      this.editableElement.value = this.newValue;
-    }
+    });
+
+
   }
 
   onEdit() {
@@ -115,8 +126,9 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
     this.oldPassword = "";
 
     this.setEditing(false);
+
     this.isConfirmed = ACTION_NULL;
-    this.isNewPasswordSame = false;
+    this.isNewPasswordSame = ACTION_NULL;
   }
 
 
@@ -141,6 +153,6 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   }
 
   isNewPasswordInvalid() {
-    return this.isConfirmed === ACTION_FAILURE && !this.isNewPasswordSame;
+    return this.isConfirmed === ACTION_FAILURE && this.isNewPasswordSame === ACTION_FAILURE;
   }
 }

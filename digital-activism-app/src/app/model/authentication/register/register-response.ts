@@ -1,4 +1,3 @@
-import {ErrorList} from '../error-list';
 import {ErrorLists} from '../error-lists';
 
 export class RegisterResponse {
@@ -14,15 +13,6 @@ export class RegisterResponse {
   static fromJson(registerResponseJson: RegisterResponse): RegisterResponse {
     let errorLists: ErrorLists = ErrorLists.fromJson(registerResponseJson.errorLists);
     return new RegisterResponse(errorLists, registerResponseJson.token);
-  }
-
-  public findErrorListByName(name: string): ErrorList {
-    let errorList: ErrorList | undefined = this.errorLists.errorList.find(errorList => errorList.name === name)
-    if (errorList != undefined) {
-      return errorList
-    } else {
-      return new ErrorList("", []);
-    }
   }
 
   hasNoErrors() {

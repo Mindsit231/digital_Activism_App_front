@@ -12,6 +12,7 @@ import {VerifyEmailComponent} from './component/authentication/verify-email/veri
 import {AuthenticatedGuardService} from './service/guard/authenticated-guard.service';
 import {VerifyMailGuardService} from './service/guard/verify-mail-guard.service';
 import {PasswordResetGuardService} from './service/guard/password-reset-guard.service';
+import {MyGroupsComponent} from './component/user-account/my-groups/my-groups.component';
 export const passwordResetRoute = `password-reset`;
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
     path: 'user-account', component: UserAccountComponent,
     children: [
       {path: 'connection-security', component: ConnectionSecurityComponent},
+      {path: 'my-groups', component: MyGroupsComponent},
       {path: 'user-settings', component: UserSettingsComponent},
     ],
     canActivate: [AuthenticatedGuardService]

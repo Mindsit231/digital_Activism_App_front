@@ -117,6 +117,14 @@ $profileMenuItemWidth: 350px;
   font-size: 20px;
 }
 
+.h1-div {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 20px 0 40px 0;
+  width: 100%;
+}
+
 @media only screen and (max-width: 960px) {
   .profile-top-div-pfp img, .profile-pfp-overlay {
     border-radius: 50px;
