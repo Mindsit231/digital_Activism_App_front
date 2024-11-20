@@ -30,11 +30,10 @@ class NavigationItem {
 }
 
 export const homeNavigationItem = new NavigationItem("Home", "/home", faHome);
-export const messagesNavigationItem = new NavigationItem("Messages", "/messages", faMessage, true);
-export const myPostsNavigationItem = new NavigationItem("My Posts", "/my-posts", faSignsPost, true);
+export const exploreCommunities = new NavigationItem("Explore Communities", "/explore-communities", faSearch);
+
 
 export const navigationItems = [
   homeNavigationItem,
-  messagesNavigationItem,
-  myPostsNavigationItem,
+  exploreCommunities,
 ];

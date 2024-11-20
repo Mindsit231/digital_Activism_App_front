@@ -1,0 +1,18 @@
+<div class="main-page-body-div">
+  <div class="header-elem">
+    <div class="header-icon-elem">
+      <fa-icon [class]="['header-icon']" [icon]="exploreCommunities.getIcon()"></fa-icon>
+    </div>
+    <h1 class="main-page-h1">Research</h1>
+  </div>
+  <div class="separation-line-2"></div>
+  <div class="search-div">
+    <input class="default-input-3" placeholder="Search By Name..." [(ngModel)]="searchString">
+  </div>
+  <div class="community-banner-container">
+    <div class="community-banner-body-div" *ngFor="let community of getCommunities()">
+
+    </div>
+  </div>
+
+</div>
