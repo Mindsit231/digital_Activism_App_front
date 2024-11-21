@@ -3,7 +3,7 @@ import {exploreCommunities} from "../header/navigation-item";
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {NgForOf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {Community} from '../../model/Community';
+import {Community} from '../../model/community';
 
 @Component({
   selector: 'app-explore-communities',

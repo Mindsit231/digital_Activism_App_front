@@ -30,7 +30,7 @@ export const routes: Routes = [
     path: 'user-account', component: UserAccountComponent,
     children: [
       {path: 'connection-security', component: ConnectionSecurityComponent},
-      {path: 'my-groups', component: MyCommunitiesComponent},
+      {path: 'my-communities', component: MyCommunitiesComponent},
       {path: 'user-settings', component: UserSettingsComponent},
     ],
     canActivate: [AuthenticatedGuardService]

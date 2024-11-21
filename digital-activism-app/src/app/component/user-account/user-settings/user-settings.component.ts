@@ -85,20 +85,22 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
   }
 
   saveOnClick() {
-    this.memberService.proposeNewTag(this.tagProposal!, this.tokenService.getUserToken()).subscribe({
-      next: (jsonTag: Tag) => {
-        if (jsonTag != null) {
-          this.memberTags.push(jsonTag);
-        } else {
-          console.error("Tag is null");
+    if(this.tagProposal != null && this.tagProposal.length > 0) {
+      this.memberService.proposeNewTag(this.tagProposal, this.tokenService.getUserToken()).subscribe({
+        next: (jsonTag: Tag) => {
+          if (jsonTag != null) {
+            this.memberTags.push(jsonTag);
+          } else {
+            console.error("Tag is null");
+          }
+        },
+        error: (error) => {
+          console.error(error);
+        },
+        complete: () => {
+          this.tagProposal = "";
         }
-      },
-      error: (error) => {
-        console.error(error);
-      },
-      complete: () => {
-        this.tagProposal = "";
-      }
-    });
+      });
+    }
   }
 }

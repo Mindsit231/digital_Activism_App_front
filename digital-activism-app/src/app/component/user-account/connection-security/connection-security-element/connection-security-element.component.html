@@ -14,11 +14,6 @@
     <div class="separation-line-small"></div>
     <span class="validation-error-span" *ngIf="isNotSuccess()">Could not update information</span>
     <span class="validation-success-span" *ngIf="isSuccess()">Changes Applied Successfully</span>
-    @for (errorList of updateResponse.errorLists.errorList; track errorList) {
-      @for (error of errorList.errors; track error) {
-        <span class="validation-error-span">{{ error }}</span>
-      }
-    }
     <div class="cs-elem-last">
       <div class="cs-button-elem">
         <button class="default-btn" type="button" (click)="onApplyChanges()">Apply Changes</button>

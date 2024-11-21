@@ -10,7 +10,7 @@
 
     <span>{{ editableElement.name }}:</span>
     @if (!isEditingField) {
-      <label for="new-value-input">{{ getValue() }}</label>
+      <label for="new-value-input">{{ this.editableElement.value }}</label>
     } @else {
       <input id="new-value-input" class="default-input-3"
              type="{{editableElement.editableElementType}}"

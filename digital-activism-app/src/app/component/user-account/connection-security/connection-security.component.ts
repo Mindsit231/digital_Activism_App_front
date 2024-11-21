@@ -26,7 +26,6 @@ import {AuthenticationService} from '../../../service/authentication.service';
   styleUrl: './connection-security.component.scss'
 })
 export class ConnectionSecurityComponent extends FooterHandlerComponent implements OnInit {
-  user!: MemberDTO;
 
   constructor(private el: ElementRef,
               protected memberService: MemberService,
@@ -38,6 +37,5 @@ export class ConnectionSecurityComponent extends FooterHandlerComponent implemen
 
   ngOnInit(): void {
     this.el.nativeElement.style.width = `100%`;
-    this.user = this.currentMemberService.member!;
   }
 }

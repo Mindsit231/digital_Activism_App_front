@@ -1,21 +1,15 @@
 import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
-import {
-  editableElements,
-  emailElement,
-  passwordElement,
-  usernameElement
-} from "../../../misc/editable-element";
+import {editableElements, emailElement, passwordElement, usernameElement} from "../../../misc/editable-element";
 import {ConnectionSecurityFieldComponent} from "../connection-security-field/connection-security-field.component";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormComponent} from "../../../misc/form-component";
-import {MemberDTO} from "../../../../model/member/member-dto";
 import {faXmark} from "@fortawesome/free-solid-svg-icons";
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {MemberService} from "../../../../service/member/member.service";
-import {Subject} from "rxjs";
 import {TokenService} from '../../../../service/token.service';
 import {CurrentMemberService} from '../../../../service/member/current-member.service';
 import {UpdateResponse} from '../../../../model/member/update-response';
+import {UpdateRequest} from '../../../../model/member/update-request';
 
 @Component({
   selector: 'app-connection-security-element',
@@ -35,10 +29,6 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   editableElements = editableElements;
   changesSuccess: boolean = false;
 
-  updateResponse: UpdateResponse = new UpdateResponse();
-
-  @Input() memberDTO!: MemberDTO;
-
   @Input() isModal: boolean = false
   @Output() onCloseModal = new EventEmitter<boolean>();
 
@@ -56,36 +46,40 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     this.editableElements.forEach((editableElement) => {
       switch (editableElement.name) {
         case usernameElement.name:
-          editableElement.value = this.memberDTO?.username!;
+          editableElement.value = this.currentMemberService.member?.username!;
           break;
         case emailElement.name:
-          editableElement.value = this.memberDTO?.email!;
-          break;
-        case passwordElement.name:
-          editableElement.value = this.memberDTO?.password!;
+          editableElement.value = this.currentMemberService.member?.email!;
           break;
       }
     });
   }
 
-  private setUserFields() {
+  private setUserFields(): UpdateRequest {
+    let updateRequest = new UpdateRequest();
+
     this.editableElements.forEach((editableElement) => {
-      switch (editableElement.name) {
-        case usernameElement.name:
-          this.memberDTO.setUsername(editableElement.value);
-          break;
-        case emailElement.name:
-          this.memberDTO.setEmail(editableElement.value);
-          break;
-        case passwordElement.name:
-          this.memberDTO.setPassword(editableElement.value);
-          break;
+      if (editableElement.isChanged) {
+        switch (editableElement.name) {
+          case usernameElement.name:
+            updateRequest.username = editableElement.value;
+            break;
+          case emailElement.name:
+            updateRequest.email = editableElement.value;
+            break;
+          case passwordElement.name:
+            updateRequest.password = editableElement.value;
+            break;
+        }
       }
     });
+
+    return updateRequest;
   }
 
-  private updateCurrentMemberDTO(memberDTO: MemberDTO) {
+  private updateCurrentMemberDTO() {
     this.editableElements.forEach((editableElement) => {
+      editableElement.isChanged = false;
       switch (editableElement.name) {
         case usernameElement.name:
           this.currentMemberService.member?.setUsername(editableElement.value);
@@ -93,37 +87,38 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
         case emailElement.name:
           this.currentMemberService.member?.setEmail(editableElement.value);
           break;
-        case passwordElement.name:
-          this.currentMemberService.member?.setPassword(editableElement.value);
-          break;
       }
     });
   }
 
   onApplyChanges() {
-    this.setUserFields();
-    let member: MemberDTO = MemberDTO.fromJson(this.memberDTO)
-
-    this.memberService.update(member, this.tokenService.getUserToken()).subscribe({
-      next: (updateResponse: UpdateResponse) => {
-        console.log("Updated member.")
-        this.updateResponse = updateResponse;
-        this.updateCurrentMemberDTO(updateResponse.memberDTO);
-        this.changesSuccess = true;
-      },
-      error: (error) => {
-        this.changesSuccess = false;
-        console.log("HTTP ERROR: Failed to update member.");
-      },
-      complete: () => {
-        super.onSubmit();
-      }
+    let updateRequest: UpdateRequest = this.setUserFields();
+    let hasModifications: boolean = false;
+    this.editableElements.forEach((editableElement) => {
+      if (editableElement.isChanged) hasModifications = true;
     });
+
+    if (hasModifications) {
+      console.log(updateRequest);
+      this.memberService.update(updateRequest, this.tokenService.getUserToken()).subscribe({
+        next: (updateResponse: UpdateResponse) => {
+          console.log(updateResponse);
+          this.updateCurrentMemberDTO();
+          this.changesSuccess = true;
+        },
+        error: (error) => {
+          this.changesSuccess = false;
+          console.log("HTTP ERROR: Failed to update member.");
+        },
+        complete: () => {
+          super.onSubmit();
+        }
+      });
+    }
   }
 
   onCancel() {
     this.setEditableElementValues();
-    this.updateResponse = new UpdateResponse();
     this.isSubmitted = false;
   }
 

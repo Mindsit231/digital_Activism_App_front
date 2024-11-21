@@ -22,12 +22,12 @@ export const connectionAndSecurity = new ProfileMenuItem(faLock,
   'Connection / Security', '/user-account/connection-security');
 export const logout = new ProfileMenuItem(faArrowRightFromBracket, 'Logout',
   '');
-export const myGroups = new ProfileMenuItem(faPeopleGroup, 'My Groups',
-  '/user-account/my-groups');
+export const myCommunities = new ProfileMenuItem(faPeopleGroup, 'My Communities',
+  '/user-account/my-communities');
 
 export const profileMenuItems: ProfileMenuItem[] = [
   settings,
-  myGroups,
+  myCommunities,
   connectionAndSecurity,
   logout
 ];

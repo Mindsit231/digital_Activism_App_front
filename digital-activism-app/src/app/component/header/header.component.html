@@ -1,6 +1,6 @@
 <div class="header-body-div text-font-700" (onResize)="handleResize($event)">
   <div class="header-elem">
-    <div class="burger-menu-elem">
+    <div class="burger-menu-elem" tabindex="0" (blur)="onDivBlur()">
       <div class="burger-menu-icon-elem" (click)="burgerMenuOnClick()">
         <fa-icon [class]="['burger-menu-icon']" [icon]="faBars"></fa-icon>
       </div>

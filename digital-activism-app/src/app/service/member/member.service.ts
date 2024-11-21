@@ -6,6 +6,7 @@ import {MemberDTO} from "../../model/member/member-dto";
 import {PfpNameByEmail} from "../../model/query/update/pfp-name-by-email";
 import {Tag} from '../../model/tag';
 import {UpdateResponse} from '../../model/member/update-response';
+import {UpdateRequest} from '../../model/member/update-request';
 
 @Injectable({
   providedIn: 'root'
@@ -58,11 +59,11 @@ export class MemberService extends EntityService<MemberDTO> {
       });
   }
 
-  public update(memberDTO: MemberDTO, token: string): Observable<UpdateResponse> {
+  public update(updateRequest: UpdateRequest, token: string): Observable<UpdateResponse> {
     const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
     return this.http.post<UpdateResponse>(
       `${this.apiBackendUrl}/authenticated/${this.entityName}/update`,
-      memberDTO,
+      updateRequest,
       {
         headers: headers
       });

@@ -3,6 +3,7 @@ import {EditableElementType} from "./editable-element-type";
 export class EditableElement {
   name: string;
   private _value: string;
+  isChanged: boolean = false;
 
   editableElementType: EditableElementType;
   isEditable: boolean = true;
@@ -18,7 +19,11 @@ export class EditableElement {
   }
 
   get value(): string {
-    return this._value;
+    if(this.editableElementType === EditableElementType.PASSWORD) {
+      return '*****************';
+    } else {
+      return this._value;
+    }
   }
 
   set value(value: string) {

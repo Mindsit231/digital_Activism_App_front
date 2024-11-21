@@ -58,6 +58,7 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {
     if (profileMenuItem != logout) {
+      this.xMarkOnClick();
       this.routerService.routeTo(profileMenuItem.link)
     } else {
       this.currentMemberService.setMemberToNull();
@@ -85,5 +86,9 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
 
   registerOnClick() {
     this.routerService.routeTo("/register");
+  }
+
+  onDivBlur() {
+    this.xMarkOnClick();
   }
 }

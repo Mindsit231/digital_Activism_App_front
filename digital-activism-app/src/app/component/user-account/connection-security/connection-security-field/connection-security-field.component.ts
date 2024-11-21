@@ -92,6 +92,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
       if (this.isConfirmed === ACTION_SUCCESS) {
         this.setEditing(false);
         this.editableElement.value = this.newValue;
+        this.editableElement.isChanged = true;
       }
     });
 
@@ -112,16 +113,8 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
     this.resetValues();
   }
 
-  getValue() {
-    if (!this.isPasswordElement()) {
-      return this.editableElement.value;
-    } else {
-      return "************";
-    }
-  }
-
   resetValues() {
-    this.newValue = this.getValue();
+    this.newValue = this.editableElement.value;
     this.passwordConfirmation = "";
     this.oldPassword = "";
 
