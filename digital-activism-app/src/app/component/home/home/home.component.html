@@ -1,0 +1,71 @@
+<div class="homepage">
+  <h1>Protest Homepage</h1>
+
+  <!-- Group Membership Section -->
+  <div class="group-section">
+    <h2>Group Membership</h2>
+    <div>
+      <p><strong>Group Name:</strong> Protest Community</p>
+      <p><strong>Members:</strong> {{ groupMembers.length }}</p>
+      <button *ngIf="!isMember" (click)="joinGroup()">Join Group</button>
+      <p *ngIf="isMember">You are a member of this group.</p>
+    </div>
+  </div>
+
+  <div (onResize)="handleFooterTopMinValue($event, 200)" class="main-content">
+    <!-- Your content here -->
+  </div>
+
+  <!-- New Post Section -->
+  <div class="new-post" *ngIf="isMember">
+    <h2>Create a New Post</h2>
+    <input [(ngModel)]="newPost.title" placeholder="Post Title" />
+    <textarea [(ngModel)]="newPost.body" placeholder="Post Body"></textarea>
+    <input [(ngModel)]="newPost.tags" placeholder="Tags (comma-separated)" />
+    <label>
+      <input type="checkbox" [(ngModel)]="newPost.isPrivate" /> Private Post
+    </label>
+    <input type="file" (change)="onImageUpload($event)" />
+    <button (click)="addNewPost()">Add Post</button>
+  </div>
+
+  <!-- Public Posts Section -->
+  <div class="posts-section">
+    <h2>Public Posts</h2>
+    <div *ngIf="publicPosts.length === 0">No public posts available.</div>
+    <ng-container *ngFor="let post of publicPosts">
+      <div class="post">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.body }}</p>
+        <p><strong>Tags:</strong> {{ post.tags.join(', ') }}</p>
+        <p><strong>Created:</strong> {{ post.creationDate }}</p>
+        <img *ngIf="post.image" [src]="post.image" alt="Post Image" class="post-image" />
+        <p><strong>Likes:</strong> {{ post.likesCount }} | <strong>Shares:</strong> {{ post.sharesCount }}</p>
+        <button (click)="onPostClick(post)">View Details</button>
+        <button (click)="likePost(post)">Like</button>
+        <button (click)="sharePost(post)">Share</button>
+        <button (click)="deletePost(post)">Delete</button>
+      </div>
+    </ng-container>
+  </div>
+
+  <!-- Private Posts Section -->
+  <div class="posts-section" *ngIf="isMember">
+    <h2>Private Posts</h2>
+    <div *ngIf="privatePosts.length === 0">No private posts available.</div>
+    <ng-container *ngFor="let post of privatePosts">
+      <div class="post">
+        <h3>{{ post.title }}</h3>
+        <p>{{ post.body }}</p>
+        <p><strong>Tags:</strong> {{ post.tags.join(', ') }}</p>
+        <p><strong>Created:</strong> {{ post.creationDate }}</p>
+        <img *ngIf="post.image" [src]="post.image" alt="Post Image" class="post-image" />
+        <p><strong>Likes:</strong> {{ post.likesCount }} | <strong>Shares:</strong> {{ post.sharesCount }}</p>
+        <button (click)="onPostClick(post)">View Details</button>
+        <button (click)="likePost(post)">Like</button>
+        <button (click)="sharePost(post)">Share</button>
+        <button (click)="deletePost(post)">Delete</button>
+      </div>
+    </ng-container>
+  </div>
+</div>
