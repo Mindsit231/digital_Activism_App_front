@@ -87,8 +87,4 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   registerOnClick() {
     this.routerService.routeTo("/register");
   }
-
-  onDivBlur() {
-    this.xMarkOnClick();
-  }
 }

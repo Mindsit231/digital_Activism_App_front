@@ -3,16 +3,26 @@
     <div class="header-icon-elem">
       <fa-icon [class]="['header-icon']" [icon]="exploreCommunities.getIcon()"></fa-icon>
     </div>
-    <h1 class="main-page-h1">Find Community</h1>
+    <h1 class="main-page-h1">Find CommunityDto</h1>
   </div>
   <div class="separation-line-2"></div>
   <div class="search-div">
     <input class="default-input-3" placeholder="Search By Name..." [(ngModel)]="searchString">
   </div>
   <div class="community-banner-container">
-    <div class="community-banner-body-div" *ngFor="let community of getCommunities()">
-
+    <div class="community-banner-body-div" *ngFor="let community of communities">
+      <app-community-widget
+      [community]="community"
+      ></app-community-widget>
     </div>
   </div>
-
+  <mat-paginator class="custom-paginator"
+                 [length]="length"
+                 [pageSize]="pageSize"
+                 [showFirstLastButtons]="true"
+                 [pageSizeOptions]="[5, 10, 25, 100]"
+                 [pageIndex]="pageIndex"
+                 (page)="handlePageEvent($event)"
+                 aria-label="Select page">
+  </mat-paginator>
 </div>

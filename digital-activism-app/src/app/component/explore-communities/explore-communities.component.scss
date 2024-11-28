@@ -1,3 +1,4 @@
+@use '@angular/material' as mat;
 @import "../common.scss";
 
 .community-banner-container {
@@ -17,5 +18,9 @@
   align-items: center;
 
   width: 100%;
-  margin: 20px;
+}
+.custom-paginator {
+  @include mat.paginator-overrides((
+    container-background-color: transparent,
+  ));
 }

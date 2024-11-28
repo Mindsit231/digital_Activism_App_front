@@ -1,5 +1,4 @@
-export class Community {
-  id: number;
+export class CommunityDTO {
   name: string;
   description: string;
   logoName: string;
@@ -8,8 +7,7 @@ export class Community {
   timestamp: string;
 
 
-  constructor(id: number, name: string, description: string, logoName: string, bannerName: string, ownerId: number, timestamp: string) {
-    this.id = id;
+  constructor(name: string, description: string, logoName: string, bannerName: string, ownerId: number, timestamp: string) {
     this.name = name;
     this.description = description;
     this.logoName = logoName;
