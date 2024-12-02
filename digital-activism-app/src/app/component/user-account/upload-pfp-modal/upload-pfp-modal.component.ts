@@ -132,8 +132,8 @@ export class UploadPfpModalComponent extends ModalComponent {
     if(this.memberDTO !== undefined) {
       if (this.imgUrl.length > 0) {
         return this.imgUrl;
-      } else if (this.memberDTO.hasPfp() && this.memberDTO.pfpImgUrl !== undefined) {
-        return this.memberDTO.pfpImgUrl;
+      } else if (this.memberDTO.hasPfp() && this.memberDTO.pfpUrl !== undefined) {
+        return this.memberDTO.pfpUrl;
       } else {
         return "";
       }

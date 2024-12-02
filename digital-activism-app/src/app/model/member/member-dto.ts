@@ -14,7 +14,7 @@ export class MemberDTO {
   token: string | undefined;
 
   // PFP IMAGE URL (COMPUTED WHEN NEEDED)
-  pfpImgUrl: string | undefined;
+  pfpUrl: string | undefined;
 
   constructor(username: string, email: string, emailVerified: boolean, password: string, role: string,
               creationDate?: string, token?: string,
@@ -46,8 +46,8 @@ export class MemberDTO {
       this.pfpName.length > 0;
   }
 
-  setPfpUrl(pfpImgUrl: string) {
-    this.pfpImgUrl = pfpImgUrl;
+  setPfpUrl(pfpUrl: string) {
+    this.pfpUrl = pfpUrl;
   }
 
   setUsername(username: string) {

@@ -126,6 +126,16 @@ $pfpImageWidthBusiness: 266px;
   border-radius: 50%;
 }
 
+.image-frame {
+  width: $pfpImageSize;
+  height: $pfpImageSize;
+  max-width: $pfpImageSize;
+  max-height: $pfpImageSize;
+
+  object-fit: cover;
+  border-radius: 50%;
+}
+
 .pfp-image-elem-business {
   display: flex;
   justify-content: center;

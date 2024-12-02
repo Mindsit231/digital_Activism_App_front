@@ -90,7 +90,11 @@ export class CurrentMemberService {
   }
 
   private getFile(httpEvent: HttpResponse<Blob>) {
-    return new File([httpEvent.body!], httpEvent.headers.get('File-Name')!,
-      {type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`});
+    return new File(
+      [httpEvent.body!],
+      httpEvent.headers.get('File-Name')!,
+      {
+        type: `${httpEvent.headers.get('Content-Type')};charset=utf-8`
+      });
   }
 }

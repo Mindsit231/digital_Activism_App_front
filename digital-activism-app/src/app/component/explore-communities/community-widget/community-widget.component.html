@@ -2,16 +2,16 @@
   <div class="p-widget-div">
 
     <div class="banner-elem">
-      <img class="banner-image-frame" src="assets/placeholder/placeholder-banner.jpg" alt="banner-placeholder">
+      <img class="banner-image-frame" src="{{this.community.bannerUrl}}" alt="banner-placeholder">
     </div>
     <div class="info-elem">
       <div class="logo-elem">
-        <img class="logo-image-frame" src="assets/placeholder/placeholder-logo.jpg" alt="pfp">
-        <!--          <fa-icon [class]="['user-icon']" [icon]="faUser" *ngIf="!currentMemberService.member?.hasPfp()"></fa-icon>-->
+<!--        <img class="logo-image-frame" src="{{ this.community.logoUrl }}" alt="pfp">-->
+        <img class="logo-image-frame" src="{{this.community.logoUrl}}" alt="pfp">
       </div>
       <div class="text-elem">
-        <span class="text-font-700">{{community.name}}</span>
-        <span>{{community.description}}</span>
+        <span class="text-font-700">{{ community.name }}</span>
+        <span>{{ community.description }}</span>
       </div>
       <div class="buttons-elem">
         <button class="default-btn">Join</button>

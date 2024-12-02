@@ -8,7 +8,7 @@
       <div class="profile-card">
         <div class="pfp-image-elem-main">
           <div class="pfp-image-elem">
-            <img class="image-frame" src="{{currentMemberService.member?.pfpImgUrl}}" alt="pfp"
+            <img class="image-frame" src="{{currentMemberService.member?.pfpUrl}}" alt="pfp"
                  *ngIf="currentMemberService.member?.hasPfp()">
             <fa-icon [class]="['user-icon']" [icon]="faUser" *ngIf="!currentMemberService.member?.hasPfp()"></fa-icon>
           </div>

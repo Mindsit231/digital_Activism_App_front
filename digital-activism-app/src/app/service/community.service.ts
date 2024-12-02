@@ -2,7 +2,7 @@ import {Injectable} from '@angular/core';
 import {environment} from '../../environment/environment.prod';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
-import {CommunityDTO} from '../model/community-d-t-o';
+import {CommunityDTO} from '../model/community-dto';
 import {FetchEntityLimited} from '../model/misc/fetch-entity-limited';
 
 @Injectable({
