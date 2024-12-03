@@ -18,7 +18,7 @@
             <button class="default-btn" type="button" (click)="loginOnClick()">Login</button>
           </div>
           <div class="logged-out-button-elem" *ngIf="!currentMemberService.isLoggedIn()">
-            <button class="default-btn" type="button" (click)="registerOnClick()">Register</button>
+            <button class="default-btn" type="button" (click)="routerService.routeToRegister()">Register</button>
           </div>
         </div>
         <div class="dpm-func-menu" *ngIf="currentMemberService.isLoggedIn()">
@@ -63,7 +63,7 @@
     <button class="login-button" type="button" (click)="loginOnClick()">Login</button>
   </div>
   <div class="header-elem register-button-elem" *ngIf="!currentMemberService.isLoggedIn()">
-    <button class="register-button" type="button" (click)="registerOnClick()">Register</button>
+    <button class="register-button" type="button" (click)="this.routerService.routeToRegister()">Register</button>
   </div>
 </div>
 <!--<app-add-edit-tweet-modal-->

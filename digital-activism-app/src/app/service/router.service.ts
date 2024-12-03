@@ -1,6 +1,16 @@
 import {inject, Injectable} from '@angular/core';
-import {ActivatedRoute, Params, Router} from '@angular/router';
-import {Observable} from 'rxjs';
+import {ActivatedRoute, Router} from '@angular/router';
+import {
+  communityRoute,
+  connectionSecurityRoute,
+  homeRoute,
+  loginRoute,
+  passwordRecoveryRoute,
+  registerRoute,
+  userAccountRoute,
+  userSettingsRoute,
+  verifyEmailRoute
+} from '../app.routes';
 
 @Injectable({
   providedIn: 'root'
@@ -13,7 +23,7 @@ export class RouterService {
   }
 
   routeToHome(): Promise<boolean> {
-    return this.router.navigate(['/home'], {relativeTo: this.route});
+    return this.router.navigate([`/${homeRoute}`], {relativeTo: this.route});
   }
 
   routeTo(path: string) {
@@ -29,6 +39,30 @@ export class RouterService {
   }
 
   routeToLogin() {
-    return this.router.navigate(['/login'], {relativeTo: this.route});
+    return this.router.navigate([`/${loginRoute}`], {relativeTo: this.route});
+  }
+
+  routeToPasswordRecovery() {
+    return this.router.navigate([`/${passwordRecoveryRoute}`], {relativeTo: this.route})
+  }
+
+  routeToRegister() {
+    return this.router.navigate([`/${registerRoute}`], {relativeTo: this.route})
+  }
+
+  routeToCommunity(communityId: number) {
+    return this.router.navigate([`/${communityRoute}/${communityId}`], {relativeTo: this.route})
+  }
+
+  routeToVerifyEmail() {
+    return this.router.navigate([`/${verifyEmailRoute}`], {relativeTo: this.route})
+  }
+
+  routeToConnectionSecurity() {
+    return this.router.navigate([`/${userAccountRoute}/${connectionSecurityRoute}`], {relativeTo: this.route})
+  }
+
+  routeToUserSettings() {
+    return this.router.navigate([`/${userAccountRoute}/${userSettingsRoute}`], {relativeTo: this.route})
   }
 }

@@ -5,6 +5,7 @@ import {CommunityDTO} from '../../../model/community-dto';
 import {getDateTime} from '../../misc/functions';
 import {CommunityService} from '../../../service/community.service';
 import {TokenService} from '../../../service/token.service';
+import {RouterService} from '../../../service/router.service';
 
 @Component({
   selector: 'app-community-widget',
@@ -21,7 +22,8 @@ export class CommunityWidgetComponent implements OnInit {
 
   constructor(private el: ElementRef,
               private communityService: CommunityService,
-              private tokenService: TokenService) {
+              private tokenService: TokenService,
+              protected routerService: RouterService) {
   }
 
 

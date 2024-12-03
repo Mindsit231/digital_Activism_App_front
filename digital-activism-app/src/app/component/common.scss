@@ -391,21 +391,6 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   position: absolute;
 }
 
-.clickable-div {
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  text-align: center;
-  height: 200px;
-  width: 500px;
-  text-decoration: none;
-  background: linear-gradient(to top left, $colorP15, $colorP11);
-  margin: 20px;
-  border-radius: 20px;
-  cursor: pointer;
-  transition: background-color 0.2s ease-in-out;
-}
-
 .icon-1 {
   font-size: 20px;
 }

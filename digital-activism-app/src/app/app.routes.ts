@@ -1,4 +1,4 @@
-import { Routes } from '@angular/router';
+import {Routes} from '@angular/router';
 import {HomeComponent} from './component/home/home.component';
 import {LoginComponent} from './component/authentication/login/login.component';
 import {RegisterComponent} from './component/authentication/register/register.component';
@@ -14,26 +14,61 @@ import {VerifyMailGuardService} from './service/guard/verify-mail-guard.service'
 import {PasswordResetGuardService} from './service/guard/password-reset-guard.service';
 import {MyCommunitiesComponent} from './component/user-account/my-communities/my-communities.component';
 import {ExploreCommunitiesComponent} from './component/explore-communities/explore-communities.component';
+import {CommunityComponent} from './component/community/community.component';
+import {CommunityGuardService} from './service/guard/community-guard.service';
+
+export const homeRoute = `home`;
+export const loginRoute = `login`;
+export const registerRoute = `register`;
+export const verifyEmailRoute = `verify-email`;
+export const passwordRecoveryRoute = `password-recovery`;
+export const userAccountRoute = `user-account`;
+export const connectionSecurityRoute = `connection-security`;
+export const myCommunitiesRoute = `my-communities`;
+export const userSettingsRoute = `user-settings`;
 export const passwordResetRoute = `password-reset`;
+export const exploreCommunitiesRoute = `explore-communities`;
+export const communityRoute = `community`;
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
-  {path: 'home', component: HomeComponent},
-  {path: 'login', component: LoginComponent},
-  {path: 'register', component: RegisterComponent},
-  {path: 'verify-email', component: VerifyEmailComponent, canActivate: [VerifyMailGuardService]},
-  {path: 'password-recovery', component: PasswordRecoveryComponent},
-  {path: `${passwordResetRoute}/:${StorageKeys.USER_TOKEN}`,
-    component: PasswordResetComponent, canActivate: [PasswordResetGuardService]
+  {path: `${homeRoute}`, component: HomeComponent},
+  {path: `${loginRoute}`, component: LoginComponent},
+  {path: `${registerRoute}`, component: RegisterComponent},
+  {path: `${verifyEmailRoute}`, component: VerifyEmailComponent, canActivate: [VerifyMailGuardService]},
+  {path: `${passwordRecoveryRoute}`, component: PasswordRecoveryComponent},
+  {
+    path: `${passwordResetRoute}/:${StorageKeys.USER_TOKEN}`,
+    component: PasswordResetComponent,
+    canActivate: [PasswordResetGuardService]
   },
   {
-    path: 'user-account', component: UserAccountComponent,
+    path: `${passwordResetRoute}`,
+    component: PasswordResetComponent,
+    canActivate: [PasswordResetGuardService]
+  },
+  {
+    path: `${userAccountRoute}`, component: UserAccountComponent,
     children: [
-      {path: 'connection-security', component: ConnectionSecurityComponent},
-      {path: 'my-communities', component: MyCommunitiesComponent},
-      {path: 'user-settings', component: UserSettingsComponent},
+      {path: `${connectionSecurityRoute}`, component: ConnectionSecurityComponent},
+      {path: `${myCommunitiesRoute}`, component: MyCommunitiesComponent},
+      {path: `${userSettingsRoute}`, component: UserSettingsComponent},
     ],
     canActivate: [AuthenticatedGuardService]
   },
-  {path: "explore-communities", component: ExploreCommunitiesComponent, canActivate: [AuthenticatedGuardService]}
+  {
+    path: `${exploreCommunitiesRoute}`,
+    component: ExploreCommunitiesComponent,
+    canActivate: [AuthenticatedGuardService]
+  },
+  {
+    path: `${communityRoute}/:${StorageKeys.COMMUNITY_ID}`,
+    component: CommunityComponent,
+    canActivate: [CommunityGuardService]
+  },
+  {
+    path: `${communityRoute}`,
+    component: CommunityComponent,
+    canActivate: [CommunityGuardService]
+  }
 ];

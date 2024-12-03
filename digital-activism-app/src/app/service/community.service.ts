@@ -4,14 +4,16 @@ import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Observable} from 'rxjs';
 import {CommunityDTO} from '../model/community-dto';
 import {FetchEntityLimited} from '../model/misc/fetch-entity-limited';
+import {EntityService} from './entity.service';
+import {StorageKeys} from '../component/misc/storage-keys';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CommunityService {
-  protected apiBackendUrl = environment.apiBackendUrl;
+export class CommunityService extends EntityService<CommunityDTO> {
 
-  constructor(protected http: HttpClient) {
+  constructor(protected override http: HttpClient) {
+    super(http, 'community');
   }
 
   public getTableLength(token: string): Observable<number> {
@@ -43,5 +45,24 @@ export class CommunityService {
           communityId: communityId.toString()
         }
       });
+  }
+
+  async getById(communityId: number, token: string): Promise<CommunityDTO | undefined> {
+    return new Promise<CommunityDTO | undefined>((resolve, reject) => {
+      this.findById(communityId, token).subscribe({
+        next: (communityDTO: CommunityDTO) => {
+          if(communityDTO != null) {
+            console.log(communityDTO)
+            resolve(CommunityDTO.fromJson(communityDTO));
+          } else {
+            resolve(undefined);
+          }
+        },
+        error: (error) => {
+          console.error(error);
+          resolve(undefined);
+        }
+      })
+    })
   }
 }

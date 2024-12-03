@@ -21,6 +21,7 @@ import {TokenService} from '../../../service/token.service';
 import {VerifyEmailService} from '../../../service/verify-email.service';
 import {SendEmailVerificationResponse} from '../../../model/authentication/verify-email/send-email-verification-response';
 import {MatProgressBar} from '@angular/material/progress-bar';
+import {passwordRecoveryRoute, registerRoute} from '../../../app.routes';
 
 // @ts-ignore
 @Component({

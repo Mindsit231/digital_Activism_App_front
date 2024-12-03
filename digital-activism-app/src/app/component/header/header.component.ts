@@ -17,6 +17,7 @@ import {navigationItems} from "./navigation-item";
 import {AddEditPostModalComponent} from "../add-edit-post-modal/add-edit-post-modal.component";
 import {AuthenticationService} from '../../service/authentication.service';
 import {RouterService} from '../../service/router.service';
+import {loginRoute} from '../../app.routes';
 
 @Component({
   selector: 'app-header',
@@ -69,7 +70,7 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   }
 
   loginOnClick() {
-    this.routerService.routeTo("/login");
+    this.routerService.routeToLogin().then();
   }
 
   burgerMenuOnClick() {
@@ -82,9 +83,5 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
 
   handleResize(entry: ResizeObserverEntry) {
     this.dropDownMenuTop = entry.contentRect.height + 10;
-  }
-
-  registerOnClick() {
-    this.routerService.routeTo("/register");
   }
 }
