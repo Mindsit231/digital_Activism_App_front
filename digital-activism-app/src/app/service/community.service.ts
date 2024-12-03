@@ -32,4 +32,16 @@ export class CommunityService {
         headers: headers
       });
   }
+
+  public toggleJoin(communityId: number, token: string): Observable<boolean> {
+    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+    return this.http.get<boolean>(
+      `${this.apiBackendUrl}/authenticated/community/toggle-join`,
+      {
+        headers: headers,
+        params: {
+          communityId: communityId.toString()
+        }
+      });
+  }
 }
