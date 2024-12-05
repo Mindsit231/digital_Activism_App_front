@@ -1,4 +1,6 @@
-export class CommunityDTO {
+import {FileManager} from './file-manager';
+
+export class CommunityDTO extends FileManager{
   id: number;
   name: string;
   description: string;
@@ -15,6 +17,7 @@ export class CommunityDTO {
 
 
   constructor(id: number, name: string, description: string, logoName: string, logo: string, bannerName: string, banner: string, ownerId: number, timestamp: string, joined: boolean) {
+    super();
     this.id = id;
     this.name = name;
     this.description = description;
@@ -48,11 +51,7 @@ export class CommunityDTO {
 
   private getLogoUrl() {
     if (this.logoName != null && this.logo != null) {
-      const byteArray = new Uint8Array(
-        atob(this.logo).split('').map(char => char.charCodeAt(0))
-      )
-      const blob = new Blob([byteArray], {type: 'image/png'});
-      return URL.createObjectURL(blob);
+      return this.convertBytesToUrl(this.logo, 'image/png');
 
       // return `data:image/png;base64,${this.logo}`;
     } else {
@@ -62,11 +61,7 @@ export class CommunityDTO {
 
   private getBannerUrl(): string {
     if (this.bannerName != null && this.banner != null) {
-      const byteArray = new Uint8Array(
-        atob(this.banner).split('').map(char => char.charCodeAt(0))
-      )
-      const blob = new Blob([byteArray], {type: 'image/png'});
-      return URL.createObjectURL(blob);
+      return this.convertBytesToUrl(this.banner, 'image/png');
 
       // return `data:image/png;base64,${this.banner}`;
     } else {

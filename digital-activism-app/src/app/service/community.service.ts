@@ -35,7 +35,7 @@ export class CommunityService extends EntityService<CommunityDTO> {
       });
   }
 
-  public toggleJoin(communityId: number, token: string): Observable<boolean> {
+  public toggleJoinRequest(communityId: number, token: string): Observable<boolean> {
     const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
     return this.http.get<boolean>(
       `${this.apiBackendUrl}/authenticated/community/toggle-join`,
@@ -46,6 +46,21 @@ export class CommunityService extends EntityService<CommunityDTO> {
         }
       });
   }
+
+  public toggleJoin(communityId: number, token: string): Promise<boolean> {
+    return new Promise<boolean>((resolve) => {
+      this.toggleJoinRequest(communityId, token).subscribe({
+        next: (response: boolean) => {
+          resolve(response);
+        },
+        error: (error) => {
+          console.error(error);
+          resolve(false);
+        }
+      });
+    })
+  }
+
 
   async getById(communityId: number, token: string): Promise<CommunityDTO | undefined> {
     return new Promise<CommunityDTO | undefined>((resolve, reject) => {

@@ -1,0 +1,15 @@
+@import "../common.scss";
+
+.posts-main-body {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+  gap: 15px;
+}
+
+.no-posts-div {
+  margin: 20px;
+}

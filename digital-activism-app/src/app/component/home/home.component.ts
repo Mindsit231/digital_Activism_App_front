@@ -50,8 +50,8 @@ export class HomeComponent extends FooterHandlerComponent implements OnInit {
     //   }
     //   if(!this.currentMemberService.isLoggedIn() || this.currentMemberService.member?.friends?.length == 0){
     //     this.postService.getAllEntities().subscribe({
-    //       next: (jsonPosts: Post[]) => {
-    //         this.allPosts = Post.initializePosts(jsonPosts);
+    //       next: (jsonPosts: PostDto[]) => {
+    //         this.allPosts = PostDto.initializePosts(jsonPosts);
     //         this.initializePostsMedia(this.allPosts).then();
     //       }
     //     });

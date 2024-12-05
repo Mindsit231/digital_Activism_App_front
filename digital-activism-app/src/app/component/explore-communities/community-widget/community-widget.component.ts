@@ -21,7 +21,7 @@ export class CommunityWidgetComponent implements OnInit {
   @Input() communityDTO!: CommunityDTO;
 
   constructor(private el: ElementRef,
-              private communityService: CommunityService,
+              protected communityService: CommunityService,
               private tokenService: TokenService,
               protected routerService: RouterService) {
   }
@@ -31,16 +31,13 @@ export class CommunityWidgetComponent implements OnInit {
     this.el.nativeElement.style.width = `100%`;
   }
 
+  protected readonly getDateTime = getDateTime;
+
   toggleJoin() {
-    this.communityService.toggleJoin(this.communityDTO.id, this.tokenService.getUserToken()).subscribe({
-      next: (response: boolean) => {
-        this.communityDTO.joined = response;
-      },
-      error: (error) => {
-        console.error(error);
+    this.communityService.toggleJoin(this.communityDTO.id, this.tokenService.getUserToken()).then((response: boolean) => {
+      if (response) {
+        this.communityDTO.joined = !this.communityDTO.joined;
       }
     });
   }
-
-  protected readonly getDateTime = getDateTime;
 }

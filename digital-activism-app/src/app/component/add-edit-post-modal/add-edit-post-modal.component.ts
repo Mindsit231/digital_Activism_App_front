@@ -12,7 +12,7 @@ import {CurrentMemberService} from "../../service/member/current-member.service"
 import {getCurrentDate} from "../misc/functions";
 import {UploadStatus} from "../misc/form-component";
 import {Tag} from "../../model/tag";
-import {Post} from '../../model/post/post';
+import {PostDTO} from '../../model/post/post-dto';
 import {PostImage} from '../../model/post/post-image';
 import {PostVideo} from '../../model/post/post-video';
 import {RouterService} from '../../service/router.service';
@@ -60,7 +60,7 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
   faTrash = faTrash;
 
   @Input() modalOpenType: ModalOpenType = ModalOpenType.NONE;
-  @Input() editingPost!: Post;
+  @Input() editingPost!: PostDTO;
 
   @ViewChild("videoInput") videoInput!: ElementRef;
   @ViewChild("imageInput") imageInput!: ElementRef;
@@ -186,8 +186,8 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
     //   let successCount = 0;
     //   new Observable<boolean>(observer => {
     //     this.postService.addEntity(this.editingPost).subscribe({
-    //       next: (jsonPost: Post) => {
-    //         let post = Post.fromJson(jsonPost);
+    //       next: (jsonPost: PostDto) => {
+    //         let post = PostDto.fromJson(jsonPost);
     //         this.editingPost.postId = post.postId;
     //
     //         new Observable<number>((observer) => {
@@ -313,9 +313,9 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
     //   });
     // } else if (this.modalOpenType == ModalOpenType.EDIT) {
     //   this.postService.updateEntity(this.editingPost).subscribe({
-    //     next: (post: Post) => {
-    //       this.uploadPostImages(Post.fromJson(post)).then();
-    //       this.uploadPostVideos(Post.fromJson(post)).then();
+    //     next: (post: PostDto) => {
+    //       this.uploadPostImages(PostDto.fromJson(post)).then();
+    //       this.uploadPostVideos(PostDto.fromJson(post)).then();
     //     },
     //     error: (error: HttpErrorResponse) => {
     //       console.error(error);
@@ -371,7 +371,7 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
     }
   }
 
-  uploadPostImages(post: Post) {
+  uploadPostImages(post: PostDTO) {
     // return new Promise<boolean>((resolve, reject) => {
     //   let formData = new FormData();
     //
@@ -410,7 +410,7 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
     // })
   }
 
-  uploadPostVideos(post: Post) {
+  uploadPostVideos(post: PostDTO) {
     // return new Promise<boolean>((resolve, reject) => {
     //   let formData = new FormData();
     //
@@ -542,7 +542,7 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
 
   private resetValues() {
     // if (this.modalOpenType == ModalOpenType.ADD) {
-    //   this.editingPost = new Post("", "", "", this.currentMemberService.member?.getMemberId()!);
+    //   this.editingPost = new PostDto("", "", "", this.currentMemberService.member?.getMemberId()!);
     // }
     //
     // for (let i = this.editingPost.postImageList.length - 1; i >= 0; i--) {

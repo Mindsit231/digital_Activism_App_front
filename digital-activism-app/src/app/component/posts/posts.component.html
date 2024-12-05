@@ -1,0 +1,13 @@
+<div class="posts-main-body">
+  @if (posts.length == 0) {
+    <div class="no-posts-div">
+      <span  class="title-span">No posts to show</span>
+    </div>
+  } @else {
+    @for (post of posts; track post) {
+      <app-post
+        [post]="post">
+      </app-post>
+    }
+  }
+</div>

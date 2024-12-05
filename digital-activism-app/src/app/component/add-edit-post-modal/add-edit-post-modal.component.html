@@ -2,7 +2,7 @@
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header my-modal-header">
-        <span class="modal-header-title">{{ modalOpenType }} Post</span>
+        <span class="modal-header-title">{{ modalOpenType }} PostDto</span>
         <div class="clickable-icon-elem-1" (click)="closeModal()">
           <fa-icon [icon]="faXmark" [class]="['clickable-icon-1']"></fa-icon>
         </div>
@@ -49,7 +49,7 @@
             </div>
           </div>
           <div class="add-form-elem-1" *ngIf="editingPost.postImageList!.length > 0">
-            <span>Post Images:</span>
+            <span>PostDto Images:</span>
           </div>
           <div class="image-preview-container">
             <div *ngFor="let postImage of editingPost.postImageList">
@@ -82,7 +82,7 @@
             </div>
           </div>
           <div class="add-form-elem-1" *ngIf="editingPost.postVideoList!.length > 0">
-            <span>Post Videos:</span>
+            <span>PostDto Videos:</span>
           </div>
           <div class="video-preview-container">
             <div *ngFor="let postVideo of editingPost.postVideoList">
@@ -107,7 +107,7 @@
         </div>
         <div class="my-modal-element">
           <div class="add-form-elem-1" *ngIf="isSuccess()">
-            <span class="validation-success-span">Post {{modalOpenType}}ed successfully</span>
+            <span class="validation-success-span">PostDto {{modalOpenType}}ed successfully</span>
           </div>
         </div>
       </div>

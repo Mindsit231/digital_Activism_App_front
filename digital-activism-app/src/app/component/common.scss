@@ -1,3 +1,6 @@
+@use '@angular/material' as mat;
+
+
 /* COLOR PALETTE 1
 $colorP11: #64395F;
 $colorP12: #C075B7;
@@ -58,11 +61,11 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   top: 0;
   left: 0;
   width: 100%;
-  height:100%;
+  height: 100%;
   position: fixed;
   padding: 0;
   margin: 0;
-  z-index:-10;
+  z-index: -10;
 }
 
 .our-light-background-1 {
@@ -71,11 +74,11 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   top: 0;
   left: 0;
   width: 100%;
-  height:100%;
+  height: 100%;
   position: fixed;
   padding: 0;
   margin: 0;
-  z-index:-10;
+  z-index: -10;
 }
 
 // DEFAULT FONT FAMILY FOR EVERYTHING
@@ -139,7 +142,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   font-weight: 500;
 }
 
-.text-font-700{
+.text-font-700 {
   font-style: normal;
   font-weight: 700;
 }
@@ -235,7 +238,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   background: $invalidColor_2;
 }
 
-.default-btn:hover{
+.default-btn:hover {
   background: $colorP11_2;
   //border: $colorP11 solid 2px;
 }
@@ -275,7 +278,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   border: grey solid 1px;
   height: 35px;
   margin: 5px 0 5px 0;
-  white-space:pre;
+  white-space: pre;
   text-indent: 10px;
   width: 100%;
 }
@@ -291,7 +294,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   margin: 0;
 }
 
-.default-input-1:hover{
+.default-input-1:hover {
   border: $colorP11 solid 1px;
 }
 
@@ -300,7 +303,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   border: grey solid 1px;
   height: 35px;
   margin: 5px 0 5px 0;
-  white-space:pre;
+  white-space: pre;
   text-indent: 10px;
   width: 100%;
 }
@@ -311,7 +314,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   border: grey solid 1px;
   height: 35px;
   margin: 5px 0 5px 0;
-  white-space:pre;
+  white-space: pre;
   text-indent: 10px;
   width: 100%;
 }
@@ -323,7 +326,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   height: 90px;
   max-height: 300px;
   margin: 5px 0 5px 0;
-  white-space:pre;
+  white-space: pre;
   padding: 5px 10px 5px 10px;
   width: 100%;
 }
@@ -733,4 +736,17 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.custom-paginator {
+  @include mat.paginator-overrides((
+    container-background-color: transparent,
+  ));
+}
+
+.custom-tabs {
+  @include mat.tabs-overrides((
+    divider-color: $colorP11_2,
+    active-indicator-color: $colorP11,
+  ));
 }
