@@ -18,6 +18,8 @@ import {RecoverPasswordRequest} from '../model/authentication/password-recovery/
 import {RecoverPasswordResponse} from '../model/authentication/password-recovery/recover-password-response';
 import {ResetPasswordRequest} from '../model/authentication/password-reset/reset-password-request';
 import {ResetPasswordResponse} from '../model/authentication/password-reset/reset-password-response';
+import {FileService} from './misc/file.service';
+import {CurrentMemberService} from './member/current-member.service';
 
 @Injectable({
   providedIn: 'root'
@@ -27,28 +29,68 @@ export class AuthenticationService {
   protected routerService: RouterService = inject(RouterService);
 
   protected memberService: MemberService = inject(MemberService);
+  protected currentMemberService: CurrentMemberService = inject(CurrentMemberService);
+
   protected tokenService: TokenService = inject(TokenService);
+  protected fileService: FileService = inject(FileService);
 
   constructor(protected http: HttpClient) {
   }
 
-  public verifyLogin(loginRequest: LoginRequest): Observable<MemberDTO> {
-    return this.http.post<MemberDTO>(`${this.apiBackendUrl}/public/login`, loginRequest);
+  public verifyLogin(loginRequest: LoginRequest): Promise<MemberDTO> {
+    let memberDTOObs = this.http.post<MemberDTO>(
+      `${this.apiBackendUrl}/public/login`,
+      loginRequest);
+
+    return this.initializeMember(memberDTOObs);
   }
 
   public register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiBackendUrl}/public/register`, registerRequest);
   }
 
-  public loginByToken(token: string): Observable<MemberDTO> {
+  public loginByToken(token: string): Promise<MemberDTO> {
     const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
-    return this.http.post<MemberDTO>(
+    let memberDTOObs = this.http.post<MemberDTO>(
       `${this.apiBackendUrl}/authenticated/login-by-token`,
       null,
       {
         headers: headers
       }
     );
+
+    return this.initializeMember(memberDTOObs);
+  }
+
+  public initializeMember(memberDTOObs: Observable<MemberDTO>): Promise<MemberDTO> {
+    return new Promise<MemberDTO>((resolve, reject) => {
+      memberDTOObs.subscribe({
+        next: (jsonMemberDTO: MemberDTO) => {
+          if (jsonMemberDTO != null) {
+            let memberDTO: MemberDTO = MemberDTO.fromJson(jsonMemberDTO);
+            if (memberDTO.pfpName != undefined) {
+              this.fileService.downloadFiles(memberDTO.pfpName, memberDTO.token, this.memberService.entityName).then(
+                (pfpUrl: string) => {
+                  memberDTO.pfpUrl = pfpUrl;
+                  resolve(memberDTO);
+                },
+                (error: Error) => {
+                  reject(error);
+                }
+              )
+            }
+            this.currentMemberService.memberDTO = memberDTO;
+            this.tokenService.setUserToken(memberDTO.token!);
+            resolve(memberDTO)
+          } else {
+            reject(new Error("MemberDTO is null"));
+          }
+        },
+        error: (error: HttpErrorResponse) => {
+          reject(error);
+        }
+      })
+    })
   }
 
   public verifyToken(token: string): Observable<boolean> {
@@ -111,27 +153,8 @@ export class AuthenticationService {
     );
   }
 
-  public isLoggedIn(): Promise<MemberDTO> {
-    return new Promise<MemberDTO>((resolve, reject) => {
-      this.loginByToken(this.tokenService.getUserToken()).subscribe({
-        next: (memberDTO: MemberDTO) => {
-          if (memberDTO != null) {
-            this.tokenService.setUserToken(memberDTO.token!);
-            resolve(memberDTO);
-          } else {
-            reject(new Error('MemberDTO is null'));
-          }
-
-        },
-        error: (error: HttpErrorResponse) => {
-          reject(error);
-        }
-      });
-    })
-  }
-
   async canActivateRole(roles: Role[]): Promise<boolean> {
-    return await this.isLoggedIn().then(
+    return await this.loginByToken(this.tokenService.getUserToken()).then(
       (memberDTO: MemberDTO) => {
         if (memberDTO != null) {
           for (let role of roles) {

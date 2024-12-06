@@ -32,7 +32,7 @@ import {loginRoute} from '../../app.routes';
     '[header-body]': 'true'
   }
 })
-export class HeaderComponent extends FooterHandlerComponent implements OnInit {
+export class HeaderComponent extends FooterHandlerComponent {
   // Logic Fields
   showMenu: boolean = false;
 
@@ -51,10 +51,6 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
               protected cookieService: CookieService,
               protected routerService: RouterService) {
     super();
-  }
-
-  ngOnInit(): void {
-    this.currentMemberService.initializeMemberBySavedToken().then();
   }
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {

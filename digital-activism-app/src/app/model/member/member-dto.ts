@@ -9,15 +9,15 @@ export class MemberDTO {
   password: string;
   role: string;
 
-  creationDate: string | undefined;
-  pfpName: string | undefined;
-  token: string | undefined;
+  token: string;
+  creationDate: string;
 
+  pfpName: string | undefined;
   // PFP IMAGE URL (COMPUTED WHEN NEEDED)
   pfpUrl: string | undefined;
 
   constructor(username: string, email: string, emailVerified: boolean, password: string, role: string,
-              creationDate?: string, token?: string,
+              creationDate: string, token: string,
               userId?: number, pfpName?: string) {
     this.id = userId;
 

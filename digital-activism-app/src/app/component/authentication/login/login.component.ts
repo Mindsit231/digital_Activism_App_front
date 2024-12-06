@@ -83,34 +83,60 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
         if (isFormValid) {
           this.formValidated = true;
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
-          this.authenticationService.verifyLogin(loginRequest).subscribe(({
-            next: (jsonMemberDTO: MemberDTO) => {
-              if (jsonMemberDTO != null) {
+          this.authenticationService.verifyLogin(loginRequest).then(
+            (memberDTO: MemberDTO) => {
+              if (memberDTO != null) {
                 console.log('Login is valid');
-                if (!jsonMemberDTO.emailVerified) {
+                if (!memberDTO.emailVerified) {
                   console.log('Email is not verified');
-                  this.verifyEmailService.sendEmailVerification(this.emailInput, jsonMemberDTO.token!)
+                  this.verifyEmailService.sendEmailVerification(this.emailInput, memberDTO.token)
                     .then(sendEmailVerificationResponse => {
                       this.emailVerificationResponse = sendEmailVerificationResponse;
                     })
                     .catch(error => {
                       console.log(error);
                     }).finally(() => {
-                      resolve(false)
-                    });
+                    resolve(false)
+                  });
                 } else {
                   this.isLoginValid = true;
-                  this.currentMemberService.initializeMember(jsonMemberDTO);
                   resolve(true);
                 }
               }
             },
-            error: (error: HttpErrorResponse) => {
-              this.isLoginChecked = true;
-              console.log('Login is invalid / HTTP ERROR');
-              resolve(false);
-            },
-          }));
+            (error: Error) => {
+              console.error(error);
+            }
+          )
+
+          // this.authenticationService.verifyLogin(loginRequest).subscribe(({
+          //   next: (jsonMemberDTO: MemberDTO) => {
+          //     if (jsonMemberDTO != null) {
+          //       console.log('Login is valid');
+          //       if (!jsonMemberDTO.emailVerified) {
+          //         console.log('Email is not verified');
+          //         this.verifyEmailService.sendEmailVerification(this.emailInput, jsonMemberDTO.token!)
+          //           .then(sendEmailVerificationResponse => {
+          //             this.emailVerificationResponse = sendEmailVerificationResponse;
+          //           })
+          //           .catch(error => {
+          //             console.log(error);
+          //           }).finally(() => {
+          //             resolve(false)
+          //           });
+          //       } else {
+          //         this.isLoginValid = true;
+          //         this.currentMemberService.initializeMember(jsonMemberDTO);
+          //         resolve(true);
+          //       }
+          //     }
+          //   },
+          //   error: (error: HttpErrorResponse) => {
+          //     this.isLoginChecked = true;
+          //     console.log('Login is invalid / HTTP ERROR');
+          //     resolve(false);
+          //   },
+          // }));
 
         } else {
           console.log('Form is invalid');

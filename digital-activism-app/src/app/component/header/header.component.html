@@ -7,7 +7,7 @@
       <div class="drop-down-menu" [style.top.px]="dropDownMenuTop" *ngIf="showMenu">
         <div class="dpm-title-elem">
           <span *ngIf="currentMemberService.isLoggedIn()"
-                class="main-title-span">Welcome, {{ currentMemberService.member?.username }}!</span>
+                class="main-title-span">Welcome, {{ currentMemberService.memberDTO?.username }}!</span>
           <span *ngIf="!currentMemberService.isLoggedIn()" class="main-title-span">Welcome To Digital Activism!</span>
           <div class="clickable-icon-elem-1" (click)="xMarkOnClick()">
             <fa-icon [icon]="faXmark" [class]="['clickable-icon-1']"></fa-icon>
