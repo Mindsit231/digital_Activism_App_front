@@ -1,3 +1,12 @@
+export function generateRandomString(length: number): string {
+  let possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890abcdefghijklmnopqrstuvwxyz";
+  let text = "";
+  for (let i = 0; i < length; i++) {
+    text += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+  return text;
+}
+
 export function getDateTime(dateTime: string) {
   let date = new Date(dateTime);
   return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()} at

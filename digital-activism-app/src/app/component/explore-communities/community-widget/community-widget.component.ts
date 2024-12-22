@@ -22,7 +22,6 @@ export class CommunityWidgetComponent implements OnInit {
 
   constructor(private el: ElementRef,
               protected communityService: CommunityService,
-              private tokenService: TokenService,
               protected routerService: RouterService) {
   }
 
@@ -34,9 +33,9 @@ export class CommunityWidgetComponent implements OnInit {
   protected readonly getDateTime = getDateTime;
 
   toggleJoin() {
-    this.communityService.toggleJoin(this.communityDTO.id, this.tokenService.getUserToken()).then((response: boolean) => {
+    this.communityService.toggleJoin(this.communityDTO.id).then((response: boolean) => {
       if (response) {
-        this.communityDTO.joined = !this.communityDTO.joined;
+        this.communityDTO.toggleJoin();
       }
     });
   }

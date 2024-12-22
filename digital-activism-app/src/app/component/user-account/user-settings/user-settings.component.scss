@@ -31,7 +31,7 @@ $pfpImageWidthBusiness: 266px;
   margin-top: 30px;
 }
 
-.profile-tags-elem {
+.tags-elem {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -42,17 +42,7 @@ $pfpImageWidthBusiness: 266px;
   width: 100%
 }
 
-.tags-select-div {
-  display: flex;
-  flex-direction: row;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
-
-}
-
-.select-div {
+.tags-select {
   width: 60%;
 }
 

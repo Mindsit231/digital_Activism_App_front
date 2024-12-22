@@ -3,31 +3,32 @@
     <div class="post-header-div post-elem">
       <div class="post-member-div">
         <div class="user-pfp-img-div">
-          <img class="pfp-img" src="{{postOwner?.pfpUrl!}}" alt="user-pfp-img" *ngIf="postOwner?.pfpUrl != undefined">
-          <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="postOwner?.pfpUrl == undefined"></fa-icon>
+          <img class="pfp-img" src="{{postDTO.memberDTOShort.pfpUrl!}}" alt="user-pfp-img"
+               *ngIf="postDTO.memberDTOShort.pfpUrl != undefined">
+          <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="postDTO.memberDTOShort.pfpUrl == undefined"></fa-icon>
         </div>
         <div class="user-info-div">
-          <span>{{postOwner?.username}}</span>
-          <span>{{postOwner?.creationDate}}</span>
+          <span>{{ postDTO.memberDTOShort.username }}</span>
+          <span>{{ getDateTime(postDTO.creationDate) }}</span>
         </div>
       </div>
       <div class="post-title-div">
-        <span class="text-font-700">{{ post.title }}</span>
+        <span class="text-font-700">{{ postDTO.title }}</span>
       </div>
     </div>
     <div class="post-body-div post-elem">
-      <span>{{post.body}}</span>
+      <span>{{ postDTO.content }}</span>
     </div>
     <div class="post-images-div post-elem" *ngIf="hasImages">
       <div (onResize)="onResize($event)" [style.justify-content]="justify" class="post-images-container">
-        <div class="post-image-div" *ngFor="let postImage of post.postImageList">
+        <div class="post-image-div" *ngFor="let postImage of postDTO.postImageDTOS">
           <img class="post-image" src="{{postImage.imageUrl}}" alt="{{postImage.name}}">
         </div>
       </div>
     </div>
     <div class="post-videos-div post-elem" *ngIf="hasVideos">
       <div class="post-videos-container">
-        <div class="post-video-div" *ngFor="let postVideo of post.postVideoList">
+        <div class="post-video-div" *ngFor="let postVideo of postDTO.postVideoDTOS">
           <video class="post-video" controls *ngIf="postVideo.videoUrl != undefined">
             <source src="{{postVideo.videoUrl}}" type="video/mp4">
           </video>
@@ -35,20 +36,20 @@
       </div>
     </div>
     <div class="post-likes-div post-elem">
-      <span>{{post.creationDate}}</span>
       <div class="likes-div">
-        <div class="{{isPostLiked ? 'clickable-icon-elem-3-clicked' : 'clickable-icon-elem-3'}}" (click)="onLikeClick()">
+        <div class="{{postDTO.liked ? 'clickable-icon-elem-3-clicked' : 'clickable-icon-elem-3'}}"
+             (click)="toggleLike()">
           <fa-icon [icon]="faThumbsUp" [class]="['clickable-icon-3']"></fa-icon>
         </div>
         <div class="likes-count-div">
-          <span>{{ post.likesCount }}</span>
+          <span>{{ postDTO.likesCount }}</span>
         </div>
       </div>
     </div>
     <div class="tags-div post-elem-2">
       <div class="tags-container">
-        <div class="tag-element" *ngFor="let tag of post.tagList">
-          {{tag.name}}
+        <div class="tag-element" *ngFor="let tag of postDTO.tagList">
+          {{ tag.name }}
         </div>
       </div>
     </div>

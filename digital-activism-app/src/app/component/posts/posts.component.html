@@ -1,13 +1,38 @@
 <div class="posts-main-body">
+  @if (communityDTO.isAdmin) {
+    <div class="create-post-div">
+      <button class="default-btn" (click)="addPostOnClick()">Add Post</button>
+    </div>
+  }
+
   @if (posts.length == 0) {
     <div class="no-posts-div">
       <span  class="title-span">No posts to show</span>
     </div>
   } @else {
-    @for (post of posts; track post) {
-      <app-post
-        [post]="post">
-      </app-post>
-    }
+    <div class="posts-container">
+
+      <div class="post-body-div" *ngFor="let post of posts">
+        <app-post
+          [postDTO]="post">
+        </app-post>
+      </div>
+
+    </div>
   }
+  <mat-paginator class="custom-paginator"
+                 [length]="length"
+                 [pageSize]="pageSize"
+                 [showFirstLastButtons]="true"
+                 [pageSizeOptions]="[5, 10, 25, 100]"
+                 [pageIndex]="pageIndex"
+                 (page)="handlePageEvent($event)"
+                 aria-label="Select page">
+  </mat-paginator>
 </div>
+<app-add-edit-tweet-modal
+  [isModalOpen]="isAddEditTweetModalOpen"
+  [postRequest]="editingPost"
+  (onModalChangeEmitter)="onAddEditPostModalChange($event)"
+  (onPostAddedEmitter)="onPostAdded($event)"
+></app-add-edit-tweet-modal>

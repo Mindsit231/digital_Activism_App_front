@@ -9,7 +9,6 @@ export abstract class FormComponent extends FooterHandlerComponent {
   protected isSubmitted: boolean = false;
   protected formValidated: boolean = false;
 
-  protected tokenService!: TokenService;
   protected fileService!: FileService;
 
   protected constructor() {
@@ -26,7 +25,7 @@ export abstract class FormComponent extends FooterHandlerComponent {
 
   protected uploadFiles(entityService: EntityService<any>, formData: FormData): Observable<UploadStatus> {
     return new Observable<UploadStatus>(subscriber => {
-      this.fileService.uploadFiles(formData, this.tokenService.getUserToken(), entityService.entityName).subscribe({
+      this.fileService.uploadFiles(formData, entityService.entityName).subscribe({
         next: (httpEvent: HttpEvent<string[]>) => {
           switch (httpEvent.type) {
             case HttpEventType.ResponseHeader:

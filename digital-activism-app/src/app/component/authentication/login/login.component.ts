@@ -1,6 +1,5 @@
 import {Component, OnInit, ViewChild} from '@angular/core';
 import {RouterOutlet} from '@angular/router';
-import {HttpClientModule, HttpErrorResponse} from "@angular/common/http";
 import {NgForOf, NgIf} from "@angular/common";
 import {RECAPTCHA_SETTINGS, RecaptchaComponent, RecaptchaModule} from "ng-recaptcha-2";
 import {FormsModule} from "@angular/forms";
@@ -19,9 +18,10 @@ import {ReCaptchaService} from '../../../service/reCaptcha/re-captcha.service';
 import {RouterService} from '../../../service/router.service';
 import {TokenService} from '../../../service/token.service';
 import {VerifyEmailService} from '../../../service/verify-email.service';
-import {SendEmailVerificationResponse} from '../../../model/authentication/verify-email/send-email-verification-response';
+import {
+  SendEmailVerificationResponse
+} from '../../../model/authentication/verify-email/send-email-verification-response';
 import {MatProgressBar} from '@angular/material/progress-bar';
-import {passwordRecoveryRoute, registerRoute} from '../../../app.routes';
 
 // @ts-ignore
 @Component({
@@ -65,7 +65,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
               protected cookieService: CookieService,
               protected currentMemberService: CurrentMemberService,
               protected routerService: RouterService,
-              protected override tokenService: TokenService,
+              protected tokenService: TokenService,
               protected override reCaptchaService: ReCaptchaService,
               protected verifyEmailService: VerifyEmailService) {
     super();
@@ -83,8 +83,8 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
         if (isFormValid) {
           this.formValidated = true;
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
-          this.authenticationService.verifyLogin(loginRequest).then(
-            (memberDTO: MemberDTO) => {
+          this.authenticationService.verifyLogin(loginRequest)
+            .then((memberDTO: MemberDTO) => {
               if (memberDTO != null) {
                 console.log('Login is valid');
                 if (!memberDTO.emailVerified) {
@@ -100,44 +100,17 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
                   });
                 } else {
                   this.isLoginValid = true;
+                  this.tokenService.setUserToken(memberDTO.token!);
+                  this.currentMemberService.memberDTO = memberDTO;
                   resolve(true);
                 }
               }
-            },
-            (error: Error) => {
-              console.error(error);
-            }
-          )
-
-          // this.authenticationService.verifyLogin(loginRequest).subscribe(({
-          //   next: (jsonMemberDTO: MemberDTO) => {
-          //     if (jsonMemberDTO != null) {
-          //       console.log('Login is valid');
-          //       if (!jsonMemberDTO.emailVerified) {
-          //         console.log('Email is not verified');
-          //         this.verifyEmailService.sendEmailVerification(this.emailInput, jsonMemberDTO.token!)
-          //           .then(sendEmailVerificationResponse => {
-          //             this.emailVerificationResponse = sendEmailVerificationResponse;
-          //           })
-          //           .catch(error => {
-          //             console.log(error);
-          //           }).finally(() => {
-          //             resolve(false)
-          //           });
-          //       } else {
-          //         this.isLoginValid = true;
-          //         this.currentMemberService.initializeMember(jsonMemberDTO);
-          //         resolve(true);
-          //       }
-          //     }
-          //   },
-          //   error: (error: HttpErrorResponse) => {
-          //     this.isLoginChecked = true;
-          //     console.log('Login is invalid / HTTP ERROR');
-          //     resolve(false);
-          //   },
-          // }));
-
+            })
+            .catch((error: Error) => {
+              console.log(error);
+              this.isLoginChecked = true;
+              resolve(false);
+            })
         } else {
           console.log('Form is invalid');
           resolve(false);
@@ -156,7 +129,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
   }
 
   override async isFormValid(): Promise<boolean> {
-    if(this.isEmailProper(this.emailInput) &&
+    if (this.isEmailProper(this.emailInput) &&
       this.isPasswordValid()) {
       return await this.checkCaptcha()
     } else {

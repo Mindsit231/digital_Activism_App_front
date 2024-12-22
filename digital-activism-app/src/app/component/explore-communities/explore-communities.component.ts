@@ -33,12 +33,11 @@ export class ExploreCommunitiesComponent implements OnInit {
 
   communities: CommunityDTO[] = [];
 
-  constructor(private communityService: CommunityService,
-              private tokenService: TokenService) {
+  constructor(private communityService: CommunityService) {
   }
 
   ngOnInit(): void {
-    this.communityService.getTableLength(this.tokenService.getUserToken()).subscribe({
+    this.communityService.getTableLength().subscribe({
       next: (response: number) => {
         this.length = response;
       },
@@ -55,21 +54,17 @@ export class ExploreCommunitiesComponent implements OnInit {
   }
 
   fetchCommunities(pageIndex: number, pageSize: number) {
-    let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex * pageSize);
-    this.communityService.fetchCommunitiesLimited(fetchEntityLimited, this.tokenService.getUserToken()).subscribe({
-      next: (jsonCommunities: CommunityDTO[]) => {
-        console.log(`Fetched ${jsonCommunities.length} communities`);
-        let communities: CommunityDTO[] = [];
-        jsonCommunities.forEach((jsonCommunity) => {
-          communities.push(CommunityDTO.fromJson(jsonCommunity));
-        });
-
-        this.communities = communities;
+    let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex);
+    this.communityService.fetchCommunitiesLimited(fetchEntityLimited).then(
+      (communitiesDTO: CommunityDTO[]) => {
+        console.log(`Fetched ${communitiesDTO.length} communities`);
+        communitiesDTO.sort((a, b) => {return a.id! - b.id!});
+        this.communities = communitiesDTO;
       },
-      error: (error) => {
+      (error) => {
         console.error(error);
       }
-    })
+    )
   }
 
 }

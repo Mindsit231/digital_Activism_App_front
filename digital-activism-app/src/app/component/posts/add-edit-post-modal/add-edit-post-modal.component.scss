@@ -1,4 +1,4 @@
-@import "../common.scss";
+@import "../../common.scss";
 
 $imageSize: 60px;
 $borderRadius: 10px;
@@ -139,3 +139,19 @@ $padding: 8px;
 .trash-icon {
   color: white;
 }
+
+.tags-elem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+
+  width: 100%
+}
+
+.tags-select {
+  width: 100%;
+}
+
+

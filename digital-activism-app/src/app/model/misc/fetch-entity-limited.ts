@@ -1,9 +1,10 @@
 export class FetchEntityLimited {
   limit: number;
   offset: number;
+  optionalId: number | undefined;
 
-  constructor(limit: number, offset: number) {
-    this.limit = limit;
-    this.offset = offset;
+  constructor(pageSize: number, pageIndex: number) {
+    this.limit = pageSize;
+    this.offset = pageIndex * pageSize;
   }
 }

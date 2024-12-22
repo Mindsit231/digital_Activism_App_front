@@ -21,7 +21,6 @@ $post-elem-padding: 15px;
   justify-content: center;
 
   width: 100%;
-  padding: 20px;
 }
 
 .post-div {
@@ -114,9 +113,11 @@ $post-elem-padding: 15px;
   align-items: center;
   justify-content: center;
 
+  overflow: scroll;
   overflow-x: auto;
   overflow-y: hidden;
 
+  height: $images-container-height;
   width: 100%;
 }
 
@@ -195,7 +196,9 @@ $post-elem-padding: 15px;
   display: flex;
   flex-direction: row;
   align-items: center;
-  justify-content: center;
+  justify-content: end;
+
+  width: 100%;
 }
 .likes-count-div {
   display: flex;
@@ -226,24 +229,6 @@ $post-elem-padding: 15px;
   overflow-y: hidden;
 }
 
-/*SCROLLBAR STUFF*/
-/* width */
-::-webkit-scrollbar {
-  height: 10px;
-  border-radius: 15px;
-}
-
-/* Track */
 ::-webkit-scrollbar-track {
-  border-radius: 15px;
-}
-
-/* Handle */
-::-webkit-scrollbar-thumb {
-  border-radius: 15px;
-}
-
-/* Handle on hover */
-::-webkit-scrollbar-thumb:hover {
   border-radius: 15px;
 }

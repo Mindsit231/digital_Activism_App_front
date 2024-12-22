@@ -33,8 +33,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   @Output() onCloseModal = new EventEmitter<boolean>();
 
   constructor(protected memberService: MemberService,
-              protected currentMemberService: CurrentMemberService,
-              protected override tokenService: TokenService) {
+              protected currentMemberService: CurrentMemberService) {
     super();
   }
 
@@ -100,7 +99,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
     if (hasModifications) {
       console.log(updateRequest);
-      this.memberService.update(updateRequest, this.tokenService.getUserToken()).subscribe({
+      this.memberService.update(updateRequest).subscribe({
         next: (updateResponse: UpdateResponse) => {
           console.log(updateResponse);
           this.updateCurrentMemberDTO();

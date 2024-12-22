@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {LogoComponent} from "../logo/logo.component";
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
 import {FooterHandlerComponent} from "../misc/footer-handler-component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
@@ -14,10 +13,11 @@ import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {logout, ProfileMenuItem, profileMenuItems} from "../user-account/profile-menu-item/profile-menu-item";
 import {MemberService} from "../../service/member/member.service";
 import {navigationItems} from "./navigation-item";
-import {AddEditPostModalComponent} from "../add-edit-post-modal/add-edit-post-modal.component";
+import {AddEditPostModalComponent} from "../posts/add-edit-post-modal/add-edit-post-modal.component";
 import {AuthenticationService} from '../../service/authentication.service';
 import {RouterService} from '../../service/router.service';
-import {loginRoute} from '../../app.routes';
+import {TokenService} from '../../service/token.service';
+import {MemberDTO} from '../../model/member/member-dto';
 
 @Component({
   selector: 'app-header',
@@ -32,7 +32,7 @@ import {loginRoute} from '../../app.routes';
     '[header-body]': 'true'
   }
 })
-export class HeaderComponent extends FooterHandlerComponent {
+export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   // Logic Fields
   showMenu: boolean = false;
 
@@ -48,9 +48,24 @@ export class HeaderComponent extends FooterHandlerComponent {
   constructor(protected currentMemberService: CurrentMemberService,
               protected authenticationService: AuthenticationService,
               protected memberService: MemberService,
-              protected cookieService: CookieService,
+              protected tokenService: TokenService,
               protected routerService: RouterService) {
     super();
+  }
+
+  ngOnInit(): void {
+    this.authenticationService.loginByToken().then(
+      (memberDTO: MemberDTO) => {
+        if (memberDTO != null && memberDTO.emailVerified) {
+          this.tokenService.setUserToken(memberDTO.token!);
+          this.currentMemberService.memberDTO = memberDTO;
+        } else {
+          console.error("Member is null or email is not verified");
+        }
+      }
+    ).catch((error) => {
+      console.error(error);
+    });
   }
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {

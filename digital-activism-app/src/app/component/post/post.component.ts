@@ -1,15 +1,16 @@
-import {Component, Input, OnInit} from '@angular/core';
+import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {faThumbsUp, faUser} from "@fortawesome/free-solid-svg-icons";
 import {NgForOf, NgIf} from "@angular/common";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
-import {HttpErrorResponse} from "@angular/common/http";
 import {RouterService} from '../../service/router.service';
 import {MemberDTO} from '../../model/member/member-dto';
 import {PostDTO} from '../../model/post/post-dto';
 import {CurrentMemberService} from '../../service/member/current-member.service';
 import {MemberService} from '../../service/member/member.service';
-import {PostService} from '../../service/post.service';
+import {PostService} from '../../service/post/post.service';
+import {TokenService} from '../../service/token.service';
+import {getDateTime} from '../misc/functions';
 
 @Component({
   selector: 'app-post',
@@ -25,45 +26,28 @@ import {PostService} from '../../service/post.service';
 })
 export class PostComponent implements OnInit {
 
-  faThumbsUp = faThumbsUp;
+  protected readonly faThumbsUp = faThumbsUp;
+  protected readonly faUser = faUser;
 
-  postOwner!: MemberDTO | undefined;
-  @Input() post!: PostDTO;
+  @Input() postDTO!: PostDTO;
 
   hasImages: boolean = false;
   hasVideos: boolean = false;
 
   justify: string = 'center';
-  isPostLiked: boolean = false;
 
-  constructor(protected currentMemberService: CurrentMemberService,
+  constructor(private el: ElementRef,
+              protected currentMemberService: CurrentMemberService,
               protected memberService: MemberService,
               protected postService: PostService,
               protected routerService: RouterService) {
   }
 
   ngOnInit(): void {
-    this.hasImages = this.post.postImageList.length > 0;
-    this.hasVideos = this.post.postVideoList.length > 0;
+    this.el.nativeElement.style.width = `100%`;
 
-    // this.initializePostLikesCount(this.post);
-    // this.postService.isPostLikedByMember(
-    //   new TwoIds(this.post.postId!, this.currentMemberService.member?.getMemberId()!)
-    // ).subscribe({
-    //   next: (isLiked: boolean) => {
-    //     this.isPostLiked = isLiked;
-    //   },
-    //   error: (error: HttpErrorResponse) => console.error(error)
-    // });
-    //
-    // if(this.postOwner == undefined) {
-    //   this.memberService.findEntityById(this.post.memberId!).subscribe({
-    //     next: (jsonMember: Member) => {
-    //       this.postOwner = Member.fromJson(jsonMember);
-    //       this.initializeMembersPfpImgUrl([this.postOwner]).then();
-    //     }, error: (error: HttpErrorResponse) => console.error(error)
-    //   });
-    // }
+    this.hasImages = this.postDTO.postImageDTOS.length > 0;
+    this.hasVideos = this.postDTO.postVideoDTOS.length > 0;
   }
 
   onResize(entry: ResizeObserverEntry) {
@@ -77,36 +61,15 @@ export class PostComponent implements OnInit {
     }
   }
 
-  onLikeClick() {
-    // if(this.isPostLiked) {
-    //   this.likedPostService.deleteByMemberIdAndPostId(
-    //     new TwoIds(this.post.postId!, this.currentMemberService.member?.getMemberId()!)
-    //   ).subscribe({
-    //     next: (deleted: number) => {
-    //       if(deleted == 1) {
-    //         this.isPostLiked = false;
-    //         this.post.setLikesCount(this.post.getLikesCount()! - 1);
-    //         console.log("PostDto has been disliked");
-    //       } else {
-    //         console.error("PostDto could not be disliked");
-    //       }
-    //     }, error: (error: HttpErrorResponse) => console.error(error)
-    //   });
-    // } else {
-    //   let likedPost = new LikedPost(this.post.postId!, this.currentMemberService.member?.getMemberId()!)
-    //   this.likedPostService.addEntity(likedPost).subscribe({
-    //     next: (added: LikedPost) => {
-    //       if(added) {
-    //         this.isPostLiked = true;
-    //         this.post.setLikesCount(this.post.getLikesCount()! + 1);
-    //         console.log("PostDto has been liked");
-    //       } else {
-    //         console.error("PostDto could not be liked");
-    //       }
-    //     }, error: (error: HttpErrorResponse) => console.error(error)
-    //   });
-    // }
+  toggleLike() {
+    console.log(this.postDTO.id!)
+    this.postService.toggleLike(this.postDTO.id!).then(
+      (response: boolean) => {
+        if (response) {
+          this.postDTO.toggleLike();
+        }
+      })
   }
 
-  protected readonly faUser = faUser;
+  protected readonly getDateTime = getDateTime;
 }

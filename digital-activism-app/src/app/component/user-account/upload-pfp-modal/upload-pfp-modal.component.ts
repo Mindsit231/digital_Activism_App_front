@@ -43,7 +43,6 @@ export class UploadPfpModalComponent extends ModalComponent {
   @ViewChild('imageInput') fileInput!: ElementRef;
 
   constructor(protected memberService: MemberService,
-              protected override tokenService: TokenService,
               protected override fileService: FileService) {
     super();
   }
@@ -86,7 +85,7 @@ export class UploadPfpModalComponent extends ModalComponent {
   private updatePfpName(newFileName: string) {
     let pfpNameByEmail = new PfpNameByEmail(this.memberDTO.email!, newFileName);
 
-    this.memberService.updatePfpNameByEmail(pfpNameByEmail, this.tokenService.getUserToken()).subscribe({
+    this.memberService.updatePfpNameByEmail(pfpNameByEmail).subscribe({
       next: (response: number) => {
         console.log('Pfp img path updated: ', response);
         this.memberDTO.setPfpName(newFileName);
@@ -99,7 +98,7 @@ export class UploadPfpModalComponent extends ModalComponent {
 
   private deleteOldPfpImg() {
     if (this.memberDTO.pfpName == null || this.memberDTO.pfpName!.length == 0) return;
-    this.fileService.deleteFile(this.memberDTO.pfpName!, this.tokenService.getUserToken(), this.memberService.entityName).subscribe({
+    this.fileService.deleteFile(this.memberDTO.pfpName!, this.memberService.entityName).subscribe({
       next: (response: boolean) => {
         console.log('Old profile picture deleted: ', response);
       },

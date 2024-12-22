@@ -1,16 +1,15 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
-import {AuthenticatedGuardService} from './authenticated-guard.service';
 import {StorageKeys} from '../../component/misc/storage-keys';
+import {AuthenticatedGuardService} from './authenticated-guard.service';
 import {CommunityService} from '../community.service';
-import {TokenService} from '../token.service';
-import {CommunityDTO} from '../../model/community-dto';
 import {InternalObjectService} from '../misc/internal-object.service';
+import {CommunityDTO} from '../../model/community-dto';
 
 @Injectable({
   providedIn: 'root'
 })
-export class CommunityGuardService implements CanActivate {
+export class CommunityAdminGuardService implements CanActivate {
 
   constructor(private authenticatedGuardService: AuthenticatedGuardService,
               private communityService: CommunityService,
@@ -24,8 +23,7 @@ export class CommunityGuardService implements CanActivate {
 
     if (communityDto != undefined) {
       this.internalObjectService.setObject(communityDto);
-
-      return await this.authenticatedGuardService.canActivate(route, state);
+      return await this.authenticatedGuardService.canActivate(route, state) && communityDto.isAdmin;
 
     } else {
       return Promise.resolve(false);

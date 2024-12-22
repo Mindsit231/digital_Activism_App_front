@@ -2,6 +2,7 @@ import {Injectable} from "@angular/core";
 import {HttpClient, HttpErrorResponse, HttpEvent, HttpEventType, HttpHeaders, HttpResponse} from "@angular/common/http";
 import {environment} from "../../../environment/environment.prod";
 import {Observable} from "rxjs";
+import {TokenService} from '../token.service';
 
 @Injectable({
   providedIn: 'root'
@@ -9,30 +10,31 @@ import {Observable} from "rxjs";
 export class FileService {
   protected apiBackendUrl = environment.apiBackendUrl;
 
-  constructor(private http: HttpClient) {
+  constructor(private http: HttpClient,
+              protected tokenService: TokenService) {
 
   }
 
-  public uploadFiles(formData: FormData, token: string, entityName: string): Observable<HttpEvent<string[]>> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
-
+  public uploadFiles(formData: FormData, entityName: string): Observable<HttpEvent<string[]>> {
     return this.http.post<string[]>(
       `${this.apiBackendUrl}/authenticated/${entityName}/upload-files`,
       formData,
       {
-        headers: headers,
+        headers: this.tokenService.getAuthHeaders(),
         reportProgress: true,
         observe: 'events'
       })
   }
 
-  public downloadFiles(fileName: string, token: string, entityName: string): Promise<string> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+  public downloadFile(fileName: string, entityName: string): Promise<string> {
     return new Promise<string>((resolve, reject) => {
       this.http.get(
-        `${this.apiBackendUrl}/authenticated/${entityName}/download-file/${fileName}`,
+        `${this.apiBackendUrl}/authenticated/${entityName}/download-file`,
         {
-          headers: headers,
+          headers: this.tokenService.getAuthHeaders(),
+          params: {
+            fileName: fileName
+          },
           reportProgress: true,
           observe: 'events',
           responseType: 'blob',
@@ -54,13 +56,14 @@ export class FileService {
 
   }
 
-  public deleteFile(fileName: string, token: string, entityName: string): Observable<boolean> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
-
+  public deleteFile(fileName: string, entityName: string): Observable<boolean> {
     return this.http.get<boolean>(
-      `${this.apiBackendUrl}/authenticated/${entityName}/delete-file/${fileName}`,
+      `${this.apiBackendUrl}/authenticated/${entityName}/delete-file`,
       {
-        headers: headers
+        headers: this.tokenService.getAuthHeaders(),
+        params: {
+          fileName: fileName
+        }
       }
     );
   }

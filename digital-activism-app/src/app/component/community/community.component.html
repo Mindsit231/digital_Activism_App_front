@@ -9,6 +9,9 @@
         <span class="text-font-700">{{ communityDTO.name }}</span>
         <span>{{ communityDTO.description }}</span>
         <span>Created on {{ getDateTime(communityDTO.timestamp) }}</span>
+        @if (communityDTO.isAdmin) {
+          <span class="text-font-700">You're an admin of {{ communityDTO.name }}</span>
+        }
       </div>
       <div class="buttons-elem">
         <button class="default-btn" (click)=toggleJoin()>{{ communityDTO.joined ? 'Leave' : 'Join' }}</button>
@@ -19,11 +22,14 @@
   <div class="tabs-elem">
     <mat-tab-group class="custom-tabs">
       <mat-tab label="Posts">
-        <app-posts></app-posts>
+        <app-posts
+          [communityDTO]="communityDTO"
+        ></app-posts>
       </mat-tab>
       <mat-tab label="Campaigns"> Content 2</mat-tab>
-      <mat-tab label="Messages"> Content 3</mat-tab>
-      <mat-tab label="Members"> Content 4</mat-tab>
+      @if (this.communityDTO.isAdmin) {
+        <mat-tab label="Members"> Content 4</mat-tab>
+      }
     </mat-tab-group>
   </div>
 </div>
