@@ -50,7 +50,7 @@ $post-elem-padding: 15px;
   align-items: center;
   justify-content: start;
 
-  width: 50%;
+  flex-grow: 1;
 }
 
 .user-pfp-img-div {
@@ -83,7 +83,17 @@ $post-elem-padding: 15px;
   align-items: center;
   justify-content: start;
 
-  width: 50%;
+  flex-grow: 1;
+  height: 100%;
+}
+
+.post-button-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  object-fit: fill;
   height: 100%;
 }
 

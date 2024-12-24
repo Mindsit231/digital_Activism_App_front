@@ -18,6 +18,7 @@ import {CommunityComponent} from './component/community/community.component';
 import {CommunityGuardService} from './service/guard/community-guard.service';
 import {CampaignComponent} from './component/campaign/campaign.component';
 import {CampaignGuardService} from './service/guard/campaign-guard.service';
+import {MyCampaignsComponent} from './component/user-account/my-campaigns/my-campaigns.component';
 
 export const homeRoute = `home`;
 export const loginRoute = `login`;
@@ -27,6 +28,7 @@ export const passwordRecoveryRoute = `password-recovery`;
 export const userAccountRoute = `user-account`;
 export const connectionSecurityRoute = `connection-security`;
 export const myCommunitiesRoute = `my-communities`;
+export const myCampaignsRoute = `my-campaigns`;
 export const userSettingsRoute = `user-settings`;
 export const passwordResetRoute = `password-reset`;
 export const exploreCommunitiesRoute = `explore-communities`;
@@ -55,6 +57,7 @@ export const routes: Routes = [
     children: [
       {path: `${connectionSecurityRoute}`, component: ConnectionSecurityComponent},
       {path: `${myCommunitiesRoute}`, component: MyCommunitiesComponent},
+      {path: `${myCampaignsRoute}`, component: MyCampaignsComponent},
       {path: `${userSettingsRoute}`, component: UserSettingsComponent},
     ],
     canActivate: [AuthenticatedGuardService]

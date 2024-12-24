@@ -1,5 +1,5 @@
 import {Injectable} from "@angular/core";
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 import {CampaignDTO} from '../../model/campaign/campaign-dto';
 
 @Injectable({

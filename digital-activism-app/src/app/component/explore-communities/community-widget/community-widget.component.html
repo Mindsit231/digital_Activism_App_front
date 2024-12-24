@@ -11,12 +11,13 @@
         </div>
         <div class="text-elem">
           <span class="text-font-700">{{ communityDTO.name }}</span>
-          <span>{{ communityDTO.description }}</span>
+          <span class="text-span-2">{{ communityDTO.description }}</span>
           <span>Created on {{ getDateTime(communityDTO.timestamp) }}</span>
         </div>
       </div>
       <div class="buttons-elem">
         <button class="default-btn" (click)=toggleJoin()>{{ communityDTO.joined ? 'Leave' : 'Join' }}</button>
+        <button class="default-btn" (click)=routerService.routeToCommunity(communityDTO.id)>Visit Community</button>
       </div>
     </div>
 

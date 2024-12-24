@@ -70,11 +70,10 @@ export class MessagesComponent implements OnInit {
     return new Observable((observer) => {
       this.messageService.fetchLatestMessageDTOSLimitedByCampaignId(fetchEntityLimited)
         .then((messageDTOS: MessageDTO[]) => {
-          console.log(messageDTOS)
           console.log(`Fetched ${messageDTOS.length} messages`);
-          messageDTOS.sort((a, b) => {
-            return a.id! - b.id!
-          });
+          messageDTOS.sort((a, b) =>
+            new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+          );
           messageDTOS.map((messageDTO: MessageDTO) =>
             new MessageListElement(messageDTO, this.currentMemberService.memberDTO!.id)).reverse()
             .forEach(messageListElement => this.messageListElements.unshift(messageListElement));

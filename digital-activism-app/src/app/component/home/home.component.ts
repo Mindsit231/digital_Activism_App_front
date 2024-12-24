@@ -2,62 +2,73 @@ import {Component, ElementRef, OnInit} from '@angular/core';
 import {FooterHandlerComponent} from "../misc/footer-handler-component";
 import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {FooterComponent} from "../footer/footer.component";
-import {CurrentMemberService} from "../../service/member/current-member.service";
-import {MemberService} from "../../service/member/member.service";
-import {CookieService} from "ngx-cookie-service";
 import {NgForOf, NgIf} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
-import {MatProgressBar, MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatProgressBarModule} from "@angular/material/progress-bar";
+import {MatPaginator, PageEvent} from "@angular/material/paginator";
+import {PostComponent} from "../post/post.component";
+import {PostService} from '../../service/post/post.service';
+import {PostDTO} from '../../model/post/post-dto';
+import {FetchEntityLimited} from '../../model/misc/fetch-entity-limited';
 
 @Component({
   selector: 'app-home',
   standalone: true,
-    imports: [
-        NgxResizeObserverModule,
-        FooterComponent,
-        NgForOf,
-        NgIf,
-        MatProgressBarModule
-    ],
+  imports: [
+    NgxResizeObserverModule,
+    FooterComponent,
+    NgForOf,
+    NgIf,
+    MatProgressBarModule,
+    MatPaginator,
+    PostComponent
+  ],
   templateUrl: './home.component.html',
   styleUrl: './home.component.scss'
 })
 export class HomeComponent extends FooterHandlerComponent implements OnInit {
 
+  pageIndex: number = 0;
+  length: number = 0;
+  pageSize: number = 10;
+
+  posts: PostDTO[] = [];
+
   constructor(private el: ElementRef,
-              protected cookieService: CookieService,
-              protected currentMemberService: CurrentMemberService,
-              protected memberService: MemberService) {
+              protected postService: PostService) {
     super();
   }
 
   ngOnInit(): void {
-    // this.initializeMemberByToken().then((success) => {
-    //   if(this.currentMemberService.isLoggedIn()) {
-    //     this.initializeCurrentMemberFriends().then((success) => {
-    //       if(success) {
-    //         this.initializeMembersPostsMedia(this.currentMemberService.member?.friends!).then();
-    //         this.hasFriends = this.currentMemberService.member?.friends?.length! > 0;
-    //         if(this.hasFriends) {
-    //           this.currentMemberService.member?.friends?.forEach(friend => {
-    //             if(friend.posts?.length > 0) {
-    //               this.friendsHaveNoPosts = false;
-    //             }
-    //           })
-    //         }
-    //       }
-    //     });
-    //   }
-    //   if(!this.currentMemberService.isLoggedIn() || this.currentMemberService.member?.friends?.length == 0){
-    //     this.postService.getAllEntities().subscribe({
-    //       next: (jsonPosts: PostDto[]) => {
-    //         this.allPosts = PostDto.initializePosts(jsonPosts);
-    //         this.initializePostsMedia(this.allPosts).then();
-    //       }
-    //     });
-    //   }
-    // });
-
     this.el.nativeElement.style.width = `100%`;
+
+    this.postService.fetchPublicPostsCount()
+      .then((count: number) => {
+        this.length = count;
+      })
+      .catch((error: Error) => {
+        console.error(error);
+      })
+
+    this.fetchPosts(this.pageIndex, this.pageSize);
+  }
+
+  handlePageEvent($event: PageEvent) {
+    this.pageIndex = $event.pageIndex;
+    this.pageSize = $event.pageSize;
+    this.fetchPosts($event.pageIndex, $event.pageSize);
+  }
+
+  fetchPosts(pageIndex: number, pageSize: number) {
+    let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex);
+
+    this.postService.fetchPublicPostDTOSLimited(fetchEntityLimited).then(
+      (postDTOs: PostDTO[]) => {
+        console.log(`Fetched ${postDTOs.length} posts`);
+        this.posts = postDTOs;
+      },
+      (error) => {
+        console.error(error);
+      }
+    )
   }
 }

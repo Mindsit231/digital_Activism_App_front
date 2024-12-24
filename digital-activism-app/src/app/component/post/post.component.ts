@@ -11,6 +11,7 @@ import {MemberService} from '../../service/member/member.service';
 import {PostService} from '../../service/post/post.service';
 import {TokenService} from '../../service/token.service';
 import {getDateTime} from '../misc/functions';
+import {PRIVATE} from '../../model/post/visibility';
 
 @Component({
   selector: 'app-post',
@@ -30,6 +31,7 @@ export class PostComponent implements OnInit {
   protected readonly faUser = faUser;
 
   @Input() postDTO!: PostDTO;
+  @Input() showVisitCommunityButton: boolean = false;
 
   hasImages: boolean = false;
   hasVideos: boolean = false;
@@ -62,14 +64,26 @@ export class PostComponent implements OnInit {
   }
 
   toggleLike() {
-    console.log(this.postDTO.id!)
-    this.postService.toggleLike(this.postDTO.id!).then(
-      (response: boolean) => {
-        if (response) {
-          this.postDTO.toggleLike();
-        }
-      })
+    if(this.currentMemberService.isLoggedIn()) {
+      this.postService.toggleLike(this.postDTO.id!).then(
+        (response: boolean) => {
+          if (response) {
+            this.postDTO.toggleLike();
+          }
+        })
+    } else {
+      this.routerService.routeToLogin().then();
+    }
   }
 
   protected readonly getDateTime = getDateTime;
+  protected readonly PRIVATE = PRIVATE;
+
+  manageVisitButton() {
+    if(this.currentMemberService.isLoggedIn()) {
+      this.routerService.routeToCommunity(this.postDTO.communityId).then()
+    } else {
+      this.routerService.routeToLogin().then();
+    }
+  }
 }

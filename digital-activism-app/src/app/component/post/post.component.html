@@ -10,11 +10,19 @@
         <div class="user-info-div">
           <span>{{ postDTO.memberDTO.username }}</span>
           <span>{{ getDateTime(postDTO.creationDate) }}</span>
+          @if (postDTO.visibility == PRIVATE) {
+            <span class="text-font-700">Private Post</span>
+          }
         </div>
       </div>
       <div class="post-title-div">
         <span class="text-font-700">{{ postDTO.title }}</span>
       </div>
+      @if(showVisitCommunityButton) {
+        <div class="post-button-div">
+          <button class="default-btn" (click)="manageVisitButton()">Visit Community</button>
+        </div>
+      }
     </div>
     <div class="post-body-div post-elem">
       <span>{{ postDTO.content }}</span>

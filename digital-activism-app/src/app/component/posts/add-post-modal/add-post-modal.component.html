@@ -21,6 +21,16 @@
           </div>
         </div>
         <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <label for="body-input">Visibility:</label>
+            <select class="default-select-div" [(ngModel)]="postRequest.visibility" (click)="checkIfPostAdded()">
+              @for(visibility of VISIBILITY_LIST; track visibility) {
+                <option value="{{visibility.name}}">{{visibility.name}}</option>
+              }
+            </select>
+          </div>
+        </div>
+        <div class="my-modal-element">
           <div class="tags-elem">
             <div class="tags-select-div">
               <div class="tags-select">

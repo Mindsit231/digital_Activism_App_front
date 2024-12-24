@@ -14,8 +14,14 @@
           [campaignDTO]="campaignDTO">
         </app-messages>
       </mat-tab>
-      @if(communityDTO.isAdmin) {
-        <mat-tab label="Members"></mat-tab>
+      @if (communityDTO.isAdmin) {
+        <mat-tab label="Members">
+          <app-members
+            [campaignDTO]="campaignDTO"
+            [fetchMembersAction]="fetchMembersAction"
+            [fetchMembersCountAction]="fetchMembersCountAction">
+          </app-members>
+        </mat-tab>
       }
     </mat-tab-group>
   </div>

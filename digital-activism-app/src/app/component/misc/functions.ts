@@ -30,3 +30,13 @@ export function generateRandomNumber(lengthOfCode: number): number {
 export function getCurrentTimeStamp(): string {
   return new Date().toISOString();
 }
+
+export function getFilesSize(files: File[]): number {
+  let size = 0;
+
+  for (let i = 0; i < files.length; i++) {
+    size += files[i].size;
+  }
+  return size;
+}
+

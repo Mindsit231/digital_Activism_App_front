@@ -4,7 +4,7 @@ import {StorageKeys} from '../../component/misc/storage-keys';
 import {AuthenticatedGuardService} from './authenticated-guard.service';
 import {CommunityService} from '../community.service';
 import {InternalObjectService} from '../misc/internal-object.service';
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 
 @Injectable({
   providedIn: 'root'

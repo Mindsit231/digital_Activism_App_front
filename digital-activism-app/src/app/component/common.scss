@@ -176,8 +176,15 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   word-wrap: break-word;
   overflow-wrap: break-word;
   white-space: normal;
-  max-width: 600px;
-  min-width: 600px;
+  width: 600px;
+  display: inline-block;
+}
+
+.text-span-2 {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  width: 400px;
   display: inline-block;
 }
 
@@ -208,6 +215,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   font-size: 32px;
   font-weight: 700;
   margin: 10px 0 10px 0;
+  text-align: center;
 }
 
 // DEFAULT BUTTON STYLES
@@ -369,6 +377,17 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
 .default-file-input-1 {
   background: $colorP17;
   margin: 5px 0 5px 0;
+}
+
+.default-select-div {
+  background: $colorP17;
+  border-radius: 15px;
+  border: grey solid 1px;
+  height: 35px;
+  margin: 5px 0 5px 0;
+  white-space: pre;
+  text-indent: 10px;
+  width: 100%;
 }
 
 .drag-and-drop-input {
@@ -645,16 +664,6 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   padding: 0 10px 0 0;
 }
 
-.select-div {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: row;
-
-  padding: 0 0 0 10px;
-  min-width: 300px;
-}
-
 .input-div {
   display: flex;
   justify-content: center;
@@ -703,6 +712,7 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   width: 100%;
   gap: 10px;
 }
+
 // tags elements end
 
 .empty-elements-body-div {
@@ -745,6 +755,13 @@ input::-webkit-inner-spin-button {
 /* Firefox */
 input[type=number] {
   -moz-appearance: textfield;
+}
+
+.paginator-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: row;
 }
 
 .custom-paginator {

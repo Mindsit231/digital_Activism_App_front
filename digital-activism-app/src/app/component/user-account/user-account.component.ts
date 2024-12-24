@@ -48,6 +48,7 @@ export class UserAccountComponent extends FooterHandlerComponent implements OnIn
 
   ngOnInit(): void {
     if (this.routerService.isCurrentUrlRoute(`/${userAccountRoute}`)) {
+
       this.routerService.routeToUserSettings().then();
     }
   }

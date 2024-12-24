@@ -18,7 +18,7 @@ export class PostVideoService extends EntityService<PostVideoDTO> {
 
   public initializePostVideoDTO(postVideoDTO: PostVideoDTO): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      this.fileService.downloadFile(postVideoDTO.name, this.entityName)
+      this.fileService.downloadFile(postVideoDTO.name, this.entityName, false)
         .then((videoUrl: string) => {
           postVideoDTO.videoUrl = videoUrl;
           resolve(true);

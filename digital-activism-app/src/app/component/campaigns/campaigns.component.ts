@@ -1,6 +1,6 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {CampaignDTO} from '../../model/campaign/campaign-dto';
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 import {CurrentMemberService} from '../../service/member/current-member.service';
 import {CampaignService} from '../../service/campaign.service';
 import {FetchEntityLimited} from '../../model/misc/fetch-entity-limited';
@@ -60,6 +60,7 @@ export class CampaignsComponent implements OnInit {
 
   handlePageEvent($event: PageEvent) {
     this.pageIndex = $event.pageIndex;
+    this.pageSize = $event.pageSize;
     this.fetchCampaigns($event.pageIndex, $event.pageSize);
   }
 
@@ -70,9 +71,8 @@ export class CampaignsComponent implements OnInit {
     this.campaignService.fetchCampaignDTOSLimitedByCommunityId(fetchEntityLimited)
       .then((campaignDTOs: CampaignDTO[]) => {
         console.log(`Fetched ${campaignDTOs.length} campaigns`);
-        campaignDTOs.sort((a, b) => {
-          return a.id! - b.id!
-        });
+        campaignDTOs.sort((a, b) =>
+          new Date(a.creationDate).getTime() - new Date(b.creationDate).getTime());
         this.campaigns = campaignDTOs;
       })
       .catch((error: Error) => {

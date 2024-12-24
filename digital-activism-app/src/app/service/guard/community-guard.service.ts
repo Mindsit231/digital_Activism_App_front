@@ -4,7 +4,7 @@ import {AuthenticatedGuardService} from './authenticated-guard.service';
 import {StorageKeys} from '../../component/misc/storage-keys';
 import {CommunityService} from '../community.service';
 import {TokenService} from '../token.service';
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 import {InternalObjectService} from '../misc/internal-object.service';
 import {InternalContainerService} from '../misc/internal-container.service';
 

@@ -26,10 +26,12 @@ export class FileService {
       })
   }
 
-  public downloadFile(fileName: string, entityName: string): Promise<string> {
+  public downloadFile(fileName: string, entityName: string, authenticated: boolean = true): Promise<string> {
+    let access = authenticated ? 'authenticated' : 'public';
+
     return new Promise<string>((resolve, reject) => {
       this.http.get(
-        `${this.apiBackendUrl}/authenticated/${entityName}/download-file`,
+        `${this.apiBackendUrl}/${access}/${entityName}/download-file`,
         {
           headers: this.tokenService.getAuthHeaders(),
           params: {

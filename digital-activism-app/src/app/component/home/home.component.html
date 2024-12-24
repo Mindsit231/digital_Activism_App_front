@@ -1,33 +1,31 @@
 <div (onResize)="handleFooterTopMinValue($event, 200)" class="main-page-body-div">
-<!--  <ng-container *ngIf="currentMemberService.isLoggedIn()">-->
-<!--    <div class="friends-container" *ngFor="let friend of this.currentMemberService.member?.friends">-->
-<!--      <div class="posts-container" *ngFor="let post of friend.posts">-->
-<!--        <app-post-->
-<!--          [style.width.%]="100"-->
-<!--          [postOwner]="friend!"-->
-<!--          [post]="post">-->
-<!--        </app-post>-->
-<!--      </div>-->
-<!--    </div>-->
-<!--  </ng-container>-->
-<!--  <div class="empty-elements-body-div" *ngIf="!hasFriends">-->
-<!--    <div class="empty-elements-div">-->
-<!--      <span class="title-span">Find Friend Posts By Following Other People!</span>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <div class="empty-elements-body-div" *ngIf="(friendsHaveNoPosts && hasFriends)">-->
-<!--    <div class="empty-elements-div">-->
-<!--      <span class="title-span">Currently following no one, <a href="/research">Connect</a> with other users</span>-->
-<!--    </div>-->
-<!--  </div>-->
-<!--  <ng-container *ngIf="!currentMemberService.isLoggedIn() || !hasFriends || friendsHaveNoPosts">-->
-<!--    <div class="posts-container" *ngFor="let post of allPosts">-->
-<!--      <app-post-->
-<!--        [style.width.%]="100"-->
-<!--        [post]="post">-->
-<!--      </app-post>-->
-<!--    </div>-->
-<!--  </ng-container>-->
+  <div class="posts-main-body">
+    @if (posts.length == 0) {
+      <div class="no-posts-div">
+        <span class="title-span">No posts to show</span>
+      </div>
+    } @else {
+      <div class="posts-container">
+
+        <div class="post-body-div" *ngFor="let post of posts">
+          <app-post
+            [postDTO]="post"
+            [showVisitCommunityButton]="true">
+          </app-post>
+        </div>
+
+      </div>
+      <mat-paginator class="custom-paginator"
+                     [length]="length"
+                     [pageSize]="pageSize"
+                     [showFirstLastButtons]="true"
+                     [pageSizeOptions]="[5, 10, 25, 100]"
+                     [pageIndex]="pageIndex"
+                     (page)="handlePageEvent($event)"
+                     aria-label="Select page">
+      </mat-paginator>
+    }
+  </div>
 </div>
 <app-footer
   [footerTopMinValue]="footerTopMinValue"

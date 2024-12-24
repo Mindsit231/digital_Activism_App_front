@@ -5,7 +5,7 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {FetchEntityLimited} from '../../model/misc/fetch-entity-limited';
 import {TokenService} from '../../service/token.service';
 import {PostService} from '../../service/post/post.service';
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 import {NgForOf} from '@angular/common';
 import {AddPostModalComponent} from './add-post-modal/add-post-modal.component';
 import {ModalOpenType} from '../misc/modal-open-type';
@@ -35,7 +35,7 @@ export class PostsComponent implements OnInit {
 
   @Input() communityDTO!: CommunityDTO;
 
-  isAddEditPostModalOpen: boolean = false;
+  isAddPostModalOpen: boolean = false;
   editingPostRequest!: PostRequest;
 
   constructor(private el: ElementRef,
@@ -60,6 +60,7 @@ export class PostsComponent implements OnInit {
 
   handlePageEvent($event: PageEvent) {
     this.pageIndex = $event.pageIndex;
+    this.pageSize = $event.pageSize;
     this.fetchPosts($event.pageIndex, $event.pageSize);
   }
 
@@ -70,7 +71,6 @@ export class PostsComponent implements OnInit {
     this.postService.fetchPostDTOSLimitedByCommunityId(fetchEntityLimited).then(
       (postDTOs: PostDTO[]) => {
         console.log(`Fetched ${postDTOs.length} posts`);
-        postDTOs.sort((a, b) => {return a.id! - b.id!});
         this.posts = postDTOs;
       },
       (error) => {
@@ -80,12 +80,12 @@ export class PostsComponent implements OnInit {
   }
 
   addPostOnClick() {
-    this.isAddEditPostModalOpen = true;
+    this.isAddPostModalOpen = true;
     this.editingPostRequest = new PostRequest("", "", PUBLIC.name, this.communityDTO.id, this.currentMemberService.memberDTO!.id);
   }
 
-  onAddEditPostModalChange(newVal: boolean) {
-    this.isAddEditPostModalOpen = newVal;
+  onAddPostModalChange(newVal: boolean) {
+    this.isAddPostModalOpen = newVal;
   }
 
   onPostAdded(postDTO: PostDTO) {

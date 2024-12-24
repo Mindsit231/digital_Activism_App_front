@@ -17,7 +17,7 @@ export class PostImageService extends EntityService<PostImageDTO> {
 
   public initializePostImageDTO(postImageDTO: PostImageDTO): Promise<boolean> {
     return new Promise<boolean>((resolve, reject) => {
-      this.fileService.downloadFile(postImageDTO.name, this.entityName)
+      this.fileService.downloadFile(postImageDTO.name, this.entityName, false)
         .then((imageUrl: string) => {
           postImageDTO.imageUrl = imageUrl;
           resolve(true);

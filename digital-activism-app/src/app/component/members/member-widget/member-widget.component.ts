@@ -2,7 +2,7 @@ import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {faUser} from '@fortawesome/free-solid-svg-icons';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {NgIf} from '@angular/common';
-import {MemberDTO} from '../../model/member/member-dto';
+import {MemberDTO} from '../../../model/member/member-dto';
 
 @Component({
   selector: 'app-member-widget',

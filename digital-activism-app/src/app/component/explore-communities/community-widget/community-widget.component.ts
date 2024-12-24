@@ -1,7 +1,7 @@
 import {Component, ElementRef, Input, OnInit} from '@angular/core';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {NgIf} from '@angular/common';
-import {CommunityDTO} from '../../../model/community-dto';
+import {CommunityDTO} from '../../../model/community/community-dto';
 import {getDateTime} from '../../misc/functions';
 import {CommunityService} from '../../../service/community.service';
 import {TokenService} from '../../../service/token.service';

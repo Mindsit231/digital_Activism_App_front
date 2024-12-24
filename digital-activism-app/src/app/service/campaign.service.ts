@@ -8,6 +8,7 @@ import {FetchEntityLimited} from '../model/misc/fetch-entity-limited';
 import {MemberService} from './member/member.service';
 import {CampaignRequest} from '../model/campaign/campaign-request';
 import {TokenService} from './token.service';
+import {CommunityDTO} from '../model/community/community-dto';
 
 @Injectable({
   providedIn: 'root'
@@ -41,6 +42,36 @@ export class CampaignService extends EntityService<CampaignDTO> {
           communityId: communityId.toString()
         }
       });
+  }
+
+  public fetchCampaignDTOSLimitedByMemberId(fetchEntityLimited: FetchEntityLimited): Promise<CampaignDTO[]> {
+    let communityDTOObss = this.http.post<CampaignDTO[]>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-campaigns-limited-by-member-id`,
+      fetchEntityLimited,
+      {
+        headers: this.tokenService.getAuthHeaders()
+      });
+
+    return this.initializeDTOObss(communityDTOObss, this.initializeCampaignDTO);
+  }
+
+  public fetchCampaignsCountByMemberId(): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      this.http.get<number>(
+        `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-campaigns-count-by-member-id`,
+        {
+          headers: this.tokenService.getAuthHeaders(),
+        })
+        .subscribe({
+          next: (response: number) => {
+            resolve(response);
+          },
+          error: (error) => {
+            console.error(error);
+            reject(error);
+          }
+        });
+    })
   }
 
   addCampaign(campaignRequest: CampaignRequest): Promise<CampaignDTO> {

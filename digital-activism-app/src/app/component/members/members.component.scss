@@ -1,28 +1,20 @@
 @import "../common.scss";
 
-.posts-main-body {
+.members-main-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
 
   width: 100%;
+  margin-top: 20px;
 }
 
-.create-post-div {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-
-  width: 100%;
+.no-members-div {
+  margin: 20px;
 }
 
-.no-posts-div {
-
-}
-
-.posts-container {
+.members-container {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -34,7 +26,7 @@
   width: 100%;
 }
 
-.post-body-div {
+.member-body-div {
   display: flex;
   flex-direction: column;
   justify-content: center;

@@ -10,7 +10,6 @@ $borderRadius: 15px;
   justify-content: center;
 
   width: 100%;
-  margin: 20px;
 }
 
 .p-widget-div {
@@ -53,7 +52,6 @@ $borderRadius: 15px;
   align-items: center;
   justify-content: center;
 
-  height: 40%;
   width: 100%;
   padding: 10px;
   gap: 10px;
@@ -109,9 +107,11 @@ $borderRadius: 15px;
 
 .buttons-elem {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  gap: 10px;
 
   width: 200px;
 }

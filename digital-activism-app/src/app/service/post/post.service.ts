@@ -27,13 +27,39 @@ export class PostService extends EntityService<PostDTO> {
 
   public fetchPostDTOSLimitedByCommunityId(fetchEntityLimited: FetchEntityLimited): Promise<PostDTO[]> {
     let postDTOObs: Observable<PostDTO[]> = this.http.post<PostDTO[]>(
-      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-limited-by-community-id`,
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-posts-limited-by-community-id`,
       fetchEntityLimited,
       {
         headers: this.tokenService.getAuthHeaders()
       }
     );
     return this.initializeDTOObss(postDTOObs, this.initializePostDTO);
+  }
+
+  public fetchPublicPostDTOSLimited(fetchEntityLimited: FetchEntityLimited): Promise<PostDTO[]> {
+    let postDTOObs: Observable<PostDTO[]> = this.http.post<PostDTO[]>(
+      `${this.apiBackendUrl}/public/${this.entityName}/fetch-public-posts-limited`,
+      fetchEntityLimited,
+      {
+        headers: this.tokenService.getAuthHeaders()
+      }
+    );
+    return this.initializeDTOObss(postDTOObs, this.initializePostDTO);
+  }
+
+  public fetchPublicPostsCount(): Promise<number> {
+    return new Promise<number>((resolve, reject) => {
+      this.http.get<number>(
+        `${this.apiBackendUrl}/public/${this.entityName}/fetch-public-posts-count`
+      ).subscribe({
+        next: (count: number) => {
+          resolve(count);
+        },
+        error: (error) => {
+          reject(error);
+        }
+      })
+    })
   }
 
 
@@ -80,7 +106,7 @@ export class PostService extends EntityService<PostDTO> {
       let postImageCount = 0;
 
       new Observable<PostDTO>((subscriber) => {
-        if(options?.postVideoService == undefined) {
+        if (options?.postVideoService == undefined) {
           reject(new Error("PostVideoService is undefined"));
         }
         if (postDTO.postVideoDTOS.length > 0) {
@@ -99,7 +125,7 @@ export class PostService extends EntityService<PostDTO> {
         }
 
         if (postDTO.postImageDTOS.length > 0) {
-          if(options?.postImageService == undefined) {
+          if (options?.postImageService == undefined) {
             reject(new Error("PostImageService is undefined"));
           }
           postDTO.postImageDTOS.forEach(postImageDTO => {
@@ -117,7 +143,7 @@ export class PostService extends EntityService<PostDTO> {
         }
 
         if (postDTO.memberDTO.pfpName != undefined) {
-          if(options?.memberService == undefined) {
+          if (options?.memberService == undefined) {
             reject(new Error("MemberService is undefined"));
           }
           options?.memberService?.getMemberPfpUrl(postDTO.memberDTO.pfpName)

@@ -81,6 +81,28 @@ export class MemberService extends EntityService<MemberDTO> {
     return this.initializeDTOObss(memberDTOObs, this.initializeMemberDTO);
   }
 
+  public fetchMembersCountByCommunityId(communityId: number): Promise<number> {
+    let membersCountObs = this.http.get<number>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-members-count-by-community-id`,
+      {
+        headers: this.tokenService.getAuthHeaders(),
+        params: {
+          communityId: communityId.toString()
+        }
+      });
+
+    return new Promise<number>((resolve, reject) => {
+      membersCountObs.subscribe({
+        next: (count: number) => {
+          resolve(count);
+        },
+        error: (error: Error) => {
+          reject(error);
+        }
+      })
+    })
+  }
+
   public fetchMembersLimitedByCampaignId(fetchEntityLimited: FetchEntityLimited): Promise<MemberDTO[]> {
     let memberDTOObs = this.http.post<MemberDTO[]>(
       `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-members-limited-by-campaign-id`,
@@ -90,6 +112,28 @@ export class MemberService extends EntityService<MemberDTO> {
       });
 
     return this.initializeDTOObss(memberDTOObs, this.initializeMemberDTO);
+  }
+
+  public fetchMembersCountByCampaignId(campaignId: number): Promise<number> {
+    let membersCountObs = this.http.get<number>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-members-count-by-campaign-id`,
+      {
+        headers: this.tokenService.getAuthHeaders(),
+        params: {
+          campaignId: campaignId.toString()
+        }
+      });
+
+    return new Promise<number>((resolve, reject) => {
+      membersCountObs.subscribe({
+        next: (count: number) => {
+          resolve(count);
+        },
+        error: (error: Error) => {
+          reject(error);
+        }
+      })
+    })
   }
 
   public initializeMemberDTO(memberDTOJson: MemberDTO,
@@ -123,7 +167,6 @@ export class MemberService extends EntityService<MemberDTO> {
           next: (memberDTO: MemberDTO) => {
             if (memberDTO.pfpName == undefined || memberDTO.pfpUrl != undefined) {
             }
-            console.log(memberDTO)
             resolve(memberDTO);
           },
           error: (error: Error) => {
@@ -160,9 +203,9 @@ export class MemberService extends EntityService<MemberDTO> {
   // }
 
   public getMemberPfpUrl(pfpName: string | undefined): Promise<string | undefined> {
-    return new Promise<string| undefined>((resolve, reject) => {
+    return new Promise<string | undefined>((resolve, reject) => {
       if (pfpName != undefined) {
-        this.fileService.downloadFile(pfpName, this.entityName)
+        this.fileService.downloadFile(pfpName, this.entityName, false)
           .then((pfpUrl: string) => {
             resolve(pfpUrl);
           }).catch((error: Error) => {
@@ -173,5 +216,4 @@ export class MemberService extends EntityService<MemberDTO> {
       }
     })
   }
-
 }

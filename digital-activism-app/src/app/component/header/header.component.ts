@@ -64,7 +64,7 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
         }
       }
     ).catch((error) => {
-      console.error(error);
+      console.log("Not logged in")
     });
   }
 

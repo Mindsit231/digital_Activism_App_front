@@ -1,4 +1,4 @@
-@import "../common.scss";
+@import "../../common.scss";
 
 .member-widget-main-div {
   display: flex;
@@ -38,7 +38,7 @@
 .pfp-img {
   width: 50px;
   height: 50px;
-  
+
   object-fit: cover;
   border-radius: 50%;
 }

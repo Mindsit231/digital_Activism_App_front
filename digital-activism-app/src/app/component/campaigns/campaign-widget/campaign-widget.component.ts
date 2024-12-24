@@ -6,7 +6,7 @@ import {faUser} from '@fortawesome/free-solid-svg-icons';
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {NgIf} from '@angular/common';
 import {RouterService} from '../../../service/router.service';
-import {CommunityDTO} from '../../../model/community-dto';
+import {CommunityDTO} from '../../../model/community/community-dto';
 
 @Component({
   selector: 'app-campaign-widget',

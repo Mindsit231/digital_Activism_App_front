@@ -4,7 +4,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
 import {FormsModule} from "@angular/forms";
 import {ModalComponent} from "../../misc/modal-component";
-import {generateRandomString} from "../../misc/functions";
+import {generateRandomString, getFilesSize} from "../../misc/functions";
 import {PostDTO} from '../../../model/post/post-dto';
 import {RouterService} from '../../../service/router.service';
 import {PostRequest} from '../../../model/post/post-request';
@@ -17,6 +17,7 @@ import {PostVideoService} from '../../../service/post/post-video.service';
 import {PostImageService} from '../../../service/post/post-image.service';
 import {Observable} from 'rxjs';
 import {FileService} from '../../../service/misc/file.service';
+import {VISIBILITY_LIST} from '../../../model/post/visibility';
 
 @Component({
   selector: 'app-add-post-modal',
@@ -79,24 +80,17 @@ export class AddPostModalComponent extends ModalComponent {
       checkedFileTypes = this.images[i].type == 'image/png' || this.images[i].type == 'image/jpeg';
       if (!checkedFileTypes) break;
     }
-    return Promise.resolve(this.postRequest.title.length > 0 && this.postRequest.content.length > 0 && checkedFileTypes);
-  }
-
-  getFilesSize(files: File[]): number {
-    let size = 0;
-
-    for (let i = 0; i < files.length; i++) {
-      size += files[i].size;
-    }
-
-    console.log(size)
-    return size;
+    return Promise.resolve(
+      this.postRequest.title.length > 0 &&
+      this.postRequest.content.length > 0 &&
+      this.postRequest.visibility.length > 0 &&
+      checkedFileTypes);
   }
 
   onImageSelected(event: any) {
     if ((this.images.length + event.target.files.length) > this.maxImages) {
       this.imagesStatusMsg = `You can only upload ${this.maxImages} images!`;
-    } else if (this.getFilesSize(this.images) + this.getFilesSize(event.target.files) > this.maxSize) {
+    } else if (getFilesSize(this.images) + getFilesSize(event.target.files) > this.maxSize) {
       this.imagesStatusMsg = `Image size is too big! Max is 100MB`;
     } else {
       for (let i = 0; i < event.target.files.length; i++) {
@@ -116,7 +110,7 @@ export class AddPostModalComponent extends ModalComponent {
   onVideoSelected(event: any) {
     if (this.videos.length + event.target.files.length > this.maxVideos) {
       this.videosStatusMsg = `You can only upload ${this.maxVideos} videos!`;
-    } else if (this.getFilesSize(this.videos) + this.getFilesSize(event.target.files) > this.maxSize) {
+    } else if (getFilesSize(this.videos) + getFilesSize(event.target.files) > this.maxSize) {
       this.videosStatusMsg = `Video size is too big! Max is 100MB`;
     } else {
       for (let i = 0; i < event.target.files.length; i++) {
@@ -136,40 +130,45 @@ export class AddPostModalComponent extends ModalComponent {
   }
 
   onAcceptClick() {
-    if (!this.isFormValid()) {
-      this.imagesStatusMsg = "Invalid form data!";
-      return;
-    }
 
-    new Observable((observer) => {
-      this.uploadPostImages()
-        .then((isSuccess: boolean) => {
-          this.isImagesSuccess = isSuccess;
-          observer.next();
-        });
+    this.isFormValid()
+      .then((isFormValid: boolean) => {
+        if (isFormValid) {
+          new Observable((observer) => {
+            this.uploadPostImages()
+              .then((isSuccess: boolean) => {
+                this.isImagesSuccess = isSuccess;
+                observer.next();
+              });
 
-      this.uploadPostVideos()
-        .then((isSuccess: boolean) => {
-          this.isVideosSuccess = isSuccess;
-          observer.next();
-        });
-    }).subscribe({
-      next: () => {
-        if(this.isImagesSuccess && this.isVideosSuccess) {
-          this.postService.addPost(this.postRequest)
-            .then((postDTO: PostDTO) => {
-              this.isPostAdded = true;
-              this.closeModal();
+            this.uploadPostVideos()
+              .then((isSuccess: boolean) => {
+                this.isVideosSuccess = isSuccess;
+                observer.next();
+              });
+          }).subscribe({
+            next: () => {
+              if(this.isImagesSuccess && this.isVideosSuccess) {
+                this.postService.addPost(this.postRequest)
+                  .then((postDTO: PostDTO) => {
+                    this.isPostAdded = true;
+                    this.closeModal();
 
-              this.onPostAddedEmitter.emit(postDTO)
-            })
-            .catch((error: Error) => {
-              console.log(error)
-              this.isFailure = true;
-            })
+                    this.onPostAddedEmitter.emit(postDTO)
+                  })
+                  .catch((error: Error) => {
+                    console.log(error)
+                    this.isFailure = true;
+                  })
+              }
+            }
+          })
+        } else {
+          this.imagesStatusMsg = "Invalid form data!";
         }
-      }
-    })
+      });
+
+
   }
 
   uploadPostImages() {
@@ -297,6 +296,7 @@ export class AddPostModalComponent extends ModalComponent {
     this.videosStatusMsg = "";
     this.isImagesSuccess = false;
     this.isVideosSuccess = false;
+    this.tagProposal = "";
   }
 
   protected readonly faArrowRight = faArrowRight;
@@ -307,4 +307,6 @@ export class AddPostModalComponent extends ModalComponent {
       this.tagProposal = ""
     }
   }
+
+  protected readonly VISIBILITY_LIST = VISIBILITY_LIST;
 }

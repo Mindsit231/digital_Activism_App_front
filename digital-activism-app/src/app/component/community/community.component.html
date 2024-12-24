@@ -7,7 +7,7 @@
       </div>
       <div class="text-elem">
         <span class="text-font-700">{{ communityDTO.name }}</span>
-        <span>{{ communityDTO.description }}</span>
+        <span class="text-span">{{ communityDTO.description }}</span>
         <span>Created on {{ getDateTime(communityDTO.timestamp) }}</span>
         @if (communityDTO.isAdmin) {
           <span class="text-font-700">You're an admin of {{ communityDTO.name }}</span>
@@ -34,7 +34,9 @@
       @if (this.communityDTO.isAdmin) {
         <mat-tab label="Members">
           <app-members
-            [communityDTO]="communityDTO">
+            [communityDTO]="communityDTO"
+            [fetchMembersAction]="fetchMembersAction"
+            [fetchMembersCountAction]="fetchMembersCountAction">
           </app-members>
         </mat-tab>
       }

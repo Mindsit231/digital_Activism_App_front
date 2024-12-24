@@ -31,8 +31,8 @@
   }
 </div>
 <app-add-post-modal
-  [isModalOpen]="isAddEditPostModalOpen"
+  [isModalOpen]="isAddPostModalOpen"
   [postRequest]="editingPostRequest"
-  (onModalChangeEmitter)="onAddEditPostModalChange($event)"
+  (onModalChangeEmitter)="onAddPostModalChange($event)"
   (onPostAddedEmitter)="onPostAdded($event)"
 ></app-add-post-modal>

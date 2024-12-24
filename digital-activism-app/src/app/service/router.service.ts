@@ -32,7 +32,7 @@ export class RouterService {
   }
 
   isCurrentUrlRoute(route: string): boolean {
-    return this.router.url.includes(route);
+    return this.router.url.endsWith(route);
   }
 
   getRouterUrl(): string {

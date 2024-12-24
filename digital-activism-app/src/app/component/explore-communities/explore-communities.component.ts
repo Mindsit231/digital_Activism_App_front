@@ -3,7 +3,7 @@ import {exploreCommunities} from "../header/navigation-item";
 import {FaIconComponent} from '@fortawesome/angular-fontawesome';
 import {NgForOf} from '@angular/common';
 import {FormsModule} from '@angular/forms';
-import {CommunityDTO} from '../../model/community-dto';
+import {CommunityDTO} from '../../model/community/community-dto';
 import {CommunityWidgetComponent} from './community-widget/community-widget.component';
 import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import {CommunityService} from '../../service/community.service';
@@ -27,6 +27,7 @@ export class ExploreCommunitiesComponent implements OnInit {
 
   protected readonly exploreCommunities = exploreCommunities;
   searchString: string = "";
+
   pageIndex: number = 0;
   length: number = 0;
   pageSize: number = 10;
@@ -50,15 +51,18 @@ export class ExploreCommunitiesComponent implements OnInit {
 
   handlePageEvent($event: PageEvent) {
     this.pageIndex = $event.pageIndex;
+    this.pageSize = $event.pageSize;
     this.fetchCommunities($event.pageIndex, $event.pageSize);
   }
 
   fetchCommunities(pageIndex: number, pageSize: number) {
     let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex);
-    this.communityService.fetchCommunitiesLimited(fetchEntityLimited).then(
+    this.communityService.fetchCommunityDTOSLimited(fetchEntityLimited).then(
       (communitiesDTO: CommunityDTO[]) => {
         console.log(`Fetched ${communitiesDTO.length} communities`);
-        communitiesDTO.sort((a, b) => {return a.id! - b.id!});
+        communitiesDTO.sort((a, b) =>
+          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+        );
         this.communities = communitiesDTO;
       },
       (error) => {
