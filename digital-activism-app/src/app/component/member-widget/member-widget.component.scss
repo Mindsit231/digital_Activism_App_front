@@ -1,0 +1,51 @@
+@import "../common.scss";
+
+.member-widget-main-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+}
+
+.member-widget-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+
+  width: 300px;
+
+  border-radius: 15px;
+  box-shadow: $boxShadowDefault;
+  background: $colorP11_2;
+  min-height: 70px;
+}
+
+.user-pfp-img-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  margin: 10px;
+
+  width: 50px;
+  height: 50px;
+}
+
+.pfp-img {
+  width: 50px;
+  height: 50px;
+  
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.user-info-div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}

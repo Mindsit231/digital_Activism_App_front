@@ -3,12 +3,12 @@
     <div class="post-header-div post-elem">
       <div class="post-member-div">
         <div class="user-pfp-img-div">
-          <img class="pfp-img" src="{{postDTO.memberDTOShort.pfpUrl!}}" alt="user-pfp-img"
-               *ngIf="postDTO.memberDTOShort.pfpUrl != undefined">
-          <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="postDTO.memberDTOShort.pfpUrl == undefined"></fa-icon>
+          <img class="pfp-img" src="{{postDTO.memberDTO.pfpUrl!}}" alt="user-pfp-img"
+               *ngIf="postDTO.memberDTO.pfpUrl != undefined">
+          <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="postDTO.memberDTO.pfpUrl == undefined"></fa-icon>
         </div>
         <div class="user-info-div">
-          <span>{{ postDTO.memberDTOShort.username }}</span>
+          <span>{{ postDTO.memberDTO.username }}</span>
           <span>{{ getDateTime(postDTO.creationDate) }}</span>
         </div>
       </div>

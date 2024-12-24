@@ -6,6 +6,7 @@ import {CommunityService} from '../community.service';
 import {TokenService} from '../token.service';
 import {CommunityDTO} from '../../model/community-dto';
 import {InternalObjectService} from '../misc/internal-object.service';
+import {InternalContainerService} from '../misc/internal-container.service';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +15,7 @@ export class CommunityGuardService implements CanActivate {
 
   constructor(private authenticatedGuardService: AuthenticatedGuardService,
               private communityService: CommunityService,
-              private internalObjectService: InternalObjectService<CommunityDTO>) {
+              private internalContainerService: InternalContainerService) {
   }
 
   async canActivate(
@@ -23,7 +24,7 @@ export class CommunityGuardService implements CanActivate {
     const communityDto = await this.communityService.getCommunityById(route.params[StorageKeys.COMMUNITY_ID]);
 
     if (communityDto != undefined) {
-      this.internalObjectService.setObject(communityDto);
+      this.internalContainerService.setCommunityDTO(communityDto);
 
       return await this.authenticatedGuardService.canActivate(route, state);
 

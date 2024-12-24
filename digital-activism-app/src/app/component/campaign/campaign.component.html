@@ -1,0 +1,22 @@
+<div class="campaign-body-main">
+  <div class="campaign-widget-div">
+    <app-campaign-widget
+      [communityDTO]="communityDTO"
+      [campaignDTO]="campaignDTO"
+      [hasVisitButton]="false">
+    </app-campaign-widget>
+  </div>
+
+  <div class="tabs-elem">
+    <mat-tab-group class="custom-tabs">
+      <mat-tab label="Messages">
+        <app-messages
+          [campaignDTO]="campaignDTO">
+        </app-messages>
+      </mat-tab>
+      @if(communityDTO.isAdmin) {
+        <mat-tab label="Members"></mat-tab>
+      }
+    </mat-tab-group>
+  </div>
+</div>

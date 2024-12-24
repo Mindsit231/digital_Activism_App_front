@@ -1,4 +1,4 @@
-import {HttpClient, HttpErrorResponse} from "@angular/common/http";
+import {HttpClient} from "@angular/common/http";
 import {EntityService} from "../entity.service";
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
@@ -11,6 +11,7 @@ import {CurrentMemberService} from './current-member.service';
 import {TokenService} from '../token.service';
 import {FileService} from '../misc/file.service';
 import {MEMBER_ENTITY} from '../entity-names';
+import {FetchEntityLimited} from '../../model/misc/fetch-entity-limited';
 
 @Injectable({
   providedIn: 'root'
@@ -69,34 +70,97 @@ export class MemberService extends EntityService<MemberDTO> {
       });
   }
 
-  public initializeMember(memberDTOObs: Observable<MemberDTO>): Promise<MemberDTO> {
+  public fetchMembersLimitedByCommunityId(fetchEntityLimited: FetchEntityLimited): Promise<MemberDTO[]> {
+    let memberDTOObs = this.http.post<MemberDTO[]>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-members-limited-by-community-id`,
+      fetchEntityLimited,
+      {
+        headers: this.tokenService.getAuthHeaders(),
+      });
+
+    return this.initializeDTOObss(memberDTOObs, this.initializeMemberDTO);
+  }
+
+  public fetchMembersLimitedByCampaignId(fetchEntityLimited: FetchEntityLimited): Promise<MemberDTO[]> {
+    let memberDTOObs = this.http.post<MemberDTO[]>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/fetch-members-limited-by-campaign-id`,
+      fetchEntityLimited,
+      {
+        headers: this.tokenService.getAuthHeaders(),
+      });
+
+    return this.initializeDTOObss(memberDTOObs, this.initializeMemberDTO);
+  }
+
+  public initializeMemberDTO(memberDTOJson: MemberDTO,
+                             options?: {
+                               memberService?: MemberService
+                             }): Promise<MemberDTO> {
     return new Promise<MemberDTO>((resolve, reject) => {
-      memberDTOObs.subscribe({
-        next: (jsonMemberDTO: MemberDTO) => {
-          if (jsonMemberDTO != null) {
-            let memberDTO: MemberDTO = MemberDTO.fromJson(jsonMemberDTO);
-            this.getMemberPfpUrl(memberDTO.pfpName)
-              .then((pfpUrl: string) => {
-                memberDTO.pfpUrl = pfpUrl;
-                resolve(memberDTO);
-              })
-              .catch((error: Error) => {
-                reject(error);
-              })
-            resolve(memberDTO)
-          } else {
-            reject(new Error("MemberDTO is null"));
+      if (memberDTOJson == undefined) {
+        reject(new Error("MemberDTOJson is undefined"));
+      }
+      let memberDTO: MemberDTO = MemberDTO.fromJson(memberDTOJson);
+
+      new Observable<MemberDTO>((subscriber) => {
+        if (memberDTO != undefined) {
+          if (options?.memberService == undefined) {
+            reject(new Error("MemberService is undefined"));
           }
-        },
-        error: (error: HttpErrorResponse) => {
-          reject(error);
+          options?.memberService?.getMemberPfpUrl(memberDTO.pfpName)
+            .then((pfpUrl: string | undefined) => {
+              memberDTO.pfpUrl = pfpUrl;
+              subscriber.next(memberDTO);
+            })
+            .catch((error: Error) => {
+              subscriber.next(memberDTO);
+            })
+        } else {
+          subscriber.error(new Error("MemberDTO is undefined"));
         }
       })
+        .subscribe({
+          next: (memberDTO: MemberDTO) => {
+            if (memberDTO.pfpName == undefined || memberDTO.pfpUrl != undefined) {
+            }
+            console.log(memberDTO)
+            resolve(memberDTO);
+          },
+          error: (error: Error) => {
+            reject(error);
+          }
+        })
     })
   }
 
-  public getMemberPfpUrl(pfpName: string | undefined): Promise<string> {
-    return new Promise<string>((resolve, reject) => {
+  // public initializeMember(memberDTOObs: Observable<MemberDTO>): Promise<MemberDTO> {
+  //   return new Promise<MemberDTO>((resolve, reject) => {
+  //     memberDTOObs.subscribe({
+  //       next: (jsonMemberDTO: MemberDTO) => {
+  //         if (jsonMemberDTO != null) {
+  //           let memberDTO: MemberDTO = MemberDTO.fromJson(jsonMemberDTO);
+  //           this.getMemberPfpUrl(memberDTO.pfpName)
+  //             .then((pfpUrl: string) => {
+  //               memberDTO.pfpUrl = pfpUrl;
+  //               resolve(memberDTO);
+  //             })
+  //             .catch((error: Error) => {
+  //               reject(error);
+  //             })
+  //           resolve(memberDTO)
+  //         } else {
+  //           reject(new Error("MemberDTO is null"));
+  //         }
+  //       },
+  //       error: (error: HttpErrorResponse) => {
+  //         reject(error);
+  //       }
+  //     })
+  //   })
+  // }
+
+  public getMemberPfpUrl(pfpName: string | undefined): Promise<string | undefined> {
+    return new Promise<string| undefined>((resolve, reject) => {
       if (pfpName != undefined) {
         this.fileService.downloadFile(pfpName, this.entityName)
           .then((pfpUrl: string) => {
@@ -104,6 +168,8 @@ export class MemberService extends EntityService<MemberDTO> {
           }).catch((error: Error) => {
           reject(error);
         })
+      } else {
+        resolve(undefined);
       }
     })
   }

@@ -7,7 +7,7 @@ import {TokenService} from '../../service/token.service';
 import {PostService} from '../../service/post/post.service';
 import {CommunityDTO} from '../../model/community-dto';
 import {NgForOf} from '@angular/common';
-import {AddEditPostModalComponent} from './add-edit-post-modal/add-edit-post-modal.component';
+import {AddPostModalComponent} from './add-post-modal/add-post-modal.component';
 import {ModalOpenType} from '../misc/modal-open-type';
 import {PostRequest} from '../../model/post/post-request';
 import {PUBLIC, Visibility} from '../../model/post/visibility';
@@ -20,7 +20,7 @@ import {CurrentMemberService} from '../../service/member/current-member.service'
     PostComponent,
     MatPaginator,
     NgForOf,
-    AddEditPostModalComponent
+    AddPostModalComponent
   ],
   templateUrl: './posts.component.html',
   styleUrl: './posts.component.scss'
@@ -35,8 +35,8 @@ export class PostsComponent implements OnInit {
 
   @Input() communityDTO!: CommunityDTO;
 
-  isAddEditTweetModalOpen: boolean = false;
-  editingPost!: PostRequest;
+  isAddEditPostModalOpen: boolean = false;
+  editingPostRequest!: PostRequest;
 
   constructor(private el: ElementRef,
               private postService: PostService,
@@ -80,12 +80,12 @@ export class PostsComponent implements OnInit {
   }
 
   addPostOnClick() {
-    this.isAddEditTweetModalOpen = true;
-    this.editingPost = new PostRequest("", "", PUBLIC.name, this.communityDTO.id, this.currentMemberService.memberDTO!.id);
+    this.isAddEditPostModalOpen = true;
+    this.editingPostRequest = new PostRequest("", "", PUBLIC.name, this.communityDTO.id, this.currentMemberService.memberDTO!.id);
   }
 
   onAddEditPostModalChange(newVal: boolean) {
-    this.isAddEditTweetModalOpen = newVal;
+    this.isAddEditPostModalOpen = newVal;
   }
 
   onPostAdded(postDTO: PostDTO) {

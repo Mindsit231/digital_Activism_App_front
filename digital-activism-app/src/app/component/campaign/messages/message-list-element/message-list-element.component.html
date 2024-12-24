@@ -1,0 +1,12 @@
+<div class="message-container" [style.justify-content]="messageListElement.position">
+  <div class="message-body-div">
+    <div class="info-div">
+      <span class="username-span small-span">{{ messageListElement.messageDTO.memberDTO.username }}</span>
+      <span class="small-span">{{timeStamp}}</span>
+    </div>
+    <div class="message-div {{messageListElement.messageType.backgroundClass}}">
+      <span class="expandable-span">{{messageListElement.messageDTO.text}}</span>
+    </div>
+  </div>
+</div>
+

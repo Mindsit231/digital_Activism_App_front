@@ -48,6 +48,19 @@ export class CommunityService extends EntityService<CommunityDTO> {
       });
   }
 
+  public findCommunityDTOById(communityId: number): Promise<CommunityDTO> {
+    let communityDTOOBs = this.http.get<CommunityDTO>(
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/find-community-dto-by-id`,
+      {
+        headers: this.tokenService.getAuthHeaders(),
+        params: {
+          communityId: communityId.toString()
+        }
+      })
+
+    return this.initializeDTOObs(communityDTOOBs, this.initializeCommunityDTO);
+  }
+
   public toggleJoin(communityId: number): Promise<boolean> {
     return new Promise<boolean>((resolve) => {
       this.toggleJoinRequest(communityId).subscribe({
@@ -62,7 +75,6 @@ export class CommunityService extends EntityService<CommunityDTO> {
     })
   }
 
-
   public getCommunityById(communityId: number): Promise<CommunityDTO> {
     return new Promise<CommunityDTO>((resolve, reject) => {
       this.findCommunityDTOById(communityId).then(
@@ -74,24 +86,10 @@ export class CommunityService extends EntityService<CommunityDTO> {
           }
         },
         (error: Error) => {
-          console.error(error);
           reject(error);
         }
       )
     })
-  }
-
-  public findCommunityDTOById(communityId: number): Promise<CommunityDTO> {
-    let communityDTOOBs = this.http.get<CommunityDTO>(
-      `${this.apiBackendUrl}/authenticated/${this.entityName}/find-community-dto-by-id`,
-      {
-        headers: this.tokenService.getAuthHeaders(),
-        params: {
-          communityId: communityId.toString()
-        }
-      })
-
-    return this.initializeDTOObs(communityDTOOBs, this.initializeCommunityDTO);
   }
 
   public initializeCommunityDTO(communityDTOJson: CommunityDTO,
@@ -101,12 +99,18 @@ export class CommunityService extends EntityService<CommunityDTO> {
                                   entityName?: string
                                 }): Promise<CommunityDTO> {
     return new Promise<CommunityDTO>((resolve, reject) => {
+      if (communityDTOJson == undefined) {
+        reject(new Error("CommunityDTOJson is undefined"));
+      }
+
       let communityDTO = CommunityDTO.fromJson(communityDTOJson);
 
-      let obs = new Observable<CommunityDTO>((subscriber) => {
+      new Observable<CommunityDTO>((subscriber) => {
         if (communityDTO != undefined) {
-
           if (communityDTO.logoName != undefined && communityDTO.logoName.length > 0) {
+            if(options?.fileService == undefined) {
+              reject(new Error("FileService is undefined"));
+            }
             options?.fileService?.downloadFile(communityDTO.logoName, options?.entityName!)
               .then((logoUrl: string) => {
                 communityDTO.logoUrl = logoUrl;
@@ -124,6 +128,9 @@ export class CommunityService extends EntityService<CommunityDTO> {
           }
 
           if (communityDTO.bannerName != undefined && communityDTO.bannerName.length > 0) {
+            if(options?.fileService == undefined) {
+              reject(new Error("FileService is undefined"));
+            }
             options?.fileService?.downloadFile(communityDTO.bannerName, options?.entityName!)
               .then((bannerUrl: string) => {
                 communityDTO.bannerUrl = bannerUrl;
@@ -138,20 +145,20 @@ export class CommunityService extends EntityService<CommunityDTO> {
             communityDTO.bannerUrl = "assets/placeholder/placeholder-banner.jpg";
             subscriber.next(communityDTO);
           }
-
+        } else {
+          subscriber.error(new Error("CommunityDTO is undefined"));
         }
       })
-
-      obs.subscribe({
-        next: (communityDTO: CommunityDTO) => {
-          if (communityDTO.bannerUrl != undefined && communityDTO.logoUrl != undefined) {
-            resolve(communityDTO);
+        .subscribe({
+          next: (communityDTO: CommunityDTO) => {
+            if (communityDTO.bannerUrl != undefined && communityDTO.logoUrl != undefined) {
+              resolve(communityDTO);
+            }
+          },
+          error: (error: Error) => {
+            reject(error);
           }
-        },
-        error: (error: Error) => {
-          reject(error);
-        }
-      })
+        })
     })
   }
 }

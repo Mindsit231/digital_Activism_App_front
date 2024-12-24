@@ -1,0 +1,39 @@
+<div class="campaigns-main-body">
+  @if (communityDTO.isAdmin) {
+    <div class="create-campaign-div">
+      <button class="default-btn" (click)="addCampaignOnClick()">Add Campaign</button>
+    </div>
+  }
+
+  @if (campaigns.length == 0) {
+    <div class="no-campaigns-div">
+      <span class="title-span">No campaigns to show</span>
+    </div>
+  } @else {
+    <div class="campaigns-container">
+
+      <div class="campaign-body-div" *ngFor="let campaign of campaigns">
+        <app-campaign-widget
+          [communityDTO]="communityDTO"
+          [campaignDTO]="campaign">
+        </app-campaign-widget>
+      </div>
+
+    </div>
+    <mat-paginator class="custom-paginator"
+                   [length]="length"
+                   [pageSize]="pageSize"
+                   [showFirstLastButtons]="true"
+                   [pageSizeOptions]="[5, 10, 25, 100]"
+                   [pageIndex]="pageIndex"
+                   (page)="handlePageEvent($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+  }
+</div>
+<app-add-campaign-modal
+  [isModalOpen]="isAddEditCampaignModalOpen"
+  [campaignRequest]="editingCampaignRequest"
+  (onModalChangeEmitter)="onAddEditCampaignModalChange($event)"
+  (onCampaignAddedEmitter)="onCampaignAdded($event)"
+></app-add-campaign-modal>

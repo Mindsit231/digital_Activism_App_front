@@ -19,7 +19,7 @@ import {Observable} from 'rxjs';
 import {FileService} from '../../../service/misc/file.service';
 
 @Component({
-  selector: 'app-add-edit-tweet-modal',
+  selector: 'app-add-post-modal',
   standalone: true,
   imports: [
     FaIconComponent,
@@ -27,10 +27,10 @@ import {FileService} from '../../../service/misc/file.service';
     FormsModule,
     NgForOf
   ],
-  templateUrl: './add-edit-post-modal.component.html',
-  styleUrl: './add-edit-post-modal.component.scss'
+  templateUrl: './add-post-modal.component.html',
+  styleUrl: './add-post-modal.component.scss'
 })
-export class AddEditPostModalComponent extends ModalComponent implements OnInit {
+export class AddPostModalComponent extends ModalComponent {
   @Input() override isModalOpen = false
   @Output() override onModalChangeEmitter = new EventEmitter<boolean>();
   @Output() onPostAddedEmitter = new EventEmitter<PostDTO>();
@@ -54,14 +54,13 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
   isVideosSuccess: boolean = false;
 
   isPostAdded: boolean = false;
-
   isFailure: boolean = false;
 
   faTrash = faTrash;
 
   @Input() postRequest!: PostRequest;
-  @ViewChild("videoInput") videoInput!: ElementRef;
 
+  @ViewChild("videoInput") videoInput!: ElementRef;
   @ViewChild("imageInput") imageInput!: ElementRef;
 
   constructor(protected postService: PostService,
@@ -70,10 +69,6 @@ export class AddEditPostModalComponent extends ModalComponent implements OnInit 
               protected routerService: RouterService,
               protected override fileService: FileService) {
     super();
-  }
-
-  ngOnInit(): void {
-
   }
 
   override isFormValid(): Promise<boolean> {

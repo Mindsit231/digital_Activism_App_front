@@ -39,7 +39,8 @@ export class AuthenticationService {
       `${this.apiBackendUrl}/public/login`,
       loginRequest);
 
-    return this.memberService.initializeMember(memberDTOObs);
+    this.memberService.memberService = this.memberService;
+    return this.memberService.initializeDTOObs(memberDTOObs, this.memberService.initializeMemberDTO) as Promise<MemberDTO>;
   }
 
   public register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
@@ -55,7 +56,8 @@ export class AuthenticationService {
       }
     );
 
-    return this.memberService.initializeMember(memberDTOObs);
+    this.memberService.memberService = this.memberService;
+    return this.memberService.initializeDTOObs(memberDTOObs, this.memberService.initializeMemberDTO) as Promise<MemberDTO>;
   }
 
   public verifyToken(token: string): Observable<boolean> {

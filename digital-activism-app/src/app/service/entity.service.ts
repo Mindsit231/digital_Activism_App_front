@@ -21,7 +21,7 @@ export abstract class EntityService<T> {
   protected postImageService!: PostImageService;
   protected postVideoService!: PostVideoService;
 
-  protected memberService!: MemberService;
+  public memberService!: MemberService;
 
   protected constructor(protected http: HttpClient, entityName: string) {
     this.entityName = entityName;
@@ -49,7 +49,7 @@ export abstract class EntityService<T> {
               entityName: this.entityName,
               postImageService: this.postImageService,
               postVideoService: this.postVideoService,
-              memberService: this.memberService
+              memberService: this.memberService,
             })
               .then((DTOInitialized: T) => {
                 DTOs.push(DTOInitialized);

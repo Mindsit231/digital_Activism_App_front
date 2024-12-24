@@ -147,6 +147,11 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   font-weight: 700;
 }
 
+.text-size-small {
+  font-style: normal;
+  font-size: 12px;
+}
+
 // COMMON SPANS
 .validation-error-span {
   color: #B81111;
@@ -165,6 +170,15 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
 .title-span {
   font-size: 26px;
   font-weight: 700;
+}
+
+.text-span {
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
+  max-width: 600px;
+  min-width: 600px;
+  display: inline-block;
 }
 
 // DEFAULT MAIN PAGE DIV
@@ -319,6 +333,17 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   width: 100%;
 }
 
+.default-date-input {
+  background: $colorP17;
+  border-radius: 15px;
+  border: grey solid 1px;
+  height: 35px;
+  margin: 5px 0 5px 0;
+  white-space: pre;
+  text-indent: 5px;
+  width: 100%;
+}
+
 .default-text-area-3 {
   background: $colorP17;
   border-radius: 5px;
@@ -326,9 +351,12 @@ $hoverBackground: rgba(0, 0, 0, 0.3);
   height: 90px;
   max-height: 300px;
   margin: 5px 0 5px 0;
-  white-space: pre;
   padding: 5px 10px 5px 10px;
   width: 100%;
+
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+  white-space: normal;
 }
 
 .default-check-box-1 {
@@ -730,4 +758,9 @@ input[type=number] {
     divider-color: $colorP11_2,
     active-indicator-color: $colorP11,
   ));
+}
+
+.tabs-elem {
+  width: 100%;
+  padding: 20px;
 }

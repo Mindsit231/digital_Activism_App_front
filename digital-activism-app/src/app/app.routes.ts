@@ -16,6 +16,8 @@ import {MyCommunitiesComponent} from './component/user-account/my-communities/my
 import {ExploreCommunitiesComponent} from './component/explore-communities/explore-communities.component';
 import {CommunityComponent} from './component/community/community.component';
 import {CommunityGuardService} from './service/guard/community-guard.service';
+import {CampaignComponent} from './component/campaign/campaign.component';
+import {CampaignGuardService} from './service/guard/campaign-guard.service';
 
 export const homeRoute = `home`;
 export const loginRoute = `login`;
@@ -29,6 +31,7 @@ export const userSettingsRoute = `user-settings`;
 export const passwordResetRoute = `password-reset`;
 export const exploreCommunitiesRoute = `explore-communities`;
 export const communityRoute = `community`;
+export const campaignRoute = `campaign`;
 
 export const routes: Routes = [
   {path: '', component: HomeComponent},
@@ -70,5 +73,15 @@ export const routes: Routes = [
     path: `${communityRoute}`,
     component: CommunityComponent,
     canActivate: [CommunityGuardService]
-  }
+  },
+  {
+    path: `${communityRoute}/:${StorageKeys.COMMUNITY_ID}/${campaignRoute}/:${StorageKeys.CAMPAIGN_ID}`,
+    component: CampaignComponent,
+    canActivate: [CampaignGuardService]
+  },
+  {
+    path: `${communityRoute}/${campaignRoute}`,
+    component: CampaignComponent,
+    canActivate: [CampaignGuardService]
+  },
 ];

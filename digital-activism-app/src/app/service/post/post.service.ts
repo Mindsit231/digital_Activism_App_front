@@ -19,7 +19,7 @@ export class PostService extends EntityService<PostDTO> {
   constructor(http: HttpClient,
               protected override postVideoService: PostVideoService,
               protected override postImageService: PostImageService,
-              protected override memberService: MemberService,
+              public override memberService: MemberService,
               protected override tokenService: TokenService) {
     super(http, POST_ENTITY);
   }
@@ -116,13 +116,13 @@ export class PostService extends EntityService<PostDTO> {
           subscriber.next(postDTO);
         }
 
-        if (postDTO.memberDTOShort.pfpName != undefined) {
+        if (postDTO.memberDTO.pfpName != undefined) {
           if(options?.memberService == undefined) {
             reject(new Error("MemberService is undefined"));
           }
-          options?.memberService?.getMemberPfpUrl(postDTO.memberDTOShort.pfpName)
-            .then((pfpUrl: string) => {
-              postDTO.memberDTOShort.pfpUrl = pfpUrl;
+          options?.memberService?.getMemberPfpUrl(postDTO.memberDTO.pfpName)
+            .then((pfpUrl: string | undefined) => {
+              postDTO.memberDTO.pfpUrl = pfpUrl;
               subscriber.next(postDTO);
             })
             .catch((error: Error) => {
@@ -137,7 +137,7 @@ export class PostService extends EntityService<PostDTO> {
           if (
             postVideoCount === postDTO.postVideoDTOS.length
             && postImageCount === postDTO.postImageDTOS.length
-            && (postDTO.memberDTOShort.pfpName == undefined || postDTO.memberDTOShort.pfpUrl != undefined)) {
+            && (postDTO.memberDTO.pfpName == undefined || postDTO.memberDTO.pfpUrl != undefined)) {
             resolve(postDTO);
           }
         },

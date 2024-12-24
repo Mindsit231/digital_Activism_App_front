@@ -85,6 +85,7 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
           let loginRequest = new LoginRequest(this.emailInput, this.passwordInput);
           this.authenticationService.verifyLogin(loginRequest)
             .then((memberDTO: MemberDTO) => {
+              console.log(memberDTO)
               if (memberDTO != null) {
                 console.log('Login is valid');
                 if (!memberDTO.emailVerified) {
@@ -104,6 +105,10 @@ export class LoginComponent extends AuthenticationComponent implements OnInit {
                   this.currentMemberService.memberDTO = memberDTO;
                   resolve(true);
                 }
+              } else {
+                console.log('Login is not valid');
+                this.isLoginChecked = true;
+                resolve(false);
               }
             })
             .catch((error: Error) => {

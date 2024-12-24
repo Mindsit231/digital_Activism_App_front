@@ -13,7 +13,7 @@ import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {logout, ProfileMenuItem, profileMenuItems} from "../user-account/profile-menu-item/profile-menu-item";
 import {MemberService} from "../../service/member/member.service";
 import {navigationItems} from "./navigation-item";
-import {AddEditPostModalComponent} from "../posts/add-edit-post-modal/add-edit-post-modal.component";
+import {AddPostModalComponent} from "../posts/add-post-modal/add-post-modal.component";
 import {AuthenticationService} from '../../service/authentication.service';
 import {RouterService} from '../../service/router.service';
 import {TokenService} from '../../service/token.service';
@@ -25,7 +25,7 @@ import {MemberDTO} from '../../model/member/member-dto';
   imports: [LogoComponent,
     FontAwesomeModule, NgStyle,
     FormsModule, AutoCompleteModule,
-    NgxResizeObserverModule, NgIf, NgForOf, AddEditPostModalComponent],
+    NgxResizeObserverModule, NgIf, NgForOf, AddPostModalComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   host: {

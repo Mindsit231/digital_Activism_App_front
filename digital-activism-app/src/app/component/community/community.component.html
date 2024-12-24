@@ -26,9 +26,17 @@
           [communityDTO]="communityDTO"
         ></app-posts>
       </mat-tab>
-      <mat-tab label="Campaigns"> Content 2</mat-tab>
+      <mat-tab label="Campaigns">
+        <app-campaigns
+          [communityDTO]="communityDTO"
+        ></app-campaigns>
+      </mat-tab>
       @if (this.communityDTO.isAdmin) {
-        <mat-tab label="Members"> Content 4</mat-tab>
+        <mat-tab label="Members">
+          <app-members
+            [communityDTO]="communityDTO">
+          </app-members>
+        </mat-tab>
       }
     </mat-tab-group>
   </div>

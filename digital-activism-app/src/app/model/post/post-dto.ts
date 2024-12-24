@@ -1,18 +1,19 @@
 import {PostImageDTO} from './post-image-dto';
 import {PostVideoDTO} from './post-video-dto';
 import {TagDTO} from '../tag/tag-dto';
-import {MemberDTOShort} from '../member/member-dto-short';
+import {Visibility} from './visibility';
+import {MemberDTO} from '../member/member-dto';
 
 export class PostDTO {
   id: number;
   title: string;
   content: string;
-  visibility: string;
+  visibility: Visibility;
   communityId: number;
 
   creationDate: string;
 
-  memberDTOShort: MemberDTOShort;
+  memberDTO: MemberDTO;
   postImageDTOS: PostImageDTO[];
   postVideoDTOS: PostVideoDTO[];
   tagList: TagDTO[];
@@ -21,14 +22,14 @@ export class PostDTO {
   liked: boolean;
 
 
-  constructor(id: number, title: string, content: string, visibility: string, communityId: number, creationDate: string, memberDTOShort: MemberDTOShort, postImageDTOS: PostImageDTO[], postVideoDTOS: PostVideoDTO[], tagList: TagDTO[], likesCount: number, liked: boolean) {
+  constructor(id: number, title: string, content: string, visibility: Visibility, communityId: number, creationDate: string, memberDTO: MemberDTO, postImageDTOS: PostImageDTO[], postVideoDTOS: PostVideoDTO[], tagList: TagDTO[], likesCount: number, liked: boolean) {
     this.id = id;
     this.title = title;
     this.content = content;
     this.visibility = visibility;
     this.communityId = communityId;
     this.creationDate = creationDate;
-    this.memberDTOShort = memberDTOShort;
+    this.memberDTO = memberDTO;
     this.postImageDTOS = postImageDTOS;
     this.postVideoDTOS = postVideoDTOS;
     this.tagList = tagList;
@@ -36,15 +37,15 @@ export class PostDTO {
     this.liked = liked;
   }
 
-  static fromJson(jsonPostDTO: PostDTO): PostDTO {
+  static fromJson(jsonPostDTO: any): PostDTO {
     return new PostDTO(
       jsonPostDTO.id,
       jsonPostDTO.title,
       jsonPostDTO.content,
-      jsonPostDTO.visibility,
+      Visibility.getVisibilityByName(jsonPostDTO.visibility)!,
       jsonPostDTO.communityId,
       jsonPostDTO.creationDate,
-      MemberDTOShort.fromJson(jsonPostDTO.memberDTOShort),
+      MemberDTO.fromJson(jsonPostDTO.memberDTO),
       PostImageDTO.initializePostImages(jsonPostDTO.postImageDTOS),
       PostVideoDTO.initializePostVideos(jsonPostDTO.postVideoDTOS),
       TagDTO.initializeTags(jsonPostDTO.tagList),

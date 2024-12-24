@@ -1,6 +1,7 @@
 import {inject, Injectable} from '@angular/core';
 import {ActivatedRoute, Router} from '@angular/router';
 import {
+  campaignRoute,
   communityRoute,
   connectionSecurityRoute,
   homeRoute,
@@ -64,5 +65,9 @@ export class RouterService {
 
   routeToUserSettings() {
     return this.router.navigate([`/${userAccountRoute}/${userSettingsRoute}`], {relativeTo: this.route})
+  }
+
+  routeToCampaign(communityId: number, campaignId: number) {
+    return this.router.navigate([`/${communityRoute}/${communityId}/${campaignRoute}/${campaignId}`], {relativeTo: this.route})
   }
 }

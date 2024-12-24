@@ -19,20 +19,20 @@
       </div>
 
     </div>
+    <mat-paginator class="custom-paginator"
+                   [length]="length"
+                   [pageSize]="pageSize"
+                   [showFirstLastButtons]="true"
+                   [pageSizeOptions]="[5, 10, 25, 100]"
+                   [pageIndex]="pageIndex"
+                   (page)="handlePageEvent($event)"
+                   aria-label="Select page">
+    </mat-paginator>
   }
-  <mat-paginator class="custom-paginator"
-                 [length]="length"
-                 [pageSize]="pageSize"
-                 [showFirstLastButtons]="true"
-                 [pageSizeOptions]="[5, 10, 25, 100]"
-                 [pageIndex]="pageIndex"
-                 (page)="handlePageEvent($event)"
-                 aria-label="Select page">
-  </mat-paginator>
 </div>
-<app-add-edit-tweet-modal
-  [isModalOpen]="isAddEditTweetModalOpen"
-  [postRequest]="editingPost"
+<app-add-post-modal
+  [isModalOpen]="isAddEditPostModalOpen"
+  [postRequest]="editingPostRequest"
   (onModalChangeEmitter)="onAddEditPostModalChange($event)"
   (onPostAddedEmitter)="onPostAdded($event)"
-></app-add-edit-tweet-modal>
+></app-add-post-modal>
