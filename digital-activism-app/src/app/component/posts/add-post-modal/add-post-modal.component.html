@@ -22,8 +22,8 @@
         </div>
         <div class="my-modal-element">
           <div class="add-form-elem-1">
-            <label for="body-input">Visibility:</label>
-            <select class="default-select-div" [(ngModel)]="postRequest.visibility" (click)="checkIfPostAdded()">
+            <label for="visibility-input">Visibility:</label>
+            <select class="default-select-div" [(ngModel)]="postRequest.visibility" (click)="checkIfPostAdded()" id="visibility-input">
               @for(visibility of VISIBILITY_LIST; track visibility) {
                 <option value="{{visibility.name}}">{{visibility.name}}</option>
               }
@@ -31,20 +31,23 @@
           </div>
         </div>
         <div class="my-modal-element">
-          <div class="tags-elem">
-            <div class="tags-select-div">
-              <div class="tags-select">
-                <input class="default-input-3" [(ngModel)]="tagProposal">
+          <div class="add-form-elem-1">
+            <label for="tags-input">Tags:</label>
+            <div class="tags-elem">
+              <div class="tags-select-div">
+                <div class="tags-select">
+                  <input class="default-input-3" id="tags-input" [(ngModel)]="tagProposal">
+                </div>
+                <div class="clickable-icon-elem-3" (click)="onAddTag()">
+                  <fa-icon [icon]="faArrowRight" [class]="['clickable-icon-3']"></fa-icon>
+                </div>
               </div>
-              <div class="clickable-icon-elem-3" (click)="onAddTag()">
-                <fa-icon [icon]="faArrowRight" [class]="['clickable-icon-3']"></fa-icon>
-              </div>
-            </div>
-            <div class="tags-container">
-              <div class="tag-element" *ngFor="let tag of postRequest.tagList">
-                <span>{{tag}}</span>
-                <div class="clickable-icon-elem-4" (click)="onDeleteTag(tag)">
-                  <fa-icon [icon]="faXmark" [class]="['clickable-icon-4']"></fa-icon>
+              <div class="tags-container">
+                <div class="tag-element" *ngFor="let tag of postRequest.tagList">
+                  <span>{{tag}}</span>
+                  <div class="clickable-icon-elem-4" (click)="onDeleteTag(tag)">
+                    <fa-icon [icon]="faXmark" [class]="['clickable-icon-4']"></fa-icon>
+                  </div>
                 </div>
               </div>
             </div>
