@@ -3,6 +3,7 @@ import {CookieService} from 'ngx-cookie-service';
 import {StorageKeys} from '../component/misc/storage-keys';
 import {MemberDTO} from '../model/member/member-dto';
 import {jwtDecode} from 'jwt-decode';
+import {HttpHeaders} from '@angular/common/http';
 
 @Injectable({
   providedIn: 'root'
@@ -28,5 +29,9 @@ export class TokenService {
 
   deleteUserToken(): void {
     this.cookieService.delete(StorageKeys.USER_TOKEN, '/');
+  }
+
+  getAuthHeaders(): HttpHeaders {
+    return new HttpHeaders({'Authorization': `Bearer ${this.getUserToken()}`});
   }
 }

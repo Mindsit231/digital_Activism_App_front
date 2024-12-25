@@ -2,4 +2,41 @@
   <div class="h1-div">
     <h1 class="main-page-h1">My Communities</h1>
   </div>
+
+  <div class="create-community-div">
+    <button class="default-btn" (click)="addCommunityOnClick()">Create community</button>
+  </div>
+
+  @if(communities.length == 0) {
+    <div class="no-communities-div">
+      <span class="title-span">No Communities to show</span>
+    </div>
+  } @else {
+    <div class="communities-container">
+      <div class="community-widget-body-div" *ngFor="let community of communities">
+        <app-community-widget
+          [communityDTO]="community"
+        ></app-community-widget>
+      </div>
+    </div>
+    <div class="paginator-container">
+      <div>
+        <mat-paginator class="custom-paginator"
+                       [length]="length"
+                       [pageSize]="pageSize"
+                       [showFirstLastButtons]="true"
+                       [pageSizeOptions]="[5, 10, 25, 100]"
+                       [pageIndex]="pageIndex"
+                       (page)="handlePageEvent($event)"
+                       aria-label="Select page">
+        </mat-paginator>
+      </div>
+    </div>
+  }
 </div>
+<app-add-community-modal
+[isModalOpen]="isAddCommunityModalOpen"
+[communityRequest]="editingCommunityRequest"
+(onModalChangeEmitter)="onAddCommunityModalChange($event)"
+(onCommunityAddedEmitter)="onCommunityAdded($event)">
+</app-add-community-modal>

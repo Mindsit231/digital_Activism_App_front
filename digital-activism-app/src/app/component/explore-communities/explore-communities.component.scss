@@ -1,6 +1,6 @@
 @import "../common.scss";
 
-.community-banner-container {
+.communities-container {
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -8,14 +8,14 @@
 
   width: 100%;
 
+  gap: 20px;
 }
 
-.community-banner-body-div {
+.community-widget-body-div {
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
 
   width: 100%;
-  margin: 20px;
 }

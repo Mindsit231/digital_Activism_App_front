@@ -1,0 +1,25 @@
+<div class="message-box-body-div">
+  <div class="message-box-body">
+    <div class="header-div">
+      <span>Campaign Messages</span>
+    </div>
+    <div class="container-div">
+      <div class="message-main-area-div">
+        <div #messageAreaDiv class="message-area-div" (scroll)="onScroll($event)">
+          @if(messageListElements.length === 0){
+            <span>This is the beginning of the chat for your order. Say Hello :)</span>
+          }
+          <div class="message-list-body-div" *ngFor="let messageList of messageListElements">
+            <app-message-list-element
+              [style.width.%]="100"
+              [messageListElement]="messageList">
+            </app-message-list-element>
+          </div>
+        </div>
+        <form class="message-input-form" (ngSubmit)="onMessageEnter()">
+          <input class="default-input-2" [(ngModel)]="messageTyped" placeholder="Type a message..." name="message-input">
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

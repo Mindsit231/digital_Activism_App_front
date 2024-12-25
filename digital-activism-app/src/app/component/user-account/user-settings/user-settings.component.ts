@@ -7,7 +7,7 @@ import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {NgForOf, NgIf} from "@angular/common";
 import {MemberService} from "../../../service/member/member.service";
 import {PaginatorModule} from "primeng/paginator";
-import {Tag} from '../../../model/tag';
+import {TagDTO} from '../../../model/tag/tag-dto';
 import {RouterService} from '../../../service/router.service';
 import {CurrentMemberService} from '../../../service/member/current-member.service';
 import {TokenService} from '../../../service/token.service';
@@ -34,7 +34,7 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
   faPenToSquare = faPenToSquare;
   faArrowRight = faArrowRight;
 
-  memberTags: Tag[] = [];
+  memberTags: TagDTO[] = [];
 
   faXmark = faXmark;
   tagProposal!: string | undefined;
@@ -42,7 +42,6 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
   constructor(protected el: ElementRef,
               protected memberService: MemberService,
               protected currentMemberService: CurrentMemberService,
-              protected tokenService: TokenService,
               protected cookieService: CookieService,
               protected routerService: RouterService) {
     super();
@@ -51,8 +50,8 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
   ngOnInit(): void {
     this.el.nativeElement.style.width = `100%`;
 
-    this.memberService.fetchTagsByToken(this.tokenService.getUserToken()).subscribe({
-      next: (tags: Tag[]) => {
+    this.memberService.fetchTagsByToken().subscribe({
+      next: (tags: TagDTO[]) => {
         this.memberTags = tags;
       },
       error: (error) => {
@@ -69,8 +68,8 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
     this.isModalOpen = newVal;
   }
 
-  onDeleteTag(tag: Tag) {
-    this.memberService.deleteTagByToken(tag, this.tokenService.getUserToken()).subscribe({
+  onDeleteTag(tag: TagDTO) {
+    this.memberService.deleteTagByToken(tag).subscribe({
       next: (isDeleted: boolean) => {
         if (isDeleted) {
           this.memberTags.splice(this.memberTags.indexOf(tag), 1);
@@ -86,8 +85,8 @@ export class UserSettingsComponent extends FooterHandlerComponent implements OnI
 
   saveOnClick() {
     if(this.tagProposal != null && this.tagProposal.length > 0) {
-      this.memberService.proposeNewTag(this.tagProposal, this.tokenService.getUserToken()).subscribe({
-        next: (jsonTag: Tag) => {
+      this.memberService.proposeNewTag(this.tagProposal).subscribe({
+        next: (jsonTag: TagDTO) => {
           if (jsonTag != null) {
             this.memberTags.push(jsonTag);
           } else {

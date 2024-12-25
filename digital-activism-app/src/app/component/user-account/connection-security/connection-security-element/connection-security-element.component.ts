@@ -33,8 +33,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
   @Output() onCloseModal = new EventEmitter<boolean>();
 
   constructor(protected memberService: MemberService,
-              protected currentMemberService: CurrentMemberService,
-              protected override tokenService: TokenService) {
+              protected currentMemberService: CurrentMemberService) {
     super();
   }
 
@@ -46,10 +45,10 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
     this.editableElements.forEach((editableElement) => {
       switch (editableElement.name) {
         case usernameElement.name:
-          editableElement.value = this.currentMemberService.member?.username!;
+          editableElement.value = this.currentMemberService.memberDTO?.username!;
           break;
         case emailElement.name:
-          editableElement.value = this.currentMemberService.member?.email!;
+          editableElement.value = this.currentMemberService.memberDTO?.email!;
           break;
       }
     });
@@ -82,10 +81,10 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
       editableElement.isChanged = false;
       switch (editableElement.name) {
         case usernameElement.name:
-          this.currentMemberService.member?.setUsername(editableElement.value);
+          this.currentMemberService.memberDTO?.setUsername(editableElement.value);
           break;
         case emailElement.name:
-          this.currentMemberService.member?.setEmail(editableElement.value);
+          this.currentMemberService.memberDTO?.setEmail(editableElement.value);
           break;
       }
     });
@@ -100,7 +99,7 @@ export class ConnectionSecurityElementComponent extends FormComponent implements
 
     if (hasModifications) {
       console.log(updateRequest);
-      this.memberService.update(updateRequest, this.tokenService.getUserToken()).subscribe({
+      this.memberService.update(updateRequest).subscribe({
         next: (updateResponse: UpdateResponse) => {
           console.log(updateResponse);
           this.updateCurrentMemberDTO();

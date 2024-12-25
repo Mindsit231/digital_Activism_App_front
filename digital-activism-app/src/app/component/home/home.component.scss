@@ -1,9 +1,44 @@
 @import "../common.scss";
-.friends-container {
+
+.posts-main-body {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+
+  width: 100%;
+}
+
+.create-post-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+}
+
+.no-posts-div {
+
+}
+
+.posts-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 20px;
+  margin-top: 20px;
+  margin-bottom: 20px;
+  width: 100%;
+}
+
+.post-body-div {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 
   width: 100%;
 }

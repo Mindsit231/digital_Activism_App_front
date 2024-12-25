@@ -13,6 +13,7 @@ import {UserSettingsComponent} from "./user-settings/user-settings.component";
 import {MemberService} from "../../service/member/member.service";
 import {AuthenticationService} from '../../service/authentication.service';
 import {RouterService} from '../../service/router.service';
+import {userAccountRoute, userSettingsRoute} from '../../app.routes';
 
 @Component({
   selector: 'app-user-account',
@@ -46,8 +47,9 @@ export class UserAccountComponent extends FooterHandlerComponent implements OnIn
   }
 
   ngOnInit(): void {
-    if (this.routerService.isCurrentUrlRoute('/user-account')) {
-      this.routerService.routeTo('/user-account/user-settings');
+    if (this.routerService.isCurrentUrlRoute(`/${userAccountRoute}`)) {
+
+      this.routerService.routeToUserSettings().then();
     }
   }
 

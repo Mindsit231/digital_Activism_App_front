@@ -1,7 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {LogoComponent} from "../logo/logo.component";
 import {NgForOf, NgIf, NgStyle} from "@angular/common";
-import {ActivatedRoute, Router} from "@angular/router";
 import {CookieService} from "ngx-cookie-service";
 import {FooterHandlerComponent} from "../misc/footer-handler-component";
 import {FontAwesomeModule} from "@fortawesome/angular-fontawesome";
@@ -14,9 +13,11 @@ import {NgxResizeObserverModule} from "ngx-resize-observer";
 import {logout, ProfileMenuItem, profileMenuItems} from "../user-account/profile-menu-item/profile-menu-item";
 import {MemberService} from "../../service/member/member.service";
 import {navigationItems} from "./navigation-item";
-import {AddEditPostModalComponent} from "../add-edit-post-modal/add-edit-post-modal.component";
+import {AddPostModalComponent} from "../posts/add-post-modal/add-post-modal.component";
 import {AuthenticationService} from '../../service/authentication.service';
 import {RouterService} from '../../service/router.service';
+import {TokenService} from '../../service/token.service';
+import {MemberDTO} from '../../model/member/member-dto';
 
 @Component({
   selector: 'app-header',
@@ -24,7 +25,7 @@ import {RouterService} from '../../service/router.service';
   imports: [LogoComponent,
     FontAwesomeModule, NgStyle,
     FormsModule, AutoCompleteModule,
-    NgxResizeObserverModule, NgIf, NgForOf, AddEditPostModalComponent],
+    NgxResizeObserverModule, NgIf, NgForOf, AddPostModalComponent],
   templateUrl: './header.component.html',
   styleUrl: './header.component.scss',
   host: {
@@ -47,13 +48,24 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   constructor(protected currentMemberService: CurrentMemberService,
               protected authenticationService: AuthenticationService,
               protected memberService: MemberService,
-              protected cookieService: CookieService,
+              protected tokenService: TokenService,
               protected routerService: RouterService) {
     super();
   }
 
   ngOnInit(): void {
-    this.currentMemberService.initializeMemberBySavedToken().then();
+    this.authenticationService.loginByToken().then(
+      (memberDTO: MemberDTO) => {
+        if (memberDTO != null && memberDTO.emailVerified) {
+          this.tokenService.setUserToken(memberDTO.token!);
+          this.currentMemberService.memberDTO = memberDTO;
+        } else {
+          console.error("Member is null or email is not verified");
+        }
+      }
+    ).catch((error) => {
+      console.log("Not logged in")
+    });
   }
 
   routeToAndCloseBurgerMenu(profileMenuItem: ProfileMenuItem) {
@@ -69,7 +81,7 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
   }
 
   loginOnClick() {
-    this.routerService.routeTo("/login");
+    this.routerService.routeToLogin().then();
   }
 
   burgerMenuOnClick() {
@@ -82,13 +94,5 @@ export class HeaderComponent extends FooterHandlerComponent implements OnInit {
 
   handleResize(entry: ResizeObserverEntry) {
     this.dropDownMenuTop = entry.contentRect.height + 10;
-  }
-
-  registerOnClick() {
-    this.routerService.routeTo("/register");
-  }
-
-  onDivBlur() {
-    this.xMarkOnClick();
   }
 }

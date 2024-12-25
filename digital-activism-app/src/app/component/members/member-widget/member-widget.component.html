@@ -1,0 +1,14 @@
+<div class="member-widget-main-div">
+  <div class="member-widget-div">
+    <div class="user-pfp-img-div">
+      <img class="pfp-img" src="{{memberDTO.pfpUrl!}}" alt="user-pfp-img"
+           *ngIf="memberDTO.pfpUrl != undefined">
+      <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="memberDTO.pfpUrl == undefined"></fa-icon>
+    </div>
+    <div class="user-info-div">
+      <span>{{ memberDTO.username }}</span>
+    </div>
+  </div>
+</div>
+
+

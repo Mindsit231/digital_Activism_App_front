@@ -36,11 +36,11 @@
       </div>
 
       <div class="sign-form-elem">
-        <button class="href-button" (click)="routerService.routeTo('/password-recovery')">Forgot Password</button>
+        <button class="href-button" (click)="this.routerService.routeToPasswordRecovery()">Forgot Password</button>
       </div>
       <div class="sign-form-elem">
         <span class="centered-span">Don't have an account?
-          <button class="href-button" (click)="routerService.routeTo('/register')"> Register</button>
+          <button class="href-button" (click)="this.routerService.routeToRegister()"> Register</button>
         </span>
       </div>
     </div>

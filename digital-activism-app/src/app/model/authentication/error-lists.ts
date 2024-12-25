@@ -16,7 +16,7 @@ export class ErrorLists {
     if (errorList != undefined) {
       return errorList
     } else {
-      return undefined;
+      return new ErrorList("", [])
     }
   }
 }

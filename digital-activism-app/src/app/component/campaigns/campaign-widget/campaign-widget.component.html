@@ -1,0 +1,34 @@
+<div class="campaign-main-div">
+  <div class="campaign-div">
+    <div class="campaign-member-div">
+      <div class="user-pfp-img-div">
+        <img class="pfp-img" src="{{campaignDTO.memberDTO.pfpUrl!}}" alt="user-pfp-img"
+             *ngIf="campaignDTO.memberDTO.pfpUrl != undefined">
+        <fa-icon class="user-icon-2" [icon]="faUser" *ngIf="campaignDTO.memberDTO.pfpUrl == undefined"></fa-icon>
+      </div>
+      <div class="user-info-div">
+        <span class="text-font-700">Original Campaign Creator</span>
+        <span>{{ campaignDTO.memberDTO.username }}</span>
+      </div>
+    </div>
+    <div class="info-elem">
+      <div class="text-elem">
+        <span class="text-font-700">{{ campaignDTO.name }}</span>
+        <span class="text-span">{{ campaignDTO.description }}</span>
+        <div class="dates-elem">
+          <span class="text-size-small">From: {{ getDate(campaignDTO.startDate) }}</span>
+          <span class="text-size-small">To: {{ getDate(campaignDTO.endDate) }}</span>
+          <span class="text-size-small">Created on {{ getDateTime(campaignDTO.creationDate) }}</span>
+        </div>
+      </div>
+      <div class="buttons-elem">
+        <button class="default-btn" (click)=toggleParticipate()>{{ campaignDTO.participating ? 'Abandon' : 'Participate' }}</button>
+        @if(campaignDTO.participating && hasVisitButton) {
+          <button class="default-btn" (click)=routerService.routeToCampaign(communityDTO.id,campaignDTO.id)>Visit Campaign</button>
+        }
+      </div>
+    </div>
+  </div>
+</div>
+
+

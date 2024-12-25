@@ -1,4 +1,4 @@
-import {Component, ElementRef, EventEmitter, Input, OnInit, Output, ViewChild} from '@angular/core';
+import {Component, ElementRef, EventEmitter, Input, Output, ViewChild} from '@angular/core';
 import {NgIf} from "@angular/common";
 import {ModalComponent} from "../../misc/modal-component";
 import {HttpErrorResponse} from "@angular/common/http";
@@ -8,10 +8,10 @@ import {faCheck, faTrash, faUser, faXmark} from "@fortawesome/free-solid-svg-ico
 import {FaIconComponent} from "@fortawesome/angular-fontawesome";
 import {UploadStatus} from "../../misc/form-component";
 import {MemberDTO} from "../../../model/member/member-dto";
-import {Subject} from "rxjs";
 import {MemberService} from "../../../service/member/member.service";
 import {PfpNameByEmail} from '../../../model/query/update/pfp-name-by-email';
 import {TokenService} from '../../../service/token.service';
+import {FileService} from '../../../service/misc/file.service';
 
 @Component({
   selector: 'app-upload-pfp-modal',
@@ -43,7 +43,7 @@ export class UploadPfpModalComponent extends ModalComponent {
   @ViewChild('imageInput') fileInput!: ElementRef;
 
   constructor(protected memberService: MemberService,
-              protected override tokenService: TokenService) {
+              protected override fileService: FileService) {
     super();
   }
 
@@ -85,7 +85,7 @@ export class UploadPfpModalComponent extends ModalComponent {
   private updatePfpName(newFileName: string) {
     let pfpNameByEmail = new PfpNameByEmail(this.memberDTO.email!, newFileName);
 
-    this.memberService.updatePfpNameByEmail(pfpNameByEmail, this.tokenService.getUserToken()).subscribe({
+    this.memberService.updatePfpNameByEmail(pfpNameByEmail).subscribe({
       next: (response: number) => {
         console.log('Pfp img path updated: ', response);
         this.memberDTO.setPfpName(newFileName);
@@ -98,7 +98,7 @@ export class UploadPfpModalComponent extends ModalComponent {
 
   private deleteOldPfpImg() {
     if (this.memberDTO.pfpName == null || this.memberDTO.pfpName!.length == 0) return;
-    this.memberService.deleteFile(this.memberDTO.pfpName!, this.tokenService.getUserToken()).subscribe({
+    this.fileService.deleteFile(this.memberDTO.pfpName!, this.memberService.entityName).subscribe({
       next: (response: boolean) => {
         console.log('Old profile picture deleted: ', response);
       },
@@ -129,11 +129,11 @@ export class UploadPfpModalComponent extends ModalComponent {
   }
 
   getUserPfpImgUrl(): string {
-    if(this.memberDTO !== undefined) {
+    if (this.memberDTO !== undefined) {
       if (this.imgUrl.length > 0) {
         return this.imgUrl;
-      } else if (this.memberDTO.hasPfp() && this.memberDTO.pfpImgUrl !== undefined) {
-        return this.memberDTO.pfpImgUrl;
+      } else if (this.memberDTO.hasPfp() && this.memberDTO.pfpUrl !== undefined) {
+        return this.memberDTO.pfpUrl;
       } else {
         return "";
       }

@@ -18,37 +18,46 @@ import {RecoverPasswordRequest} from '../model/authentication/password-recovery/
 import {RecoverPasswordResponse} from '../model/authentication/password-recovery/recover-password-response';
 import {ResetPasswordRequest} from '../model/authentication/password-reset/reset-password-request';
 import {ResetPasswordResponse} from '../model/authentication/password-reset/reset-password-response';
+import {FileService} from './misc/file.service';
+import {CurrentMemberService} from './member/current-member.service';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthenticationService {
   protected apiBackendUrl = environment.apiBackendUrl;
-  protected routerService: RouterService = inject(RouterService);
 
-  protected memberService: MemberService = inject(MemberService);
-  protected tokenService: TokenService = inject(TokenService);
-
-  constructor(protected http: HttpClient) {
+  constructor(protected http: HttpClient,
+              protected routerService: RouterService,
+              protected memberService: MemberService,
+              protected currentMemberService: CurrentMemberService,
+              protected tokenService: TokenService) {
   }
 
-  public verifyLogin(loginRequest: LoginRequest): Observable<MemberDTO> {
-    return this.http.post<MemberDTO>(`${this.apiBackendUrl}/public/login`, loginRequest);
+  public verifyLogin(loginRequest: LoginRequest): Promise<MemberDTO> {
+    let memberDTOObs = this.http.post<MemberDTO>(
+      `${this.apiBackendUrl}/public/login`,
+      loginRequest);
+
+    this.memberService.memberService = this.memberService;
+    return this.memberService.initializeDTOObs(memberDTOObs, this.memberService.initializeMemberDTO) as Promise<MemberDTO>;
   }
 
   public register(registerRequest: RegisterRequest): Observable<RegisterResponse> {
     return this.http.post<RegisterResponse>(`${this.apiBackendUrl}/public/register`, registerRequest);
   }
 
-  public loginByToken(token: string): Observable<MemberDTO> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
-    return this.http.post<MemberDTO>(
+  public loginByToken(): Promise<MemberDTO> {
+    let memberDTOObs = this.http.post<MemberDTO>(
       `${this.apiBackendUrl}/authenticated/login-by-token`,
       null,
       {
-        headers: headers
+        headers: this.tokenService.getAuthHeaders()
       }
     );
+
+    this.memberService.memberService = this.memberService;
+    return this.memberService.initializeDTOObs(memberDTOObs, this.memberService.initializeMemberDTO) as Promise<MemberDTO>;
   }
 
   public verifyToken(token: string): Observable<boolean> {
@@ -100,43 +109,25 @@ export class AuthenticationService {
     );
   }
 
-  public checkOldPassword(oldPassword: string, token: string): Observable<boolean> {
-    const headers: HttpHeaders = new HttpHeaders({'Authorization': `Bearer ${token}`});
+  public checkOldPassword(oldPassword: string): Observable<boolean> {
     return this.http.post<boolean>(
       `${this.apiBackendUrl}/authenticated/check-old-password`,
       oldPassword,
       {
-        headers: headers
+        headers: this.tokenService.getAuthHeaders()
       }
     );
   }
 
-  public isLoggedIn(): Promise<MemberDTO> {
-    return new Promise<MemberDTO>((resolve, reject) => {
-      this.loginByToken(this.tokenService.getUserToken()).subscribe({
-        next: (memberDTO: MemberDTO) => {
-          if (memberDTO != null) {
-            this.tokenService.setUserToken(memberDTO.token!);
-            resolve(memberDTO);
-          } else {
-            reject(new Error('MemberDTO is null'));
-          }
-
-        },
-        error: (error: HttpErrorResponse) => {
-          reject(error);
-        }
-      });
-    })
-  }
-
   async canActivateRole(roles: Role[]): Promise<boolean> {
-    return await this.isLoggedIn().then(
+    return await this.loginByToken().then(
       (memberDTO: MemberDTO) => {
-        if (memberDTO != null) {
+        if (memberDTO != null && memberDTO.emailVerified) {
           for (let role of roles) {
             if (memberDTO.role == role.role) {
               console.info("Passed role check");
+              this.tokenService.setUserToken(memberDTO.token!);
+              this.currentMemberService.memberDTO = memberDTO;
               return true;
             }
           }

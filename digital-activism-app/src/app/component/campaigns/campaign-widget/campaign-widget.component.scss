@@ -1,0 +1,102 @@
+@import "../../common.scss";
+
+$borderRadius: 20px;
+
+.campaign-main-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  width: 100%;
+
+  gap: 15px;
+
+  box-shadow: $boxShadowDefault;
+  border-radius: $borderRadius;
+}
+
+.campaign-div {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  padding: 10px;
+  background: $colorP12;
+  border-radius: $borderRadius;
+}
+
+.campaign-member-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: start;
+
+  width: 100%;
+}
+
+.user-pfp-img-div {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  margin-right: 10px;
+}
+
+.pfp-img {
+  width: 50px;
+  height: 50px;
+
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+.user-info-div {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+}
+
+
+.info-elem {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+}
+
+.text-elem {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+
+  flex: 1;
+  padding: 10px;
+  height: 100%;
+  gap: 10px;
+}
+
+.dates-elem {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: start;
+
+  gap: 2px;
+}
+
+.buttons-elem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  gap: 10px;
+  width: 200px;
+}

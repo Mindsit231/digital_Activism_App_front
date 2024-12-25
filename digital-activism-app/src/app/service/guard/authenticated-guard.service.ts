@@ -1,7 +1,7 @@
 import {Injectable} from '@angular/core';
 import {ActivatedRouteSnapshot, CanActivate, RouterStateSnapshot} from '@angular/router';
 import {AuthenticationService} from '../authentication.service';
-import {adminRole, authenticatedRole} from './role';
+import {siteAdminRole, authenticatedRole} from './role';
 
 @Injectable({
   providedIn: 'root'
@@ -14,6 +14,6 @@ export class AuthenticatedGuardService implements CanActivate {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ) {
-    return await this.authenticationService.canActivateRole([authenticatedRole, adminRole]);
+    return await this.authenticationService.canActivateRole([authenticatedRole, siteAdminRole]);
   }
 }

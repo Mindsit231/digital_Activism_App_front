@@ -5,6 +5,7 @@ import {HttpErrorResponse} from '@angular/common/http';
 import {AuthenticationService} from './authentication.service';
 import {InternalObjectService} from './misc/internal-object.service';
 import {RouterService} from './router.service';
+import {verifyEmailRoute} from '../app.routes';
 
 @Injectable({
   providedIn: 'root'
@@ -32,7 +33,7 @@ export class VerifyEmailService {
               email: email,
               token: token
             });
-            if(routing) this.routerService.routeTo('/verify-email');
+            if(routing) this.routerService.routeToVerifyEmail().then();
             resolve(sendEmailVerificationResponse);
           } else {
             reject(sendEmailVerificationResponse.errors);

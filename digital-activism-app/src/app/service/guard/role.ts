@@ -8,10 +8,12 @@ export class Role {
 
 export const publicRole = new Role('PUBLIC');
 export const authenticatedRole = new Role('AUTHENTICATED');
-export const adminRole = new Role('ADMIN');
+export const siteAdminRole = new Role('SITE_ADMIN');
+export const communityAdminRole = new Role('COMMUNITY_ADMIN');
 
 export const roles = {
   publicRole,
   authenticatedRole,
-  adminRole
+  siteAdminRole,
+  communityAdminRole
 }

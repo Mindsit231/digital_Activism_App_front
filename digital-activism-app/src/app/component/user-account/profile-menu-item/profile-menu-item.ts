@@ -24,10 +24,13 @@ export const logout = new ProfileMenuItem(faArrowRightFromBracket, 'Logout',
   '');
 export const myCommunities = new ProfileMenuItem(faPeopleGroup, 'My Communities',
   '/user-account/my-communities');
+export const myCampaigns = new ProfileMenuItem(faPeopleGroup, 'My Campaigns',
+  '/user-account/my-campaigns');
 
 export const profileMenuItems: ProfileMenuItem[] = [
   settings,
   myCommunities,
+  myCampaigns,
   connectionAndSecurity,
   logout
 ];

@@ -8,9 +8,9 @@
       <div class="profile-card">
         <div class="pfp-image-elem-main">
           <div class="pfp-image-elem">
-            <img class="image-frame" src="{{currentMemberService.member?.pfpImgUrl}}" alt="pfp"
-                 *ngIf="currentMemberService.member?.hasPfp()">
-            <fa-icon [class]="['user-icon']" [icon]="faUser" *ngIf="!currentMemberService.member?.hasPfp()"></fa-icon>
+            <img class="image-frame" src="{{currentMemberService.memberDTO?.pfpUrl}}" alt="pfp"
+                 *ngIf="currentMemberService.memberDTO?.hasPfp()">
+            <fa-icon [class]="['user-icon']" [icon]="faUser" *ngIf="!currentMemberService.memberDTO?.hasPfp()"></fa-icon>
           </div>
 
           <div class="pfp-edit-elem" (click)="openModal()">
@@ -18,13 +18,13 @@
           </div>
         </div>
         <div class="profile-top-div-info">
-          <span class="text-font-700">{{ currentMemberService.member?.username }}</span>
-          <span>{{ currentMemberService.member?.email }}</span>
+          <span class="text-font-700">{{ currentMemberService.memberDTO?.username }}</span>
+          <span>{{ currentMemberService.memberDTO?.email }}</span>
         </div>
       </div>
-      <div class="profile-tags-elem">
+      <div class="tags-elem">
         <div class="tags-select-div">
-          <div class="select-div">
+          <div class="tags-select">
             <input class="default-input-3" [(ngModel)]="tagProposal">
           </div>
           <div class="clickable-icon-elem-3" (click)="saveOnClick()">
@@ -41,7 +41,7 @@
         </div>
       </div>
       <div class="profile-edit-elem">
-        <div class="clickable-icon-elem-1" (click)="this.routerService.routeTo('/user-account/connection-security')">
+        <div class="clickable-icon-elem-1" (click)="this.routerService.routeToConnectionSecurity()">
           <fa-icon [class]="['clickable-icon-1']" [icon]="faPenToSquare"></fa-icon>
         </div>
       </div>
@@ -50,6 +50,6 @@
 </div>
 <app-upload-pfp-modal
   [isModalOpen]="isModalOpen"
-  [memberDTO]="this.currentMemberService.member!"
+  [memberDTO]="this.currentMemberService.memberDTO!"
   (onModalChangeEmitter)="closeModal($event)"
 ></app-upload-pfp-modal>

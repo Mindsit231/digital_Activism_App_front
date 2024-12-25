@@ -3,7 +3,7 @@ export abstract class FooterHandlerComponent {
   protected footerTopMinValue: number = 0;
   protected position: string = "static";
 
-  constructor() {
+  protected constructor() {
   }
 
   handleFooterTopMinValue(entry: ResizeObserverEntry, staticVal: number = 0) {

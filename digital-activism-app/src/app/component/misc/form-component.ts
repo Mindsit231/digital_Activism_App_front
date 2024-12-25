@@ -3,12 +3,17 @@ import {HttpErrorResponse, HttpEvent, HttpEventType} from "@angular/common/http"
 import {Observable} from "rxjs";
 import {EntityService} from "../../service/entity.service";
 import {TokenService} from '../../service/token.service';
+import {FileService} from '../../service/misc/file.service';
 
 export abstract class FormComponent extends FooterHandlerComponent {
   protected isSubmitted: boolean = false;
   protected formValidated: boolean = false;
 
-  protected tokenService!: TokenService;
+  protected fileService!: FileService;
+
+  protected constructor() {
+    super();
+  }
 
   onSubmit() {
     this.isSubmitted = true;
@@ -20,7 +25,7 @@ export abstract class FormComponent extends FooterHandlerComponent {
 
   protected uploadFiles(entityService: EntityService<any>, formData: FormData): Observable<UploadStatus> {
     return new Observable<UploadStatus>(subscriber => {
-      entityService.uploadFiles(formData, this.tokenService.getUserToken()).subscribe({
+      this.fileService.uploadFiles(formData, entityService.entityName).subscribe({
         next: (httpEvent: HttpEvent<string[]>) => {
           switch (httpEvent.type) {
             case HttpEventType.ResponseHeader:

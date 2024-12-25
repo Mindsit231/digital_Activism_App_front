@@ -35,8 +35,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
   isEditable: boolean = true;
 
   constructor(protected currentMemberService: CurrentMemberService,
-              protected authenticationService: AuthenticationService,
-              protected override tokenService: TokenService) {
+              protected authenticationService: AuthenticationService) {
     super();
   }
 
@@ -54,7 +53,7 @@ export class ConnectionSecurityFieldComponent extends AuthenticationComponent im
       if (this.isPasswordElement()) {
         if (this.isPasswordProper(this.newValue)) {
           if (this.newValue === this.passwordConfirmation) {
-            this.authenticationService.checkOldPassword(this.oldPassword, this.tokenService.getUserToken()).subscribe({
+            this.authenticationService.checkOldPassword(this.oldPassword).subscribe({
               next: (isNewPasswordSame: boolean) => {
                 this.isNewPasswordSame = isNewPasswordSame ? ACTION_FAILURE : ACTION_SUCCESS;
                 this.isConfirmed = isNewPasswordSame ? ACTION_FAILURE : ACTION_SUCCESS;

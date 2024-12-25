@@ -1,0 +1,45 @@
+<div class="community-body-main">
+  <div class="banner-elem">
+    <img class="banner-image-frame" src="{{this.communityDTO.bannerUrl}}" alt="banner-placeholder">
+    <div class="info-elem">
+      <div class="logo-elem">
+        <img class="logo-image-frame" src="{{this.communityDTO.logoUrl}}" alt="pfp">
+      </div>
+      <div class="text-elem">
+        <span class="text-font-700">{{ communityDTO.name }}</span>
+        <span class="text-span">{{ communityDTO.description }}</span>
+        <span>Created on {{ getDateTime(communityDTO.timestamp) }}</span>
+        @if (communityDTO.isAdmin) {
+          <span class="text-font-700">You're an admin of {{ communityDTO.name }}</span>
+        }
+      </div>
+      <div class="buttons-elem">
+        <button class="default-btn" (click)=toggleJoin()>{{ communityDTO.joined ? 'Leave' : 'Join' }}</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="tabs-elem">
+    <mat-tab-group class="custom-tabs">
+      <mat-tab label="Posts">
+        <app-posts
+          [communityDTO]="communityDTO"
+        ></app-posts>
+      </mat-tab>
+      <mat-tab label="Campaigns">
+        <app-campaigns
+          [communityDTO]="communityDTO"
+        ></app-campaigns>
+      </mat-tab>
+      @if (this.communityDTO.isAdmin) {
+        <mat-tab label="Members">
+          <app-members
+            [communityDTO]="communityDTO"
+            [fetchMembersAction]="fetchMembersAction"
+            [fetchMembersCountAction]="fetchMembersCountAction">
+          </app-members>
+        </mat-tab>
+      }
+    </mat-tab-group>
+  </div>
+</div>

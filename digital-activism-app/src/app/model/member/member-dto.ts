@@ -1,43 +1,47 @@
-import {Tag} from '../tag';
-
 export class MemberDTO {
-  protected id: number | undefined;
-
+  id: number;
   username: string;
+  pfpName: string | undefined;
+
   email: string;
   emailVerified: boolean;
   password: string;
   role: string;
 
-  creationDate: string | undefined;
-  pfpName: string | undefined;
-  token: string | undefined;
+  token: string;
+  creationDate: string;
 
   // PFP IMAGE URL (COMPUTED WHEN NEEDED)
-  pfpImgUrl: string | undefined;
+  pfpUrl: string | undefined;
 
-  constructor(username: string, email: string, emailVerified: boolean, password: string, role: string,
-              creationDate?: string, token?: string,
-              userId?: number, pfpName?: string) {
-    this.id = userId;
-
+  constructor(id: number, username: string, pfpName: string | undefined, email: string, emailVerified: boolean, password: string, role: string, token: string, creationDate: string) {
+    this.id = id;
+    this.username = username;
+    this.pfpName = pfpName;
     this.email = email;
     this.emailVerified = emailVerified;
-    this.username = username;
     this.password = password;
     this.role = role;
-
-    this.creationDate = creationDate;
     this.token = token;
-    this.pfpName = pfpName;
+    this.creationDate = creationDate;
   }
 
-  static fromJson(jsonMemberDto: MemberDTO): MemberDTO {
-    return new MemberDTO(jsonMemberDto.username,
-      jsonMemberDto.email, jsonMemberDto.emailVerified,
-      jsonMemberDto.password, jsonMemberDto.role,
-      jsonMemberDto.creationDate, jsonMemberDto.token,
-      jsonMemberDto.id, jsonMemberDto.pfpName);
+  static fromJson(memberDTOJson: any): MemberDTO {
+    return new MemberDTO(
+      memberDTOJson.id,
+      memberDTOJson.username,
+      memberDTOJson.pfpName,
+      memberDTOJson.email,
+      memberDTOJson.emailVerified,
+      memberDTOJson.password,
+      memberDTOJson.role,
+      memberDTOJson.token,
+      memberDTOJson.creationDate
+    );
+  }
+
+  setEmail(email: string) {
+    this.email = email;
   }
 
   hasPfp(): boolean {
@@ -46,20 +50,12 @@ export class MemberDTO {
       this.pfpName.length > 0;
   }
 
-  setPfpUrl(pfpImgUrl: string) {
-    this.pfpImgUrl = pfpImgUrl;
+  setPfpUrl(pfpUrl: string) {
+    this.pfpUrl = pfpUrl;
   }
 
   setUsername(username: string) {
     this.username = username;
-  }
-
-  setEmail(email: string) {
-    this.email = email;
-  }
-
-  setPassword(password: string) {
-    this.password = password;
   }
 
   getPfpImgPrefix(): string {

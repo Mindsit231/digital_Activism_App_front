@@ -1,0 +1,93 @@
+<div class="modal my-modal" *ngIf="isModalOpen">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header my-modal-header">
+        <span class="modal-header-title">Add Post</span>
+        <div class="clickable-icon-elem-1" (click)="closeModal()">
+          <fa-icon [icon]="faXmark" [class]="['clickable-icon-1']"></fa-icon>
+        </div>
+      </div>
+      <div class="modal-body">
+        <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <label for="name-input">Name:</label>
+            <input class="default-input-3" type="text" [(ngModel)]="communityRequest.name" (click)="checkIfCommunityAdded()" id="name-input">
+          </div>
+        </div>
+        <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <label for="body-input">Description:</label>
+            <textarea class="default-text-area-3" [(ngModel)]="communityRequest.description" (click)="checkIfCommunityAdded()" id="body-input"></textarea>
+          </div>
+        </div>
+        <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <span>Select Logo:</span>
+            <div class="drag-and-drop-elem">
+              <span>Click Or Drag</span>
+              <input #logoInput id="logo-input" type="file" accept="image/png, image/gif, image/jpeg" name="files"
+                     class="drag-and-drop-input" (change)="onLogoSelected($event)">
+            </div>
+          </div>
+          @if(communityRequest.logoName!.length > 0) {
+            <div class="add-form-elem-1">
+              <span>Logo:</span>
+            </div>
+            <div class="image-preview-container">
+              <div class="image-preview-elem-main">
+                <div class="image-preview-elem">
+                  <img class="image-preview" src="{{communityRequest.logoUrl}}" alt="img">
+                </div>
+
+                <div class="image-preview-edit-elem">
+                  <fa-icon [icon]="faTrash" [class]="['clickable-icon-1', 'trash-icon']"
+                           (click)="onDeleteLogo()"></fa-icon>
+                </div>
+              </div>
+            </div>
+          }
+          <span class="validation-error-span">{{ logoStatusMsg }}</span>
+        </div>
+        <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <span>Select Banner:</span>
+            <div class="drag-and-drop-elem">
+              <span>Click Or Drag</span>
+              <input #bannerInput id="banner-input" type="file" accept="image/png, image/gif, image/jpeg" name="files"
+                     class="drag-and-drop-input" (change)="onBannerSelected($event)">
+            </div>
+          </div>
+          @if(communityRequest.bannerName!.length > 0) {
+            <div class="add-form-elem-1">
+              <span>Banner:</span>
+            </div>
+            <div class="image-preview-container">
+              <div class="image-preview-elem-main">
+                <div class="image-preview-elem">
+                  <img class="image-preview" src="{{communityRequest.bannerUrl}}" alt="img">
+                </div>
+
+                <div class="image-preview-edit-elem">
+                  <fa-icon [icon]="faTrash" [class]="['clickable-icon-1', 'trash-icon']"
+                           (click)="onDeleteBanner()"></fa-icon>
+                </div>
+              </div>
+            </div>
+          }
+          <span class="validation-error-span">{{ bannerStatusMsg }}</span>
+        </div>
+        <div class="my-modal-element">
+          <div class="add-form-elem-1">
+            <span class="validation-success-span" *ngIf="isSuccess()">Community added successfully</span>
+            <span class="validation-error-span" *ngIf="isFailure">Community could not be added</span>
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <div class="clickable-icon-elem-1" (click)="onAcceptClick()">
+          <fa-icon [icon]="faCheck" [class]="['clickable-icon-1']"></fa-icon>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

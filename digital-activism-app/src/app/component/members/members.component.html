@@ -1,0 +1,26 @@
+<div class="members-main-body">
+  @if (memberDTOS.length == 0) {
+    <div class="no-members-div">
+      <span class="title-span">This Community Has No Members</span>
+    </div>
+  } @else {
+    <div class="members-container">
+
+      <div class="member-body-div" *ngFor="let memberDTO of memberDTOS">
+        <app-member-widget
+          [memberDTO]="memberDTO">
+        </app-member-widget>
+      </div>
+
+    </div>
+    <mat-paginator class="custom-paginator"
+                   [length]="length"
+                   [pageSize]="pageSize"
+                   [showFirstLastButtons]="true"
+                   [pageSizeOptions]="[5, 10, 25, 100]"
+                   [pageIndex]="pageIndex"
+                   (page)="handlePageEvent($event)"
+                   aria-label="Select page">
+    </mat-paginator>
+  }
+</div>
