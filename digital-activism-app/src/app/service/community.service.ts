@@ -19,11 +19,14 @@ export class CommunityService extends EntityService<CommunityDTO> {
     super(http, 'community');
   }
 
-  public getTableLength(): Observable<number> {
+  public getTableLength(searchValue: string): Observable<number> {
     return this.http.get<number>(
       `${this.apiBackendUrl}/authenticated/${this.entityName}/get-table-length`,
       {
-        headers: this.tokenService.getAuthHeaders()
+        headers: this.tokenService.getAuthHeaders(),
+        params: {
+          searchValue: searchValue
+        }
       });
   }
 

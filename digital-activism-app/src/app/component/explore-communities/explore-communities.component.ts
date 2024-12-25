@@ -26,7 +26,7 @@ import {FetchEntityLimited} from '../../model/misc/fetch-entity-limited';
 export class ExploreCommunitiesComponent implements OnInit {
 
   protected readonly exploreCommunities = exploreCommunities;
-  searchString: string = "";
+  searchValue: string = "";
 
   pageIndex: number = 0;
   length: number = 0;
@@ -38,14 +38,6 @@ export class ExploreCommunitiesComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.communityService.getTableLength().subscribe({
-      next: (response: number) => {
-        this.length = response;
-      },
-      error: (error) => {
-        console.error(error);
-      }
-    });
     this.fetchCommunities(this.pageIndex, this.pageSize);
   }
 
@@ -56,19 +48,31 @@ export class ExploreCommunitiesComponent implements OnInit {
   }
 
   fetchCommunities(pageIndex: number, pageSize: number) {
-    let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex);
-    this.communityService.fetchCommunityDTOSLimited(fetchEntityLimited).then(
-      (communitiesDTO: CommunityDTO[]) => {
-        console.log(`Fetched ${communitiesDTO.length} communities`);
-        communitiesDTO.sort((a, b) =>
-          new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
-        );
-        this.communities = communitiesDTO;
+    this.communityService.getTableLength(this.searchValue).subscribe({
+      next: (response: number) => {
+        this.length = response;
+
+        let fetchEntityLimited: FetchEntityLimited = new FetchEntityLimited(pageSize, pageIndex, this.searchValue);
+        this.communityService.fetchCommunityDTOSLimited(fetchEntityLimited).then(
+          (communitiesDTO: CommunityDTO[]) => {
+            console.log(`Fetched ${communitiesDTO.length} communities`);
+            communitiesDTO.sort((a, b) =>
+              new Date(a.timestamp).getTime() - new Date(b.timestamp).getTime()
+            );
+            this.communities = communitiesDTO;
+          },
+          (error) => {
+            console.error(error);
+          }
+        )
       },
-      (error) => {
+      error: (error) => {
         console.error(error);
       }
-    )
+    });
   }
 
+  onSearch() {
+    this.fetchCommunities(this.pageIndex, this.pageSize);
+  }
 }

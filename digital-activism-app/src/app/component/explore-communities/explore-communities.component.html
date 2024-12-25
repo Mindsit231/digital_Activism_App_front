@@ -6,9 +6,9 @@
     <h1 class="main-page-h1">Find Community</h1>
   </div>
   <div class="separation-line-2"></div>
-  <div class="search-div">
-    <input class="default-input-3" placeholder="Search By Name..." [(ngModel)]="searchString">
-  </div>
+  <form class="search-div" (ngSubmit)="onSearch()">
+    <input class="default-input-3" placeholder="Search By Name..." [(ngModel)]="searchValue" name="search-input">
+  </form>
   <div class="communities-container">
     <div class="community-widget-body-div" *ngFor="let community of communities">
       <app-community-widget

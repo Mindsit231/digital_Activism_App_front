@@ -35,7 +35,7 @@ export class CampaignService extends EntityService<CampaignDTO> {
 
   public getTableLength(communityId: number): Observable<number> {
     return this.http.get<number>(
-      `${this.apiBackendUrl}/authenticated/campaign/get-table-length-by-community-id`,
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/get-table-length-by-community-id`,
       {
         headers: this.tokenService.getAuthHeaders(),
         params: {

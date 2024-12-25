@@ -35,7 +35,7 @@ export class MessageService extends EntityService<MessageDTO> {
 
   public getTableLength(campaignId: number): Observable<number> {
     return this.http.get<number>(
-      `${this.apiBackendUrl}/authenticated/message/get-table-length-by-campaign-id`,
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/get-table-length-by-campaign-id`,
       {
         headers: this.tokenService.getAuthHeaders(),
         params: {

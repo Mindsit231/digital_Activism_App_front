@@ -201,7 +201,7 @@ export class PostService extends EntityService<PostDTO> {
 
   public getTableLength(communityId: number): Observable<number> {
     return this.http.get<number>(
-      `${this.apiBackendUrl}/authenticated/post/get-table-length-by-community-id`,
+      `${this.apiBackendUrl}/authenticated/${this.entityName}/get-table-length-by-community-id`,
       {
         headers: this.tokenService.getAuthHeaders(),
         params: {
